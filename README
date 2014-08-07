@@ -1,0 +1,50 @@
+"Then and Now" is an application designed to bring together Google Street Views
+with historic photos stored in a CONTENTdm collection. It makes use of an SQLite
+database (but could easily be substituted by any other means of storing/retrieving 
+JSON data).
+
+Implementation:
+
+1) Your PHP installation must support the cURL and PDO_SQLITE.
+
+2) The config_{$mapref}.php file must be filled out completely. {$mapref} is a short 
+identifier for a geographical location. Example contents:
+
+// server + path where this script resides
+$config['THIS_HOST'] = "http://" . $_SERVER["HTTP_HOST"] . "/thenandnow"; 
+// URL for public-facing CONTENTdm host
+$config['CONTENTDM_HOME'] = "http://www.contentdmhost.org";
+// Path to SQLite db
+$config['PATH_TO_SQLITE'] = $_SERVER["DOCUMENT_ROOT"] . "/thenandnow/data/test.db";
+// address for CONTENTdm web services
+$config['CDM_WEBSERVICES_HOME'] = "https://server00000.contentdm.oclc.org";
+// any street address for example prompt value
+$config['ADDRESS_PROMPT'] = "88 South High Street, Columbus, OH";
+// any CDM Reference URL for example prompt value
+$config['CDMURL_PROMPT'] = $config['CONTENTDM_HOME']."/cdm/ref/collection/[alias]/id/[ptr]";
+// optional title that will appear on map
+$config['MAP_TITLE'] = "Map of Downtown Columbus, Ohio";
+
+3) The test.db database is a sample table with one blank JSON record in it. The 
+name of the test map is "testmap", which is what you would type into the "Get 
+Map Data" blank. To make your own database just make sure the table is 
+named "maprecord" and that it contains two columns, one named "mapid", and the 
+other named "mapdata". Although it is not necessary, if you need/want the rest of 
+SQLite, visit their download page at http://www.sqlite.org/download.html.
+
+4) To start a new map, type a title in the "Get Map Data" blank and click the
+"Add Line" button.
+
+Note: With the administrative files (get_data.php, do_query.php,
+do_cdmquery.php) only basic data sanitization is being done. The administrative 
+interface be run locally behind a firewall and the database can subsequently be 
+uploaded to a publicly accessible site.
+
+These scripts are distributed "as is", and neither I nor the Ohio History Connection 
+accept liability of any kind (see accompanying BSD License file). If you
+do make improvements on the application, however, please consider notifying me 
+and the rest of the CONTENTdm community!
+
+Phil Sager
+Ohio History Connection
+psager@ohiohistory.org

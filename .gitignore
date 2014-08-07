@@ -1,0 +1,4 @@
+﻿#Ignore these
+/conf/*
+/data/maps.db
+*.bak
