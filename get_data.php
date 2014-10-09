@@ -45,6 +45,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json2/20130526/json2.min.js"></script>
+<!--<script type="text/css" src="css/bootstrap.css"></script>-->
 
 
 <script>
@@ -120,6 +121,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 				alert("Need both a latitude and longitude");
 				return false;
 			}
+			
 			var povHead = 0;
 			var povPitch = 0;
 			var povZoom = 0;
@@ -128,6 +130,8 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 				alert("Need a valid CONTENTdm scaled image URL");
 				return false;
 			}
+			
+			$('#streetwrapper').show();
 			
       var thumbImg = $('<img />', {
         src: imgPath
@@ -195,6 +199,42 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 			
 		});
 		
+		$('#bottomformsave').submit(function(e) {
+			e.preventDefault();
+			if ($('#savemap') == null || $('#savemap').val().length == 0) { 
+				alert("Please enter a map name"); 
+				return false; 
+			}
+			var mapname = $("#savemap").val();
+			var numRows = $(".mapdatarow").length;
+			var mapDataArray = new Array(numRows);
+			for (i = 0; i < numRows; i++) {
+				var mapDataRow = {};
+				mapDataRow.latitude = $('#latitude_' + i).val();
+				mapDataRow.longitude = $('#longitude_' + i).val();
+				mapDataRow.itemtitle = $('#itemtitle_' + i).val();
+				mapDataRow.cdmurl = $('#cdmurl_' + i).val();
+				mapDataRow.identifier = $('#identifier_' + i).val();
+				mapDataRow.heading = $('#heading_' + i).val();
+				mapDataRow.pitch = $('#pitch_' + i).val();
+				mapDataRow.zoom = $('#zoom_' + i).val();
+				mapDataArray[i] = mapDataRow;
+			}
+			
+			var mapDataArrayJSON = JSON.stringify(mapDataArray);
+			
+			var request = $.ajax({
+				type: "POST",
+				data: { getmap: mapname, savedata: mapDataArrayJSON },
+				url: "do_query.php",
+				success: function(data) {
+					$('#saved').html('<b>saved!</b>');
+					setTimeout("$('#saved').empty()",1000);
+				}
+			});
+			
+		});
+		
 		// set input value on blur
 		$('.mapinput').blur(function() {
 			var setDomVal = $(this).val();
@@ -210,9 +250,16 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 			window.open("<?php echo($config['THIS_HOST']) ?>/thenandnow.php?getmap=" + $('#showmap').val());
     	return false; 
 		});
-		
+		$("#bottomformshow").submit(function() {
+			if ($('#bottomshowmap') == null || $('#bottomshowmap').val().length == 0) { 
+				alert("Please enter a map name"); 
+				return false; 
+			} 
+			window.open("<?php echo($config['THIS_HOST']) ?>/thenandnow.php?getmap=" + $('#bottomshowmap').val());
+    	return false; 
+		});
 		// when "add line" is clicked either start a new map or add a new line
-		$("#formadd").submit(function(e) {
+		$("#formadd").submit(function (e) {
 			if ($('#getmap') == null || $('#getmap').val().length == 0) { 
 				var mapname = prompt("Type the name of your map (no spaces or punctuation)", "MyMap");
 			} else {
@@ -232,7 +279,26 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 			}
 			return false;
 		});
-		
+		$("#bottomformadd").submit(function (e) {
+			if ($('#getmap') == null || $('#getmap').val().length == 0) { 
+				var mapname = prompt("Type the name of your map (no spaces or punctuation)", "MyMap");
+			} else {
+				var mapname = $('#getmap').val();
+			}
+			if (mapname != '' && mapname != null) {
+				$.ajax({
+					type: "POST",
+					data: { getmap: mapname, addline: "addline" },
+					url: "do_query.php",
+					success: function(data) {
+						location.href = "<?php echo($config['THIS_HOST']) ?>/get_data.php?getmap=" + mapname;
+					}
+				});	
+			} else {
+				return false;
+			}
+			return false;
+		});
 		// make sure map name is entered
 		$("#formgetmap").submit(function() {
 			if ($('#getmap') == null || $('#getmap').val().length == 0) { 
@@ -281,9 +347,20 @@ th {
 #formsave {
 	display: inline-block;
 }
+#bottomformshow {
+	display: inline-block;
+}
+#bottomformadd { 
+  display: inline-block;
+}
+#bottomformsave {
+	display: inline-block;
+}
+
 #streetwrapper {
 	/*float:left;*/
 	width:100%;
+	height:500px;
 	text-align: center;
 }
 #panoInfo {
@@ -292,31 +369,45 @@ th {
 	/*float:left;*/
 }
 #panoblock {
-
+	height: 420px;
+	width:900px;
+	margin-left:auto;
+	margin-right:auto;
+	/*display: inline;*/
 }
 #pano {
 	width: 420px; 
 	height: 370px;
 	padding:10px;
+	/*margin-right: -800px;*/
+	float:left;
 	display: inline-block;
 }
 #imageview {
 	padding:10px;
-	display: inline-block;
+	width: 420px; 
+	height: 370px;
+	float:left;
+	display: inline;
+	/*display: inline-block;*/
 }
 th {
 	text-align: left;
 }
 </style>
+<link media="ALL" rel="stylesheet" type="text/css" href="css/bootstrap.css"></link>
+
 </head>
 <body>
+	<div class = "container-fluid"><!--bootstrap!-->
 	<div id="output"></div>
 	<div class="title">
 		<form id="formgetmap" name="formgetmap" method="POST" action="get_data.php">
 			<b>"Then and Now" Map Helper</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<br><br>
 			<input type="text" class="mapinput" name="getmap" id="getmap" size="10" value="<?php echo $map_data_exists ? $mapref : '' ?>">
 			<input type="submit" name="getdata" value="Get Map Data"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		</form>
+		</form><br><br>
 		<form id="formshow" name="formshow">
 			<input type="hidden" id="showmap" name="showmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
 			<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
@@ -331,9 +422,10 @@ th {
 			<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
 			<input type="submit" id="savesubmit" name="savesubmit" value="Save Map Data">&nbsp;&nbsp;<span id="saved"></span>
 		</form>
-	</div>
+	</div><br>
 
-	<table>
+	<table class="table table-border">	
+	<!--<table>-->
 			<?php 
 				if ($map_data_exists) {
 					echo('<tr><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th></tr>');
@@ -345,7 +437,7 @@ th {
 						<td><input type="submit" class="getcoordinates" id="getcoords_<?php echo $i ?>" value="Get lat/lng"></td>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="latitude" id="latitude_<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>" size="10"></td>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="longitude" id="longitude_<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>" size="10"> </td>
-						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="itemtitle" id="itemtitle_<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>" size="50"> </td>
+						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="itemtitle" id="itemtitle_<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  style="wordwrap:initial; width:20 height:60 px"> <!--size="50">--> </td>
 						<td><input type="submit" class="getscaled" id="getscaled_<?php echo $i ?>" value="Scale image"></td>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>"> </td>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="identifier" id="identifier_<?php echo $i ?>" value="<?php echo $map_data[$i]["identifier"] ?>"> </td>
@@ -355,16 +447,33 @@ th {
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="zoom" id="zoom_<?php echo $i ?>" value="<?php echo $map_data[$i]["zoom"] ?>" size="2"> </td>
 						<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapref : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
 				
-		<?php	} 
-					
-				} ?>
+			<?php	} 
+				
+		} ?>
 			
 	</table>
 	
 	<?php if ($map_data_exists) { ?>
 	
 	<hr/>
-	<div id="streetwrapper">
+	<div class="title">
+		<form id="bottomformshow" name="bottomformshow">
+				<input type="hidden" id="bottomshowmap" name="bottomshowmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+				<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</form>
+			<form id="bottomformadd" name="bottomformadd" method="POST" action="do_query.php">
+				<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+				<input type="submit" name="addline" value="Add Line">
+			</form>
+			<form id="bottomformsave" name="bottomformsave">
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+				<input type="submit" id="savesubmit" name="savesubmit" value="Save Map Data">&nbsp;&nbsp;<span id="saved"></span>
+			</form>
+	</div>
+	<br>
+	<div id="streetwrapper" style="display:none">
 		<div id="panoInfo">
 	  	&nbsp;&nbsp;&nbsp;latitude: <input type="text" id="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" size="10">
 	  	&nbsp;&nbsp;&nbsp;heading: <input type="text" id="heading_cell" size="9">, 
@@ -377,7 +486,7 @@ th {
 		  <div id="imageview"></div>
 	  </div>
 	</div>
-	
+	</div><!--container-fluid!-->
 	<?php } ?>
 	
 </body>
