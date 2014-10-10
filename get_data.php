@@ -27,12 +27,32 @@ function do_curl($curl_url) {
 define("ABS_PATH", dirname(__FILE__));
 // get map data
 if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
-	$mapref = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
-	include(ABS_PATH . '/conf/config_'.$mapref.'.php');
-	$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapref);
-	// send curl with entry data to an sqlite db somewhere
-	$map_data = do_curl($curl_url);
-	$map_data_exists = true; 
+	$mapID="columbus";
+	if(isset($_POST['getmap'])){
+	$maptitle=$_POST['getmap'];
+	}
+	else if(isset($_GET['getmap'])){
+		$maptitle= $_GET['getmap'];
+	}
+	else{
+		$maptitle =null;
+	}
+	if($maptitle ==$mapID){
+		$mapref = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
+		include(ABS_PATH . '/conf/config_'.$mapref.'.php');
+		$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapref);
+		// send curl with entry data to an sqlite db somewhere
+		$map_data = do_curl($curl_url);
+		$map_data_exists = true;
+	}
+	elseif($maptitle ==null){
+	echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
+	$map_data_exists = false;
+	}
+	else{
+	echo("<script> alert(\"".$maptitle." does not exist. Enter valid city.\");</script>");
+	$map_data_exists = false;
+	}
 }
 
 ?>
@@ -302,7 +322,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 		// make sure map name is entered
 		$("#formgetmap").submit(function() {
 			if ($('#getmap') == null || $('#getmap').val().length == 0) { 
-				alert("Please enter a map name"); 
+				alert("Please enter a map name");
 				return false;
 			}
 		});
@@ -337,6 +357,15 @@ th {
 }
 #formgetmap { 
   display: inline-block;
+  font-size: 140%;
+  margin-top: 10em;
+  background: #D3D3D3;
+  border: solid;
+  padding: 6em;
+}
+#formgetmap b{
+	font-size: 230%;
+	background: default;
 }
 #formshow {
 	display: inline-block;
@@ -405,29 +434,56 @@ th {
 		<form id="formgetmap" name="formgetmap" method="POST" action="get_data.php">
 			<b>"Then and Now" Map Helper</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<br><br>
+			<p id="intro">
+			"Then and Now" is an application designed to bring together Google Street Views
+with historic photos stored in the Ohio Memory Collection.<!--a CONTENTdm collection. It makes use of an SQLite
+database (but could easily be substituted by any other means of storing/retrieving 
+JSON data).--><br><br>
+
+			Please enter the name of the city to retrieve the relevant images and markers.</p>
 			<input type="text" class="mapinput" name="getmap" id="getmap" size="10" value="<?php echo $map_data_exists ? $mapref : '' ?>">
 			<input type="submit" name="getdata" value="Get Map Data"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		</form><br><br>
-		<form id="formshow" name="formshow">
-			<input type="hidden" id="showmap" name="showmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
-			<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		</form>
-		<form id="formadd" name="formadd" method="POST" action="do_query.php">
-			<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
-			<input type="submit" name="addline" value="Add Line">
-		</form>
-		<form id="formsave" name="formsave">
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
-			<input type="submit" id="savesubmit" name="savesubmit" value="Save Map Data">&nbsp;&nbsp;<span id="saved"></span>
-		</form>
-	</div><br>
+	</div><br><br>
 
-	<table class="table table-border">	
+	<table class="table table-border"><!--twitter bootstrap-->
 	<!--<table>-->
 			<?php 
-				if ($map_data_exists) {
+				if ($map_data_exists) { ?>
+					<style>
+						#formgetmap{
+							font-size: 90%;
+							display: inline-block;
+							margin-top: 0;
+							background:inherit;
+							padding: 0 3em;
+							border: none;
+						}
+						#formgetmap b{
+						text-decoration: none;
+						}
+						#intro{
+							display: none;
+						}
+						
+					</style>
+					<div class="title">
+						<form id="formshow" name="formshow">
+							<input type="hidden" id="showmap" name="showmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+							<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						</form>
+						<form id="formadd" name="formadd" method="POST" action="do_query.php">
+							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+							<input type="submit" name="addline" value="Add Line">
+						</form>
+						<form id="formsave" name="formsave">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+							<input type="submit" id="savesubmit" name="savesubmit" value="Save Map Data">&nbsp;&nbsp;<span id="saved"></span>
+						</form>
+					</div><br>
+			<?php
 					echo('<tr><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th></tr>');
 					$max = count($map_data);
 					for ($i = 0; $i < $max; $i++) {		

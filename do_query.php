@@ -16,8 +16,8 @@ $mapdata = "";
 $map_data_json = "";
 
 if (isset($_GET["getmap"]) || isset($_POST["getmap"])) {
-	 
-	$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
+	$mapID="columbus"; 
+	#$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
 	include(ABS_PATH . '/conf/config_'.$mapID.'.php');
 
 	try
@@ -57,7 +57,6 @@ if (isset($_GET["getmap"]) || isset($_POST["getmap"])) {
 	    print($map_data_json);
 	  } 
 	  $dbh = NULL;
-	  
 	}
 	catch(Exception $e)
 	{
