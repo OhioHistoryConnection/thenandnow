@@ -454,7 +454,9 @@ JSON data).--><br><br>
 					echo"<option class=\"hr\" disabled=\"disabled\"><em>Maps Available</em></option>";
 				}
 				for ($i = 0; $i < $max; $i++) {
-					echo "<option value= \"".$map_id_json_array[$i]['mapid']."\">".ucfirst($map_id_json_array[$i]['mapid'])."</option>";
+					if($map_id_json_array[$i]['mapid'] <> $mapID){
+						echo "<option value= \"".$map_id_json_array[$i]['mapid']."\">".ucfirst($map_id_json_array[$i]['mapid'])."</option>";
+					}
 				}
 				echo "</select>";
 			}
@@ -463,15 +465,11 @@ JSON data).--><br><br>
 				print 'Exception : '.$e->getMessage();
 			}
 			?>
-			<!--<input type="text" size="10" value="<?php echo $map_data_exists ? $mapID : '' ?>">
-			<!--<input type="text" class="mapinput" name="getmap" id="getmap" size="10" value="<?php echo $map_data_exists ? $mapID : '' ?>">
-			<!--<input type="text" class="mapinput" name="getmap" id="getmap" size="10" value="<?php #echo $map_data_exists ? $mapref : '' ?>">-->
 			<input type="submit" name="getdata" value="Get Map Data"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		</form>
 	</div><br><br>
 	<div class="table-responsive">
 	<table class="table table-border"><!--twitter bootstrap-->
-	<!--<table>-->
 			<?php 
 				if ($map_data_exists) { ?>
 					<style>
@@ -493,7 +491,7 @@ JSON data).--><br><br>
 					</style>
 					<div class="title">
 						<form id="formshow" name="formshow">
-							<input type="hidden" id="showmap" name="showmap" value="<?php echo $mapID#$map_data_exists ? $mapref : '' ?>">
+							<input type="hidden" id="showmap" name="showmap" value="<?php echo $mapID?>">
 							<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						</form>
@@ -525,7 +523,7 @@ JSON data).--><br><br>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="heading" id="heading_<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="5"> </td>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="pitch" id="pitch_<?php echo $i ?>" value="<?php echo $map_data[$i]["pitch"] ?>" size="5"> </td>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="zoom" id="zoom_<?php echo $i ?>" value="<?php echo $map_data[$i]["zoom"] ?>" size="2"> </td>
-						<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><!--<input type="hidden" name="getmap" value="<?php #echo $map_data_exists ? $mapref : '' ?>">--><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
+						<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
 				
 			<?php	} 
 				
@@ -538,14 +536,12 @@ JSON data).--><br><br>
 	<hr/>
 	<div class="title">
 		<form id="bottomformshow" name="bottomformshow">
-				<input type="hidden" id="bottomshowmap" name="bottomshowmap" value="<?php echo $mapID#$map_data_exists ? $mapref : '' ?>">
+				<input type="hidden" id="bottomshowmap" name="bottomshowmap" value="<?php echo $mapID?>">
 				<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</form>
 			<form id="bottomformadd" name="bottomformadd" method="POST" action="do_query.php">
-				<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
-				<!--<input type="hidden" name="getmap" value="<?php #echo $map_data_exists ? $mapref : '' ?>">-->
-				<input type="submit" name="addline" value="Add Line">
+				<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">				<input type="submit" name="addline" value="Add Line">
 			</form>
 			<form id="bottomformsave" name="bottomformsave">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
