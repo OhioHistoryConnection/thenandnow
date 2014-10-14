@@ -434,7 +434,7 @@ with historic photos stored in the Ohio Memory Collection.<!--a CONTENTdm collec
 database (but could easily be substituted by any other means of storing/retrieving 
 JSON data).--><br><br>
 
-			Please enter the name of the city to retrieve the relevant images and markers.</p>
+			Please choose the name of the city to retrieve the relevant images and markers.</p>
 			<?php
 			include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
 
