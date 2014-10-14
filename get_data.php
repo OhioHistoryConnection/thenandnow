@@ -468,12 +468,12 @@ JSON data).--><br><br>
 				$max = count($map_id_json_array);
 				echo"<select name=\"getmap\" id=\"getmap\">";
 				if($map_data_exists == true){
-					echo"<option value= \"". $mapID ."\" selected><strong>Current Map: ". $mapID ."</strong></option>";
+					echo"<option value= \"". $mapID ."\" selected><strong>Current Map: ". ucfirst($mapID) ."</strong></option>";
 					echo"<option class=\"hr\" disabled=\"disabled\">-----------------------------</option>";
 					echo"<option class=\"hr\" disabled=\"disabled\"><em>Maps Available</em></option>";
 				}
 				for ($i = 0; $i < $max; $i++) {
-					echo "<option value= \"".$map_id_json_array[$i]['mapid']."\">".$map_id_json_array[$i]['mapid']."</option>";
+					echo "<option value= \"".$map_id_json_array[$i]['mapid']."\">".ucfirst($map_id_json_array[$i]['mapid'])."</option>";
 				}
 				echo "</select>";
 			}
@@ -527,7 +527,7 @@ JSON data).--><br><br>
 						</form>
 					</div><br>
 			<?php
-					echo('<tr><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th></tr>');
+					echo('<tr><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th><th></th></tr>');
 					$max = count($map_data);
 					for ($i = 0; $i < $max; $i++) {		
 			?>
