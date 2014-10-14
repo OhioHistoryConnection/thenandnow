@@ -10,7 +10,7 @@ $lat = "";
 $lon = "";
 $CDM_link = "";
 $map_data_exists = false;
-
+$mapPath="columbus";
 // curl for getting JSON map data
 function do_curl($curl_url) {
 	$ch = curl_init();
@@ -27,32 +27,43 @@ function do_curl($curl_url) {
 define("ABS_PATH", dirname(__FILE__));
 // get map data
 if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
-	$mapID="columbus";
+	#$mapPath="columbus";
+	#$mapID="columbus";
 	if(isset($_POST['getmap'])){
-	$maptitle=$_POST['getmap'];
+		$mapID=$_POST['getmap'];
+		#$maptitle=$_POST['getmap'];
 	}
 	else if(isset($_GET['getmap'])){
-		$maptitle= $_GET['getmap'];
+		$mapID= $_GET['getmap'];
+		#$maptitle= $_GET['getmap'];
 	}
 	else{
-		$maptitle =null;
+		$mapID =null;
+		#$maptitle =null;
+		echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
+		$map_data_exists = false;
 	}
-	if($maptitle ==$mapID){
-		$mapref = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
-		include(ABS_PATH . '/conf/config_'.$mapref.'.php');
-		$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapref);
+	if($mapID != null){
+	#if($maptitle ==$mapID){
+		$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
+		#$mapref = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
+		include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
+		#include(ABS_PATH . '/conf/config_'.$mapref.'.php');
+		$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapID);
+		#$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapref);
 		// send curl with entry data to an sqlite db somewhere
 		$map_data = do_curl($curl_url);
 		$map_data_exists = true;
 	}
-	elseif($maptitle ==null){
+	
+	/*elseif($maptitle ==null){
 	echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
 	$map_data_exists = false;
 	}
 	else{
 	echo("<script> alert(\"".$maptitle." does not exist. Enter valid city.\");</script>");
 	$map_data_exists = false;
-	}
+	}*/
 }
 
 ?>
@@ -441,11 +452,41 @@ database (but could easily be substituted by any other means of storing/retrievi
 JSON data).--><br><br>
 
 			Please enter the name of the city to retrieve the relevant images and markers.</p>
-			<input type="text" class="mapinput" name="getmap" id="getmap" size="10" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+			<?php
+				#echo"<select>";
+				#echo"<option value= \"". $map_data_exists ? $mapref : '' ."\" >". $map_data_exists ? $mapref : '' ."</option></select>";
+			include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
+
+			try
+			{
+			
+				$dbh = new PDO('sqlite:'.$config['PATH_TO_SQLITE']);
+				$sql = $dbh->prepare("SELECT mapid FROM maprecord");# where mapdata <>NULL");
+				$sql->execute();
+				$map_id_json_array = $sql->fetchAll(); //[0]['mapdata'];
+				$map_id_json = $map_id_json_array[0]['mapid'];#[0]['mapdata'];
+				$max = count($map_id_json_array);
+				echo"<select name=\"getmap\" id=\"getmap\">";
+				if($map_data_exists == true){
+					echo"<option value= \"". $mapID ."\" selected>". $mapID ."</option>";
+				}
+				for ($i = 0; $i < $max; $i++) {
+					echo "<option value= \"".$map_id_json_array[$i]['mapid']."\">".$map_id_json_array[$i]['mapid']."</option>";
+				}
+				echo "</select>";
+			}
+			catch(Exception $e)
+			{
+				print 'Exception : '.$e->getMessage();
+			}
+			?>
+			<!--<input type="text" size="10" value="<?php echo $map_data_exists ? $mapID : '' ?>">
+			<!--<input type="text" class="mapinput" name="getmap" id="getmap" size="10" value="<?php echo $map_data_exists ? $mapID : '' ?>">
+			<!--<input type="text" class="mapinput" name="getmap" id="getmap" size="10" value="<?php #echo $map_data_exists ? $mapref : '' ?>">-->
 			<input type="submit" name="getdata" value="Get Map Data"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		</form>
 	</div><br><br>
-
+	<div class="table-responsive">
 	<table class="table table-border"><!--twitter bootstrap-->
 	<!--<table>-->
 			<?php 
@@ -469,7 +510,7 @@ JSON data).--><br><br>
 					</style>
 					<div class="title">
 						<form id="formshow" name="formshow">
-							<input type="hidden" id="showmap" name="showmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+							<input type="hidden" id="showmap" name="showmap" value="<?php echo $mapID#$map_data_exists ? $mapref : '' ?>">
 							<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						</form>
@@ -501,25 +542,26 @@ JSON data).--><br><br>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="heading" id="heading_<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="5"> </td>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="pitch" id="pitch_<?php echo $i ?>" value="<?php echo $map_data[$i]["pitch"] ?>" size="5"> </td>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="zoom" id="zoom_<?php echo $i ?>" value="<?php echo $map_data[$i]["zoom"] ?>" size="2"> </td>
-						<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapref : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
+						<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><!--<input type="hidden" name="getmap" value="<?php #echo $map_data_exists ? $mapref : '' ?>">--><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
 				
 			<?php	} 
 				
-		} ?>
+				} ?>
 			
 	</table>
-	
+	</div>
 	<?php if ($map_data_exists) { ?>
 	
 	<hr/>
 	<div class="title">
 		<form id="bottomformshow" name="bottomformshow">
-				<input type="hidden" id="bottomshowmap" name="bottomshowmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+				<input type="hidden" id="bottomshowmap" name="bottomshowmap" value="<?php echo $mapID#$map_data_exists ? $mapref : '' ?>">
 				<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</form>
 			<form id="bottomformadd" name="bottomformadd" method="POST" action="do_query.php">
-				<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+				<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
+				<!--<input type="hidden" name="getmap" value="<?php #echo $map_data_exists ? $mapref : '' ?>">-->
 				<input type="submit" name="addline" value="Add Line">
 			</form>
 			<form id="bottomformsave" name="bottomformsave">
