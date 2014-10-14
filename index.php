@@ -10,7 +10,7 @@ $lat = "";
 $lon = "";
 $CDM_link = "";
 $map_data_exists = false;
-
+$mapPath="columbus";
 // curl for getting JSON map data
 function do_curl($curl_url) {
 	$ch = curl_init();
@@ -27,32 +27,26 @@ function do_curl($curl_url) {
 define("ABS_PATH", dirname(__FILE__));
 // get map data
 if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
-	$mapID="columbus";
 	if(isset($_POST['getmap'])){
-	$maptitle=$_POST['getmap'];
+		$mapID=$_POST['getmap'];
 	}
 	else if(isset($_GET['getmap'])){
-		$maptitle= $_GET['getmap'];
+		$mapID= $_GET['getmap'];
 	}
 	else{
-		$maptitle =null;
+		$mapID =null;
+		echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
+		$map_data_exists = false;
 	}
-	if($maptitle ==$mapID){
-		$mapref = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
-		include(ABS_PATH . '/conf/config_'.$mapref.'.php');
-		$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapref);
+	if($mapID != null){
+		$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
+		include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
+		$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapID);
 		// send curl with entry data to an sqlite db somewhere
 		$map_data = do_curl($curl_url);
 		$map_data_exists = true;
 	}
-	elseif($maptitle ==null){
-	echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
-	$map_data_exists = false;
-	}
-	else{
-	echo("<script> alert(\"".$maptitle." does not exist. Enter valid city.\");</script>");
-	$map_data_exists = false;
-	}
+	
 }
 
 ?>
@@ -291,7 +285,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 					data: { getmap: mapname, addline: "addline" },
 					url: "do_query.php",
 					success: function(data) {
-						location.href = "<?php echo($config['THIS_HOST']) ?>/get_data.php?getmap=" + mapname;
+						location.href = "<?php echo($config['THIS_HOST']) ?>/index.php?getmap=" + mapname;
 					}
 				});	
 			} else {
@@ -311,7 +305,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 					data: { getmap: mapname, addline: "addline" },
 					url: "do_query.php",
 					success: function(data) {
-						location.href = "<?php echo($config['THIS_HOST']) ?>/get_data.php?getmap=" + mapname;
+						location.href = "<?php echo($config['THIS_HOST']) ?>/index.php?getmap=" + mapname;
 					}
 				});	
 			} else {
@@ -431,7 +425,7 @@ th {
 	<div class = "container-fluid"><!--bootstrap!-->
 	<div id="output"></div>
 	<div class="title">
-		<form id="formgetmap" name="formgetmap" method="POST" action="get_data.php">
+		<form id="formgetmap" name="formgetmap" method="POST" action="index.php">
 			<b>"Then and Now" Map Helper</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<br><br>
 			<p id="intro">
@@ -440,14 +434,42 @@ with historic photos stored in the Ohio Memory Collection.<!--a CONTENTdm collec
 database (but could easily be substituted by any other means of storing/retrieving 
 JSON data).--><br><br>
 
-			Please enter the name of the city to retrieve the relevant images and markers.</p>
-			<input type="text" class="mapinput" name="getmap" id="getmap" size="10" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+			Please choose the name of the city to retrieve the relevant images and markers.</p>
+			<?php
+			include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
+
+			try
+			{
+			
+				$dbh = new PDO('sqlite:'.$config['PATH_TO_SQLITE']);
+				$sql = $dbh->prepare("SELECT mapid FROM maprecord");# where mapdata <>NULL");
+				$sql->execute();
+				$map_id_json_array = $sql->fetchAll(); //[0]['mapdata'];
+				$map_id_json = $map_id_json_array[0]['mapid'];#[0]['mapdata'];
+				$max = count($map_id_json_array);
+				echo"<select name=\"getmap\" id=\"getmap\">";
+				if($map_data_exists == true){
+					echo"<option value= \"". $mapID ."\" selected><strong>Current Map: ". ucfirst($mapID) ."</strong></option>";
+					echo"<option class=\"hr\" disabled=\"disabled\">-----------------------------</option>";
+					echo"<option class=\"hr\" disabled=\"disabled\"><em>Maps Available</em></option>";
+				}
+				for ($i = 0; $i < $max; $i++) {
+					if($map_id_json_array[$i]['mapid'] <> $mapID){
+						echo "<option value= \"".$map_id_json_array[$i]['mapid']."\">".ucfirst($map_id_json_array[$i]['mapid'])."</option>";
+					}
+				}
+				echo "</select>";
+			}
+			catch(Exception $e)
+			{
+				print 'Exception : '.$e->getMessage();
+			}
+			?>
 			<input type="submit" name="getdata" value="Get Map Data"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		</form>
 	</div><br><br>
-
+	<div class="table-responsive">
 	<table class="table table-border"><!--twitter bootstrap-->
-	<!--<table>-->
 			<?php 
 				if ($map_data_exists) { ?>
 					<style>
@@ -469,7 +491,7 @@ JSON data).--><br><br>
 					</style>
 					<div class="title">
 						<form id="formshow" name="formshow">
-							<input type="hidden" id="showmap" name="showmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+							<input type="hidden" id="showmap" name="showmap" value="<?php echo $mapID?>">
 							<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						</form>
@@ -484,7 +506,7 @@ JSON data).--><br><br>
 						</form>
 					</div><br>
 			<?php
-					echo('<tr><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th></tr>');
+					echo('<tr><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th><th></th></tr>');
 					$max = count($map_data);
 					for ($i = 0; $i < $max; $i++) {		
 			?>
@@ -501,26 +523,25 @@ JSON data).--><br><br>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="heading" id="heading_<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="5"> </td>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="pitch" id="pitch_<?php echo $i ?>" value="<?php echo $map_data[$i]["pitch"] ?>" size="5"> </td>
 						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="zoom" id="zoom_<?php echo $i ?>" value="<?php echo $map_data[$i]["zoom"] ?>" size="2"> </td>
-						<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapref : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
+						<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
 				
 			<?php	} 
 				
-		} ?>
+				} ?>
 			
 	</table>
-	
+	</div>
 	<?php if ($map_data_exists) { ?>
 	
 	<hr/>
 	<div class="title">
 		<form id="bottomformshow" name="bottomformshow">
-				<input type="hidden" id="bottomshowmap" name="bottomshowmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
+				<input type="hidden" id="bottomshowmap" name="bottomshowmap" value="<?php echo $mapID?>">
 				<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</form>
 			<form id="bottomformadd" name="bottomformadd" method="POST" action="do_query.php">
-				<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
-				<input type="submit" name="addline" value="Add Line">
+				<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">				<input type="submit" name="addline" value="Add Line">
 			</form>
 			<form id="bottomformsave" name="bottomformsave">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

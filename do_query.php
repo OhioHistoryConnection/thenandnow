@@ -45,14 +45,14 @@ if (isset($_GET["getmap"]) || isset($_POST["getmap"])) {
 			$mapdata = strip_tags($_POST["savedata"]);
 			$sql = "UPDATE maprecord SET mapdata = '".$mapdata."' WHERE mapid = '".$mapID."';";
 			$dbh->exec($sql);
-			header('Location: '.$config['THIS_HOST'].'/get_data.php?getmap='.$mapID);
+			header('Location: '.$config['THIS_HOST'].'/index.php?getmap='.$mapID);
 		} else if (isset($_POST["deldata"])) {
 			$offset = $_POST["recordno"];
 			$map_data = json_decode($map_data_json, true);
 			$new_map_data = json_encode (array_merge(array_slice($map_data, 0, $offset), array_slice($map_data, $offset+1)));
 			$sql = "INSERT OR REPLACE INTO maprecord (mapid, mapdata) VALUES ('".$mapID."', '".$new_map_data."');";
 			$dbh->exec($sql);
-			header('Location: '.$config['THIS_HOST'].'/get_data.php?getmap='.$mapID);
+			header('Location: '.$config['THIS_HOST'].'/index.php?getmap='.$mapID);
 		} else {
 	    print($map_data_json);
 	  } 

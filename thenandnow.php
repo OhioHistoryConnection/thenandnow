@@ -8,12 +8,9 @@
 
 // path to thenandnow folder
 define("ABS_PATH", dirname(__FILE__));
-
-// get config data for location parameter value
-if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
-	$mapref = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
-}
-include(ABS_PATH . '/conf/config_'.$mapref.'.php'); 
+$mapID="columbus";
+include(ABS_PATH . '/conf/config_'.$mapID.'.php'); 
+#include(ABS_PATH . '/conf/config_'.$mapref.'.php'); 
 
 ?>
 
