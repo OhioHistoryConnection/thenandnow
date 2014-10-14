@@ -285,7 +285,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 					data: { getmap: mapname, addline: "addline" },
 					url: "do_query.php",
 					success: function(data) {
-						location.href = "<?php echo($config['THIS_HOST']) ?>/get_data.php?getmap=" + mapname;
+						location.href = "<?php echo($config['THIS_HOST']) ?>/index.php?getmap=" + mapname;
 					}
 				});	
 			} else {
@@ -305,7 +305,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 					data: { getmap: mapname, addline: "addline" },
 					url: "do_query.php",
 					success: function(data) {
-						location.href = "<?php echo($config['THIS_HOST']) ?>/get_data.php?getmap=" + mapname;
+						location.href = "<?php echo($config['THIS_HOST']) ?>/index.php?getmap=" + mapname;
 					}
 				});	
 			} else {
