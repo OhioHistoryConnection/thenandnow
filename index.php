@@ -27,43 +27,26 @@ function do_curl($curl_url) {
 define("ABS_PATH", dirname(__FILE__));
 // get map data
 if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
-	#$mapPath="columbus";
-	#$mapID="columbus";
 	if(isset($_POST['getmap'])){
 		$mapID=$_POST['getmap'];
-		#$maptitle=$_POST['getmap'];
 	}
 	else if(isset($_GET['getmap'])){
 		$mapID= $_GET['getmap'];
-		#$maptitle= $_GET['getmap'];
 	}
 	else{
 		$mapID =null;
-		#$maptitle =null;
 		echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
 		$map_data_exists = false;
 	}
 	if($mapID != null){
-	#if($maptitle ==$mapID){
 		$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
-		#$mapref = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
 		include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
-		#include(ABS_PATH . '/conf/config_'.$mapref.'.php');
 		$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapID);
-		#$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapref);
 		// send curl with entry data to an sqlite db somewhere
 		$map_data = do_curl($curl_url);
 		$map_data_exists = true;
 	}
 	
-	/*elseif($maptitle ==null){
-	echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
-	$map_data_exists = false;
-	}
-	else{
-	echo("<script> alert(\"".$maptitle." does not exist. Enter valid city.\");</script>");
-	$map_data_exists = false;
-	}*/
 }
 
 ?>
@@ -442,7 +425,7 @@ th {
 	<div class = "container-fluid"><!--bootstrap!-->
 	<div id="output"></div>
 	<div class="title">
-		<form id="formgetmap" name="formgetmap" method="POST" action="get_data.php">
+		<form id="formgetmap" name="formgetmap" method="POST" action="index.php">
 			<b>"Then and Now" Map Helper</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<br><br>
 			<p id="intro">
@@ -453,8 +436,6 @@ JSON data).--><br><br>
 
 			Please enter the name of the city to retrieve the relevant images and markers.</p>
 			<?php
-				#echo"<select>";
-				#echo"<option value= \"". $map_data_exists ? $mapref : '' ."\" >". $map_data_exists ? $mapref : '' ."</option></select>";
 			include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
 
 			try
