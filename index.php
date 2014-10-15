@@ -59,6 +59,8 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json2/20130526/json2.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="js/bootstrap.js"></script>
 <!--<script type="text/css" src="css/bootstrap.css"></script>-->
 
 
@@ -338,6 +340,9 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 body { 
 	font-family: Arial, Verdana, Geneva;
 	font-size: 90%; 
+	background-image:url(img/1-1249480650QT9U.jpg);
+	/* picture src: http://www.publicdomainpictures.net/view-image.php?image=3560&picture=paper-background&large=1 */
+	background-color: #cccccc;
 }
 .mapinput {
 	font-size: 80%;
@@ -353,7 +358,7 @@ th {
   display: inline-block;
   font-size: 140%;
   margin-top: 10em;
-  background: #D3D3D3;
+  background: #F8F8F8;
   border: solid;
   padding: 6em;
 }
@@ -425,7 +430,7 @@ th {
 	<div class = "container-fluid"><!--bootstrap!-->
 	<div id="output"></div>
 	<div class="title">
-		<form id="formgetmap" name="formgetmap" method="POST" action="index.php">
+		<form class="form-inline" role="form" id="formgetmap" name="formgetmap" method="POST" action="index.php">
 			<b>"Then and Now" Map Helper</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<br><br>
 			<p id="intro">
@@ -435,6 +440,7 @@ database (but could easily be substituted by any other means of storing/retrievi
 JSON data).--><br><br>
 
 			Please choose the name of the city to retrieve the relevant images and markers.</p>
+			<div class="input-append">
 			<?php
 			include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
 
@@ -447,7 +453,7 @@ JSON data).--><br><br>
 				$map_id_json_array = $sql->fetchAll(); //[0]['mapdata'];
 				$map_id_json = $map_id_json_array[0]['mapid'];#[0]['mapdata'];
 				$max = count($map_id_json_array);
-				echo"<select name=\"getmap\" id=\"getmap\">";
+				echo"<select class=\"form-control\" name=\"getmap\" id=\"getmap\">";
 				if($map_data_exists == true){
 					echo"<option value= \"". $mapID ."\" selected><strong>Current Map: ". ucfirst($mapID) ."</strong></option>";
 					echo"<option class=\"hr\" disabled=\"disabled\">-----------------------------</option>";
@@ -465,16 +471,17 @@ JSON data).--><br><br>
 				print 'Exception : '.$e->getMessage();
 			}
 			?>
-			<input type="submit" name="getdata" value="Get Map Data"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<button type="submit" class="btn btn-default" name="getdata" value="Get Map Data">Get Map Data</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<!--<input type="submit" name="getdata" value="Get Map Data"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+			</div>
 		</form>
 	</div><br><br>
-	<div class="table-responsive">
-	<table class="table table-border"><!--twitter bootstrap-->
-			<?php 
+				<?php 
 				if ($map_data_exists) { ?>
+										
 					<style>
 						#formgetmap{
-							font-size: 90%;
+							font-size: 100%;
 							display: inline-block;
 							margin-top: 0;
 							background:inherit;
@@ -492,21 +499,28 @@ JSON data).--><br><br>
 					<div class="title">
 						<form id="formshow" name="formshow">
 							<input type="hidden" id="showmap" name="showmap" value="<?php echo $mapID?>">
-							<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
+							<button type="submit" class="btn btn-default" id="showsubmit" name="showsubmit" value="<?php echo $mapID?>">Show Map</button>
+							<!--<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">-->
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						</form>
 						<form id="formadd" name="formadd" method="POST" action="do_query.php">
-							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
-							<input type="submit" name="addline" value="Add Line">
+							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
+							<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
+							<!--<input type="submit" name="addline" value="Add Line">-->
 						</form>
 						<form id="formsave" name="formsave">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
-							<input type="submit" id="savesubmit" name="savesubmit" value="Save Map Data">&nbsp;&nbsp;<span id="saved"></span>
+							<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
+							<button type="submit" class="btn btn-default" id="savesubmit" name="savesubmit" value="Save Map Data">Save Map Data</button>&nbsp;&nbsp;<span id="saved"></span>
+							<!--<input type="submit" id="savesubmit" name="savesubmit" value="Save Map Data">&nbsp;&nbsp;<span id="saved"></span>-->
 						</form>
 					</div><br>
+					<div class="table table-responsive">
+					<table class="table table-hover"><!--twitter bootstrap-->
+
 			<?php
-					echo('<tr><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th><th></th></tr>');
+					
+					echo('<tr class="info"><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th><th></th></tr>');
 					$max = count($map_data);
 					for ($i = 0; $i < $max; $i++) {		
 			?>
@@ -526,7 +540,7 @@ JSON data).--><br><br>
 						<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
 				
 			<?php	} 
-				
+					echo '<tr class="info"><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>';
 				} ?>
 			
 	</table>
@@ -537,16 +551,20 @@ JSON data).--><br><br>
 	<div class="title">
 		<form id="bottomformshow" name="bottomformshow">
 				<input type="hidden" id="bottomshowmap" name="bottomshowmap" value="<?php echo $mapID?>">
-				<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">
+				<button type="submit" class="btn btn-default" id="showsubmit" name="showsubmit" value="Show Map">Show Map</button>
+				<!--<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">-->
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</form>
 			<form id="bottomformadd" name="bottomformadd" method="POST" action="do_query.php">
-				<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">				<input type="submit" name="addline" value="Add Line">
+				<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
+				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
+				<!--<input type="submit" name="addline" value="Add Line">-->
 			</form>
 			<form id="bottomformsave" name="bottomformsave">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapref : '' ?>">
-				<input type="submit" id="savesubmit" name="savesubmit" value="Save Map Data">&nbsp;&nbsp;<span id="saved"></span>
+				<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
+				<button type="submit" class="btn btn-default" id="savesubmit" name="savesubmit" value="Save Map Data">Save Map Data</button>&nbsp;&nbsp;<span id="saved"></span>
+				<!--<input type="submit" id="savesubmit" name="savesubmit" value="Save Map Data">&nbsp;&nbsp;<span id="saved"></span>-->
 			</form>
 	</div>
 	<br>

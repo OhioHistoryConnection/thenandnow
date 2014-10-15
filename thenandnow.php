@@ -8,8 +8,8 @@
 
 // path to thenandnow folder
 define("ABS_PATH", dirname(__FILE__));
-$mapID="columbus";
-include(ABS_PATH . '/conf/config_'.$mapID.'.php'); 
+$mapPath="columbus";
+include(ABS_PATH . '/conf/config_'.$mapPath.'.php'); 
 #include(ABS_PATH . '/conf/config_'.$mapref.'.php'); 
 
 ?>
