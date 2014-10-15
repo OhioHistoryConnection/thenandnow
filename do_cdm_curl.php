@@ -10,10 +10,10 @@
 // path to thenandnow folder
 define("ABS_PATH", dirname(__FILE__));
 if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
-	$mapref = "columbus";
+	$mapPath = "columbus";
 	#$mapref = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
 }
-include(ABS_PATH . '/conf/config_'.$mapref.'.php');
+include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
 
 $coll = isset($_GET["coll"]) ? $_GET["coll"] : $_POST["coll"];
 $ptr = isset($_GET["ptr"]) ? $_GET["ptr"] : $_POST["ptr"];
