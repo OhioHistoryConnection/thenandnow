@@ -25,6 +25,21 @@ function do_curl($curl_url) {
 
 // path to thenandnow folder
 define("ABS_PATH", dirname(__FILE__));
+
+//call mapID for drop down and $_POST comparison
+try	{
+	include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
+
+		$dbh = new PDO('sqlite:'.$config['PATH_TO_SQLITE']);
+		$sql = $dbh->prepare("SELECT mapid FROM maprecord");# where mapdata <>NULL");
+		$sql->execute();
+		$map_id_json_array = $sql->fetchAll(); //[0]['mapdata'];
+		$map_id_json = $map_id_json_array[0]['mapid'];#[0]['mapdata'];
+		$max = count($map_id_json_array);
+}
+catch(Exception $e){
+				print 'Exception : '.$e->getMessage();
+}
 // get map data
 if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 	if(isset($_POST['getmap'])){
@@ -40,11 +55,16 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 	}
 	if($mapID != null){
 		$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
-		include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
-		$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapID);
-		// send curl with entry data to an sqlite db somewhere
-		$map_data = do_curl($curl_url);
-		$map_data_exists = true;
+		for ($i = 0; $i < $max; $i++) {
+			if($map_id_json_array[$i]['mapid'] == $mapID){
+				$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapID);
+				// send curl with entry data to an sqlite db somewhere
+				$map_data = do_curl($curl_url);
+				$map_data_exists = true;
+				break;
+			}
+			$map_data_exists = false;
+		}
 	}
 	
 }
@@ -442,17 +462,6 @@ JSON data).--><br><br>
 			Please choose the name of the city to retrieve the relevant images and markers.</p>
 			<div class="input-append">
 			<?php
-			include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
-
-			try
-			{
-			
-				$dbh = new PDO('sqlite:'.$config['PATH_TO_SQLITE']);
-				$sql = $dbh->prepare("SELECT mapid FROM maprecord");# where mapdata <>NULL");
-				$sql->execute();
-				$map_id_json_array = $sql->fetchAll(); //[0]['mapdata'];
-				$map_id_json = $map_id_json_array[0]['mapid'];#[0]['mapdata'];
-				$max = count($map_id_json_array);
 				echo"<select class=\"form-control\" name=\"getmap\" id=\"getmap\">";
 				if($map_data_exists == true){
 					echo"<option value= \"". $mapID ."\" selected><strong>Current Map: ". ucfirst($mapID) ."</strong></option>";
@@ -465,11 +474,6 @@ JSON data).--><br><br>
 					}
 				}
 				echo "</select>";
-			}
-			catch(Exception $e)
-			{
-				print 'Exception : '.$e->getMessage();
-			}
 			?>
 			<button type="submit" class="btn btn-default" name="getdata" value="Get Map Data">Get Map Data</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<!--<input type="submit" name="getdata" value="Get Map Data"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
