@@ -503,7 +503,7 @@ JSON data).--><br><br>
 					<div class="title">
 						<form id="formshow" name="formshow">
 							<input type="hidden" id="showmap" name="showmap" value="<?php echo $mapID?>">
-							<button type="submit" class="btn btn-default" id="showsubmit" name="showsubmit" value="<?php echo $mapID?>">Show Map</button>
+							<button type="submit" class="btn btn-default" id="showsubmit" name="showsubmit" value="<?php echo $mapID?>">Show <?php echo ucfirst($mapID)?> Map</button>
 							<!--<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">-->
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						</form>
@@ -512,36 +512,86 @@ JSON data).--><br><br>
 							<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							<!--<input type="submit" name="addline" value="Add Line">-->
 						</form>
-						<form id="formsave" name="formsave">
+						<!--<form id="formsave" name="formsave">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
 							<button type="submit" class="btn btn-default" id="savesubmit" name="savesubmit" value="Save Map Data">Save Map Data</button>&nbsp;&nbsp;<span id="saved"></span>
-							<!--<input type="submit" id="savesubmit" name="savesubmit" value="Save Map Data">&nbsp;&nbsp;<span id="saved"></span>-->
-						</form>
+						</form>-->
 					</div><br>
-					<div class="table table-responsive">
+					<!--<div class="table table-responsive">
 					<table class="table table-hover"><!--twitter bootstrap-->
-
+					<div class="panel-group" id="accordion">					
 			<?php
 					
-					echo('<tr class="info"><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th><th></th></tr>');
+					#echo('<tr class="info"><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th><th></th></tr>');
 					$max = count($map_data);
 					for ($i = 0; $i < $max; $i++) {		
 			?>
+				
 			
-						<tr class="mapdatarow">
-						<td><input type="submit" class="getcoordinates" id="getcoords_<?php echo $i ?>" value="Get lat/lng"></td>
-						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="latitude" id="latitude_<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>" size="10"></td>
-						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="longitude" id="longitude_<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>" size="10"> </td>
-						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="itemtitle" id="itemtitle_<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  style="wordwrap:initial; width:20 height:60 px"> <!--size="50">--> </td>
-						<td><input type="submit" class="getscaled" id="getscaled_<?php echo $i ?>" value="Scale image"></td>
-						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>"> </td>
-						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="identifier" id="identifier_<?php echo $i ?>" value="<?php echo $map_data[$i]["identifier"] ?>"> </td>
-						<td><input type="submit" class="changeRecord" id="change_<?php echo $i ?>" value="Set orientation"></td>
-						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="heading" id="heading_<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="5"> </td>
-						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="pitch" id="pitch_<?php echo $i ?>" value="<?php echo $map_data[$i]["pitch"] ?>" size="5"> </td>
-						<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="zoom" id="zoom_<?php echo $i ?>" value="<?php echo $map_data[$i]["zoom"] ?>" size="2"> </td>
-						<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
+						<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+							<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="123" height="90">&nbsp&nbsp
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $i ?>">
+						  <?php echo $map_data[$i]["itemtitle"]; ?>
+							</a>							
+							</h4>
+						</div>
+						<div id="collapse<?php echo $i ?>" class="panel-collapse collapse">
+							<div class="panel-body">
+								
+								<div id="maindisplay" class="panel-body">
+									<div id="dbpics">	
+									 
+									  <div id="imagepreview">
+											<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="260" height="180">
+									  </div>
+									</div>
+									<div class="btn-group">
+									
+									<form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>">
+									<button class="btn" type="button" onclick="document.getElementById('EditOptions<?php echo $i ?>').style.display = 'inline';"}>Edit</button>
+									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button></a></form>
+									</div>
+								</div>
+								<div id="EditOptions<?php echo $i ?>" class="panel-body" style="display:none">
+								<td><input type="submit" class="getcoordinates" id="getcoords_<?php echo $i ?>" value="Get lat/lng"></td>
+								</div>
+								<div style="display:none"><!--reorg-->
+								<tr class="mapdatarow">
+								<td><input type="submit" class="getcoordinates" id="getcoords_<?php echo $i ?>" value="Get lat/lng"></td>
+								<div id="imgmaplocation"style="display:none"<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="latitude" id="latitude_<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>" size="10"></td>
+								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="longitude" id="longitude_<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>" size="10"> </td>
+								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="itemtitle" id="itemtitle_<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  style="wordwrap:initial; width:20 height:60 px"> </td></div>
+								<td><input type="submit" class="getscaled" id="getscaled_<?php echo $i ?>" value="Scale image"></td>
+								<div id="imgdirpath" style="display:none"><td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>"> </td>
+								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="identifier" id="identifier_<?php echo $i ?>" value="<?php echo $map_data[$i]["identifier"] ?>"> </td></div>
+								<td><input type="submit" class="changeRecord" id="change_<?php echo $i ?>" value="Set orientation"></td>
+								<div id="viewmatch" style="display:none"><td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="heading" id="heading_<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="5"> </td>
+								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="pitch" id="pitch_<?php echo $i ?>" value="<?php echo $map_data[$i]["pitch"] ?>" size="5"> </td>
+								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="zoom" id="zoom_<?php echo $i ?>" value="<?php echo $map_data[$i]["zoom"] ?>" size="2"> </td></div>
+								<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
+								
+								<div id="streetwrapper" style="display:none">
+									<div id="panoInfo">
+									&nbsp;&nbsp;&nbsp;latitude: <input type="text" id="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" size="10">
+									&nbsp;&nbsp;&nbsp;heading: <input type="text" id="heading_cell" size="9">, 
+									pitch: <input type="text" id="pitch_cell" size="9">, 
+									zoom: <input type="text" id="zoom_cell" size="1">
+								  </div>
+								  <br/>
+									<div id="panoblock">	
+									  <div id="pano"></div>
+									  <div id="imageview"></div>
+								  </div>
+								</div>								
+							</div><!--reorg-->
+							
+							</div>
+							
+						</div>
+					</div>
 				
 			<?php	} 
 					echo '<tr class="info"><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>';
@@ -572,7 +622,7 @@ JSON data).--><br><br>
 			</form>
 	</div>
 	<br>
-	<div id="streetwrapper" style="display:none">
+	<!--<div id="streetwrapper" style="display:none">
 		<div id="panoInfo">
 	  	&nbsp;&nbsp;&nbsp;latitude: <input type="text" id="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" size="10">
 	  	&nbsp;&nbsp;&nbsp;heading: <input type="text" id="heading_cell" size="9">, 
@@ -584,7 +634,7 @@ JSON data).--><br><br>
 		  <div id="pano"></div>
 		  <div id="imageview"></div>
 	  </div>
-	</div>
+	</div>-->
 	</div><!--container-fluid!-->
 	<?php } ?>
 	
