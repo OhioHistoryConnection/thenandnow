@@ -460,7 +460,9 @@ database (but could easily be substituted by any other means of storing/retrievi
 JSON data).--><br><br>
 
 			Please choose the name of the city to retrieve the relevant images and markers.</p>
-			<div class="input-append">
+			<!--<div class="input-append">!-->
+			<div class="btn-group" role="group">
+			<div class="btn-group" role="group" aria-label="...">
 			<?php
 				echo"<select class=\"form-control\" name=\"getmap\" id=\"getmap\">";
 				if($map_data_exists == true){
@@ -475,6 +477,7 @@ JSON data).--><br><br>
 				}
 				echo "</select>";
 			?>
+			</div>
 			<button type="submit" class="btn btn-default" name="getdata" value="Get Map Data">Get Map Data</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<!--<input type="submit" name="getdata" value="Get Map Data"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
 			</div>
@@ -507,17 +510,35 @@ JSON data).--><br><br>
 							<!--<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">-->
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						</form>
-						<form id="formadd" name="formadd" method="POST" action="do_query.php">
-							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
-							<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
-							<!--<input type="submit" name="addline" value="Add Line">-->
-						</form>
+
 						<!--<form id="formsave" name="formsave">
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
 							<button type="submit" class="btn btn-default" id="savesubmit" name="savesubmit" value="Save Map Data">Save Map Data</button>&nbsp;&nbsp;<span id="saved"></span>
 						</form>-->
 					</div><br>
+					<div class="input-group">
+					<h2>Add New Image</h2>
+						<form role="form" id="formadd" name="formadd" method="POST" action="do_query.php">
+							<div class="form-group">
+							<label for="itemtitle">Title: </label>
+							<input type="text" class="form-control" id="itemtitle" placeholder="The Ohio Statehouse">
+							</div>
+							<div class="form-group">
+							<label for="getLatLong">Street Address: </label><input type="text" class="form-control" id="getLatLong" placeholder="1 capitol square, Columbus, OH">
+							</div>
+							<div class="form-group">
+							<label for="getscaled_<?php echo $i ?>">ContentDM Image Upload: </label>						<input type="submit" class="getscaled" id="getscaled_<?php echo $i ?>" value="Scale image">
+							<div id="imgdirpath" style="display:none">
+								<input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>">
+							</div>
+							</div>
+							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
+							<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
+							<!--<input type="submit" name="addline" value="Add Line">-->
+						</form>
+					</div>
+					<br>
 					<!--<div class="table table-responsive">
 					<table class="table table-hover"><!--twitter bootstrap-->
 					<div class="panel-group" id="accordion">					
