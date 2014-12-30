@@ -78,6 +78,8 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 <title>Get Street View data</title>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<!--Google autocomplete-->
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json2/20130526/json2.min.js"></script>
 <script type="text/javascript" src="js/jquery-1.11.1.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
@@ -355,6 +357,69 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 		}
 	}
 	
+	//Google autocomplete
+	var placeSearch, autocomplete;
+var componentForm = {
+  street_number: 'short_name',
+  route: 'long_name',
+  locality: 'long_name',
+  administrative_area_level_1: 'short_name',
+  country: 'long_name',
+  postal_code: 'short_name'
+};
+
+function initialize() {
+  // Create the autocomplete object, restricting the search
+  // to geographical location types.
+  autocomplete = new google.maps.places.Autocomplete(
+      /** @type {HTMLInputElement}*/ (document.getElementById('autocomplete')),
+      { types: ['geocode'] });
+  // When the user selects an address from the dropdown,
+  // populate the address fields in the form.
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    fillInAddress();
+  });
+}
+
+// [START region_fillform]
+function fillInAddress() {
+  // Get the place details from the autocomplete object.
+  var place = autocomplete.getPlace();
+
+  for (var component in componentForm) {
+    document.getElementById(component).value = '';
+    document.getElementById(component).disabled = false;
+  }
+
+  // Get each component of the address from the place details
+  // and fill the corresponding field on the form.
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    if (componentForm[addressType]) {
+      var val = place.address_components[i][componentForm[addressType]];
+      document.getElementById(addressType).value = val;
+    }
+  }
+}
+// [END region_fillform]
+
+// [START region_geolocation]
+// Bias the autocomplete object to the user's geographical location,
+// as supplied by the browser's 'navigator.geolocation' object.
+function geolocate() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var geolocation = new google.maps.LatLng(
+          position.coords.latitude, position.coords.longitude);
+      var circle = new google.maps.Circle({
+        center: geolocation,
+        radius: position.coords.accuracy
+      });
+      autocomplete.setBounds(circle.getBounds());
+    });
+  }
+}
+// [END region_geolocation]
 </script>
 <style type="text/css">
 body { 
@@ -446,7 +511,7 @@ th {
 <link media="ALL" rel="stylesheet" type="text/css" href="css/bootstrap.css"></link>
 
 </head>
-<body>
+<body onload="initialize()">
 	<div class = "container-fluid"><!--bootstrap!-->
 	<div id="output"></div>
 	<div class="title">
@@ -528,31 +593,43 @@ JSON data).--><br><br>
 						</div>
 						<div id="collapseImage" class="panel-collapse collapse">
 							<div class="panel-body">
-							
-					<div class="input-group">
-					<h2>Add New Image</h2>
-						<form role="form" id="formadd" name="formadd" method="POST" action="do_query.php">
+					
+					<label>This is a 2 part process which includes inputting the picture information and then replicating the picture's focal point on Google street view.</label><br><br>
+					<div id="titleStreet" class="input-group">
+					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>
+						<!--<form role="form" id="formadd" name="formadd" method="POST" action="do_query.php">-->
+						<form role="form" id="formadd" name="formadd" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+						
 							<div class="form-group">
 							<label for="itemtitle">Title: </label>
 							<input type="text" class="form-control" id="itemtitle" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \">
 							</div>
 							<div class="form-group">
-							<label for="getLatLong">Street Address: </label><input type="text" class="form-control" id="getLatLong" placeholder="1 capitol square, Columbus, OH" required pattern="[a-zA-Z\d\s\-\,\#\.\+]+">
+							<label for="getLatLong">Street Address: </label><input id="autocomplete" class="form-control" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()" required pattern="[a-zA-Z\d\s\-\,\#\.\+]+"></input><!--<input type="text" class="form-control" id="getLatLong" placeholder="1 capitol square, Columbus, OH" required pattern="[a-zA-Z\d\s\-\,\#\.\+]+"></input>-->
 							</div>
 							<div class="form-group">
 							<label for="getscaled_<?php echo $i ?>">ContentDM Image Upload: </label>
-							<input type="text" class="form-control" id="itemtitle" placeholder="Please enter a CONTENTdm reference URL">
+							<input type="text" class="form-control" id="itemtitle" placeholder="Please enter a CONTENTdm reference URL" required>
 							<!--<input type="submit" class="getscaled" id="getscaled_<?php echo $i ?>" value="Scale image">-->
 							<div id="imgdirpath" style="display:none">
 								<input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>">
 							</div>
 							</div>
+							<input type="submit" name="submit" value="Get Map Images">
+						</form>
+						</div>
+						<div id="imgView" style="display:none">
+						<form role="form" id="formimg" name="formadd" method="POST" action="do_query.php">
+							<label>Adjust the Google Viewpoint to match the image.</label>
+							<label><?php echo $_POST["itemtitle"]?></label>
+							<label><?php echo $_POST["getLatLong"]?></label>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
-							<button type="submit" class="btn btn-default">Add Image</button>
+							<button type="submit" class="btn btn-default">Save Image</button>
 							<!--<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							<!--<input type="submit" name="addline" value="Add Line">-->
 						</form>
-					</div>
+						</div>						
+					
 					<br>
 					</div>
 					</div>
