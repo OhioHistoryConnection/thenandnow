@@ -517,6 +517,18 @@ JSON data).--><br><br>
 							<button type="submit" class="btn btn-default" id="savesubmit" name="savesubmit" value="Save Map Data">Save Map Data</button>&nbsp;&nbsp;<span id="saved"></span>
 						</form>-->
 					</div><br>
+					<div class="panel-group" id="accordion">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapseImage">
+								Add Image
+							</a>							
+							</h4>
+						</div>
+						<div id="collapseImage" class="panel-collapse collapse">
+							<div class="panel-body">
+							
 					<div class="input-group">
 					<h2>Add New Image</h2>
 						<form role="form" id="formadd" name="formadd" method="POST" action="do_query.php">
@@ -539,9 +551,11 @@ JSON data).--><br><br>
 						</form>
 					</div>
 					<br>
+					</div>
+					</div>
 					<!--<div class="table table-responsive">
 					<table class="table table-hover"><!--twitter bootstrap-->
-					<div class="panel-group" id="accordion">					
+					<!--<div class="panel-group" id="accordion">-->					
 			<?php
 					
 					#echo('<tr class="info"><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th><th></th></tr>');
@@ -567,8 +581,12 @@ JSON data).--><br><br>
 									 
 									  <div id="imagepreview">
 											<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="260" height="180">
-									  </div>
+									  <img src=https://maps.googleapis.com/maps/api/streetview?location=<?php echo $map_data[$i]["latitude"]?>,<?php echo $map_data[$i]["longitude"]?>&pitch=<?php echo $map_data[$i]["pitch"] ?>&heading=<?php echo $map_data[$i]["heading"] ?>&zoom=<?php echo $map_data[$i]["zoom"]?>&size=260x180>
 									</div>
+									</div>
+									<?php if( $map_data[$i]["zoom"] >1){?>
+									<p>The map image will be magnified by <?php echo $map_data[$i]["zoom"]?>.</p>
+									<?php } ?>
 									<div class="btn-group">
 									
 									<form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>">
