@@ -534,19 +534,22 @@ JSON data).--><br><br>
 						<form role="form" id="formadd" name="formadd" method="POST" action="do_query.php">
 							<div class="form-group">
 							<label for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle" placeholder="The Ohio Statehouse">
+							<input type="text" class="form-control" id="itemtitle" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \">
 							</div>
 							<div class="form-group">
-							<label for="getLatLong">Street Address: </label><input type="text" class="form-control" id="getLatLong" placeholder="1 capitol square, Columbus, OH">
+							<label for="getLatLong">Street Address: </label><input type="text" class="form-control" id="getLatLong" placeholder="1 capitol square, Columbus, OH" required pattern="[a-zA-Z\d\s\-\,\#\.\+]+">
 							</div>
 							<div class="form-group">
-							<label for="getscaled_<?php echo $i ?>">ContentDM Image Upload: </label>						<input type="submit" class="getscaled" id="getscaled_<?php echo $i ?>" value="Scale image">
+							<label for="getscaled_<?php echo $i ?>">ContentDM Image Upload: </label>
+							<input type="text" class="form-control" id="itemtitle" placeholder="Please enter a CONTENTdm reference URL">
+							<!--<input type="submit" class="getscaled" id="getscaled_<?php echo $i ?>" value="Scale image">-->
 							<div id="imgdirpath" style="display:none">
 								<input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>">
 							</div>
 							</div>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
-							<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
+							<button type="submit" class="btn btn-default">Add Image</button>
+							<!--<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							<!--<input type="submit" name="addline" value="Add Line">-->
 						</form>
 					</div>
@@ -581,11 +584,11 @@ JSON data).--><br><br>
 									 
 									  <div id="imagepreview">
 											<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="260" height="180">
-									  <img src=https://maps.googleapis.com/maps/api/streetview?location=<?php echo $map_data[$i]["latitude"]?>,<?php echo $map_data[$i]["longitude"]?>&pitch=<?php echo $map_data[$i]["pitch"] ?>&heading=<?php echo $map_data[$i]["heading"] ?>&zoom=<?php echo $map_data[$i]["zoom"]?>&size=260x180>
+									  <img src=https://maps.googleapis.com/maps/api/streetview?location=<?php echo $map_data[$i]["latitude"]?>,<?php echo $map_data[$i]["longitude"]?>&pitch=<?php echo $map_data[$i]["pitch"] ?>&heading=<?php echo $map_data[$i]["heading"] ?>&zoom=<?php echo $map_data[$i]["zoom"]?>0&size=260x180>
 									</div>
 									</div>
 									<?php if( $map_data[$i]["zoom"] >1){?>
-									<p>The map image will be magnified by <?php echo $map_data[$i]["zoom"]?>.</p>
+									<p><br>The map image will be magnified by <?php echo $map_data[$i]["zoom"]?>.</p>
 									<?php } ?>
 									<div class="btn-group">
 									
