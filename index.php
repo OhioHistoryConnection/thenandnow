@@ -357,7 +357,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 		}
 	}
 	
-	//Google autocomplete
+	//Google Address Autocomplete Script
 	var placeSearch, autocomplete;
 var componentForm = {
   street_number: 'short_name',
@@ -376,13 +376,13 @@ function initialize() {
       { types: ['geocode'] });
   // When the user selects an address from the dropdown,
   // populate the address fields in the form.
-  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  /*google.maps.event.addListener(autocomplete, 'place_changed', function() {
     fillInAddress();
-  });
+  });*/
 }
 
 // [START region_fillform]
-function fillInAddress() {
+/*function fillInAddress() {
   // Get the place details from the autocomplete object.
   var place = autocomplete.getPlace();
 
@@ -400,7 +400,7 @@ function fillInAddress() {
       document.getElementById(addressType).value = val;
     }
   }
-}
+}*/
 // [END region_fillform]
 
 // [START region_geolocation]
@@ -602,20 +602,46 @@ JSON data).--><br><br>
 						
 							<div class="form-group">
 							<label for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \">
+							<input type="text" class="form-control" id="itemtitle" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" autofocus>
 							</div>
 							<div class="form-group">
-							<label for="getLatLong">Street Address: </label><input id="autocomplete" class="form-control" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()" required pattern="[a-zA-Z\d\s\-\,\#\.\+]+"></input><!--<input type="text" class="form-control" id="getLatLong" placeholder="1 capitol square, Columbus, OH" required pattern="[a-zA-Z\d\s\-\,\#\.\+]+"></input>-->
+							<label id="addressLabel" for="getLatLong">Street Address: </label><input id="autocomplete" class="form-control" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()" required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
+							<button type="button" id="convertAddress" onclick="myFunction()" role="group">Get Lat Long</button>
 							<div class="form-group">
 							<label for="getscaled_<?php echo $i ?>">ContentDM Image Upload: </label>
-							<input type="text" class="form-control" id="itemtitle" placeholder="Please enter a CONTENTdm reference URL" required>
+							<input type="url" class="form-control" id="itemtitle" placeholder="Please enter a CONTENTdm reference URL" required>
+							<input type="text" class= "form-control" style="display:none" id="latitude_autocomplete">
+							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete">
 							<!--<input type="submit" class="getscaled" id="getscaled_<?php echo $i ?>" value="Scale image">-->
 							<div id="imgdirpath" style="display:none">
 								<input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>">
 							</div>
 							</div>
-							<input type="submit" name="submit" value="Get Map Images">
+							
+							<input type="submit" name="submit" value="Save Images" style="display:none">
+							<script>
+							//copied from 138
+						
+				function myFunction(){alert($("#autocomplete").val());
+					x= $("#autocomplete").val();
+					if(Boolean($("#autocomplete").val())== false){
+						alert("wrong");
+						document.getElementById("addressLabel").innerHTML = "Complete Postal Address is Required";
+						document.getElementById("addressLabel").style.color='red';						
+						document.getElementById("autocomplete").focus();}
+					else{
+						var streetAddress = $("#autocomplete").val();
+						alert(streetAddress);
+						var mygc = new google.maps.Geocoder();
+						mygc.geocode({'address' : streetAddress }, function(results, status){
+						$('#latitude_autocomplete').attr("value", results[0].geometry.location.lat());
+						$('#longitude_autocomplete').attr("value", results[0].geometry.location.lng());		    
+						});
+						document.getElementById("latitude_autocomplete").style.display="inline";
+						document.getElementById("longitude_autocomplete").style.display="inline";}
+				}
+							</script>
 						</form>
 						</div>
 						<div id="imgView" style="display:none">
