@@ -5,7 +5,6 @@
   * Phil Sager <psager@ohiohistory.org>.
   * 
 */
-
 $lat = "";
 $lon = "";
 $CDM_link = "";
@@ -91,7 +90,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 	$(document).ready(function() {
 		
 		// for purposes of getting a scaled image from CDM reference URL
-		$('.getscaled').click(function() {
+		/*$('.getscaled').click(function() {
 			var recid = $(this).attr("id");
 			var recidno = recid.replace(/.*_(.*)/,"$1");
 			// verify thatURL is in the form: http://[CONTENTdm home]/cdm/ref/collection/[alias]/id/[id]
@@ -128,7 +127,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 				
 			});
 			
-		});
+		});*/
 		
 		// use Google Geocoder to get latitude and longitude based on an address
 		$('.getcoordinates').click(function() {
@@ -237,7 +236,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 			
 		});
 		
-		$('#bottomformsave').submit(function(e) {
+		/*$('#bottomformsave').submit(function(e) {
 			e.preventDefault();
 			if ($('#savemap') == null || $('#savemap').val().length == 0) { 
 				alert("Please enter a map name"); 
@@ -271,7 +270,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 				}
 			});
 			
-		});
+		});*/
 		
 		// set input value on blur
 		$('.mapinput').blur(function() {
@@ -297,7 +296,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
     	return false; 
 		});
 		// when "add line" is clicked either start a new map or add a new line
-		$("#formadd").submit(function (e) {
+		/*$("#formadd").submit(function (e) {
 			if ($('#getmap') == null || $('#getmap').val().length == 0) { 
 				var mapname = prompt("Type the name of your map (no spaces or punctuation)", "MyMap");
 			} else {
@@ -336,7 +335,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 				return false;
 			}
 			return false;
-		});
+		});*/
 		// make sure map name is entered
 		$("#formgetmap").submit(function() {
 			if ($('#getmap') == null || $('#getmap').val().length == 0) { 
@@ -595,25 +594,28 @@ JSON data).--><br><br>
 							<div class="panel-body">
 					
 					<label>This is a 2 part process which includes inputting the picture information and then replicating the picture's focal point on Google street view.</label><br><br>
+					<?php if (!isset($_POST['_submit'])){ ?>
 					<div id="titleStreet" class="input-group">
 					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>
 						<!--<form role="form" id="formadd" name="formadd" method="POST" action="do_query.php">-->
-						<form role="form" id="formadd" name="formadd" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+						<form role="form" id="formadd" name="formadd" method="POST" action="" ><!--action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>"-->
 						
 							<div class="form-group">
-							<label for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" autofocus>
+							<label id="itemlabel" for="itemtitle">Title: </label>
+							<input type="text" class="form-control" id="itemtitle" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";' onchange='alert($("#itemtitle").val());' autofocus><!--onchange="validateTitle()"-->
 							</div>
 							<div class="form-group">
-							<label id="addressLabel" for="getLatLong">Street Address: </label><input id="autocomplete" class="form-control" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()" required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							<label id="addressLabel" for="getLatLong" style="display:none">Street Address: </label><input id="autocomplete" class="form-control" name="address" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()"  style="display:none"required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
-							<button type="button" id="convertAddress" onclick="myFunction()" role="group">Get Lat Long</button>
+							<button type="button" id="convertAddress" onclick="myFunction()" style="display:none"role="group">Get Lat Long</button>
 							<div class="form-group">
-							<label for="getscaled_<?php echo $i ?>">ContentDM Image Upload: </label>
-							<input type="url" class="form-control" id="itemtitle" placeholder="Please enter a CONTENTdm reference URL" required>
-							<input type="text" class= "form-control" style="display:none" id="latitude_autocomplete">
-							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete">
-							<!--<input type="submit" class="getscaled" id="getscaled_<?php echo $i ?>" value="Scale image">-->
+							<label id="picturetitle" for="getscaled_autocomplete"style="display:none">ContentDM Image Upload: </label>
+							<input type="url" class="form-control" id="picturelocal" placeholder="Please enter a CONTENTdm reference URL" style="display:none" role="group" required>
+							</div>
+							<button type="button" id="sizepic" onclick="cdmpicture()" style="display:none"role="group">Get Picture</button>
+							<input type="text" class= "form-control" style="display:none" id="latitude_autocomplete" name="lat">
+							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete" name="long">
+							<!--<input type="url" class="getscaled" id="getscaled_autocomplete" name="pic" value="Scale image" required>-->
 							<div id="imgdirpath" style="display:none">
 								<input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>">
 							</div>
@@ -622,29 +624,91 @@ JSON data).--><br><br>
 							<input type="submit" name="submit" value="Save Images" style="display:none">
 							<script>
 							//copied from 138
-						
-				function myFunction(){alert($("#autocomplete").val());
-					x= $("#autocomplete").val();
-					if(Boolean($("#autocomplete").val())== false){
-						alert("wrong");
+				function validateTitle(){
+					var title = $("#itemtitle").val();
+					var titlepresent = Boolean(title);
+					if(titlepresent == false){// ||(title.length <4)){
+						//alert("wrong");
+						document.getElementById("itemlabel").innerHTML = "A Picture Title is Required";
+						document.getElementById("itemlabel").style.color='red';						
+						document.getElementById("itemtitle").focus();
+						//document.getElementById("itemtitle").attribute.onchange= false;
+						}
+					else{
+					document.getElementById("itemlabel").innerHTML = "Title: ";
+					document.getElementById("itemlabel").style.color='black';}
+				}
+				
+				function myFunction(){
+					var streetAddress= $("#autocomplete").val();
+					var x = Boolean(streetAddress);
+					if( (x == false) || (streetAddress.length <3)){
+						//alert("wrong");
 						document.getElementById("addressLabel").innerHTML = "Complete Postal Address is Required";
 						document.getElementById("addressLabel").style.color='red';						
 						document.getElementById("autocomplete").focus();}
-					else{
-						var streetAddress = $("#autocomplete").val();
-						alert(streetAddress);
+					else{						
+						//alert(streetAddress);
 						var mygc = new google.maps.Geocoder();
 						mygc.geocode({'address' : streetAddress }, function(results, status){
 						$('#latitude_autocomplete').attr("value", results[0].geometry.location.lat());
 						$('#longitude_autocomplete').attr("value", results[0].geometry.location.lng());		    
 						});
-						document.getElementById("latitude_autocomplete").style.display="inline";
-						document.getElementById("longitude_autocomplete").style.display="inline";}
+						if(document.getElementById("addressLabel").style.color == 'red'){
+						document.getElementById("addressLabel").innerHTML = "Street Address:";
+						document.getElementById("addressLabel").style.color='black';}
+						
+						document.getElementById("picturetitle").style.display="inline";
+						document.getElementById("picturelocal").style.display="inline";
+						document.getElementById("sizepic").style.display="inline";
+						//document.getElementById("latitude_autocomplete").style.display="inline";
+						//document.getElementById("longitude_autocomplete").style.display="inline";
+						}
 				}
+				
+				// for purposes of getting a scaled image from CDM reference URL
+		function cdmpicture(){
+			// verify thatURL is in the form: http://[CONTENTdm home]/cdm/ref/collection/[alias]/id/[id]
+			cdmrefurl = $("picturelocal").val();
+			if (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0) {
+				alert("Need a valid CONTENTdm reference URL");
+				return false;
+			}
+			// get collection alias and id as an array
+			var coll_id = cdmrefurl.replace(/^.*collection\/(.*?)\/id\/(.*).*$/,"$1,$2");
+			var refvals = coll_id.split(",");
+			// use proxy to get image width and height, then scale and fill in
+			$.ajax({
+				type: "POST",
+				data: { coll: refvals[0], ptr: refvals[1], getmap: mapname },
+				url: "do_cdm_curl.php",
+				success: function(xml) {
+					var imgwidth = $(xml).find('width').text();
+					var imgheight = $(xml).find('height').text();
+					var identifier = $(xml).find('identifier').text();
+					var img_size = 340;
+					if (imgwidth > imgheight) { img_size = 400; }
+					var longest_side = (imgwidth > imgheight) ? imgwidth : imgheight;
+					var trimmed_scale = "20";
+					var scale = img_size/longest_side;
+					var targ_w = (imgwidth*scale).toFixed(2);
+					var targ_h = (imgheight*scale).toFixed(2);
+					var formatted_scale = (scale * 100).toFixed(2);
+					if (imgwidth < img_size) { formatted_scale = 100; }
+					var imgPath = "<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=" + refvals[0] + '&CISOPTR=' + refvals[1] + '&action=2&DMSCALE=' + formatted_scale + '&DMWIDTH=' + targ_w + '&DMHEIGHT=' + targ_h + '&DMX=0&DMY=0';
+					$('#cdmurl_' + recidno).attr("value", imgPath);
+					$('#identifier_' + recidno).attr("value", identifier);
+				}
+				
+			});
+			
+		}
 							</script>
 						</form>
 						</div>
-						<div id="imgView" style="display:none">
+						<?php } else { echo html($_POST['somevalue']);?>
+
+						<div id="imgView" <!--style="display:none"-->>
 						<form role="form" id="formimg" name="formadd" method="POST" action="do_query.php">
 							<label>Adjust the Google Viewpoint to match the image.</label>
 							<label><?php echo $_POST["itemtitle"]?></label>
@@ -655,7 +719,7 @@ JSON data).--><br><br>
 							<!--<input type="submit" name="addline" value="Add Line">-->
 						</form>
 						</div>						
-					
+						<?php } ?>
 					<br>
 					</div>
 					</div>
