@@ -613,6 +613,7 @@ JSON data).--><br><br>
 							<input type="url" class="form-control" id="picturelocal" placeholder="Please enter a CONTENTdm reference URL" style="display:none" role="group" required>
 							</div>
 							<button type="button" id="sizepic" onclick="cdmpicture()" style="display:none"role="group">Get Picture</button>
+							<!--onclick='alert($("#picturelocal").val())'-->
 							<input type="text" class= "form-control" style="display:none" id="latitude_autocomplete" name="lat">
 							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete" name="long">
 							<!--<input type="url" class="getscaled" id="getscaled_autocomplete" name="pic" value="Scale image" required>-->
@@ -643,7 +644,6 @@ JSON data).--><br><br>
 					var streetAddress= $("#autocomplete").val();
 					var x = Boolean(streetAddress);
 					if( (x == false) || (streetAddress.length <3)){
-						//alert("wrong");
 						document.getElementById("addressLabel").innerHTML = "Complete Postal Address is Required";
 						document.getElementById("addressLabel").style.color='red';						
 						document.getElementById("autocomplete").focus();}
@@ -667,17 +667,26 @@ JSON data).--><br><br>
 						}
 				}
 				
-				// for purposes of getting a scaled image from CDM reference URL
+		// for purposes of getting a scaled image from CDM reference URL
 		function cdmpicture(){
 			// verify thatURL is in the form: http://[CONTENTdm home]/cdm/ref/collection/[alias]/id/[id]
-			cdmrefurl = $("picturelocal").val();
-			if (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0) {
-				alert("Need a valid CONTENTdm reference URL");
-				return false;
+			cdmrefurl = $("#picturelocal").val();
+			if ((Boolean(cdmrefurl) == false) || (cdmrefurl.length < 12) || (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0)){
+				alert(cdmrefurl);
+				document.getElementById("picturetitle").innerHTML = "Need a valid CONTENTdm reference URL";
+				document.getElementById("picturetitle").style.color='red';
+				document.getElementById("picturelocal").value=null;
+				document.getElementById("picturelocal").focus();
 			}
+			else{
+			/*if (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0) {
+				alert("Need a valid CONTENTdm reference URL");
+				//return false;
+			}*/
 			// get collection alias and id as an array
 			var coll_id = cdmrefurl.replace(/^.*collection\/(.*?)\/id\/(.*).*$/,"$1,$2");
 			var refvals = coll_id.split(",");
+			alert(refvals);
 			// use proxy to get image width and height, then scale and fill in
 			$.ajax({
 				type: "POST",
@@ -697,12 +706,13 @@ JSON data).--><br><br>
 					var formatted_scale = (scale * 100).toFixed(2);
 					if (imgwidth < img_size) { formatted_scale = 100; }
 					var imgPath = "<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=" + refvals[0] + '&CISOPTR=' + refvals[1] + '&action=2&DMSCALE=' + formatted_scale + '&DMWIDTH=' + targ_w + '&DMHEIGHT=' + targ_h + '&DMX=0&DMY=0';
-					$('#cdmurl_' + recidno).attr("value", imgPath);
-					$('#identifier_' + recidno).attr("value", identifier);
-				}
-				
+					//1/20/2015 NEED HIDDEN INPUTS
+					//$('#cdmurl_' + recidno).attr("value", imgPath);
+					//$('#identifier_' + recidno).attr("value", identifier);
+				}				
 			});
 			
+		}	
 		}
 							</script>
 						</form>
