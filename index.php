@@ -602,7 +602,7 @@ JSON data).--><br><br>
 						
 							<div class="form-group">
 							<label id="itemlabel" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";' onchange='alert($("#itemtitle").val());' autofocus><!--onchange="validateTitle()"-->
+							<input type="text" class="form-control" id="itemtitle" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";' onchange="validateTitle()" autofocus>
 							</div>
 							<div class="form-group">
 							<label id="addressLabel" for="getLatLong" style="display:none">Street Address: </label><input id="autocomplete" class="form-control" name="address" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()"  style="display:none"required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
@@ -661,6 +661,7 @@ JSON data).--><br><br>
 						document.getElementById("picturetitle").style.display="inline";
 						document.getElementById("picturelocal").style.display="inline";
 						document.getElementById("sizepic").style.display="inline";
+						validateTitle();
 						//document.getElementById("latitude_autocomplete").style.display="inline";
 						//document.getElementById("longitude_autocomplete").style.display="inline";
 						}
