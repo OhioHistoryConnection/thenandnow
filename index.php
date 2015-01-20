@@ -613,13 +613,33 @@ JSON data).--><br><br>
 							<input type="url" class="form-control" id="picturelocal" placeholder="Please enter a CONTENTdm reference URL" style="display:none" role="group" required>
 							</div>
 							<button type="button" id="sizepic" onclick="cdmpicture()" style="display:none"role="group">Get Picture</button>
-							<!--onclick='alert($("#picturelocal").val())'-->
+							<!--LAT & LONG STORAGE-->
 							<input type="text" class= "form-control" style="display:none" id="latitude_autocomplete" name="lat">
-							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete" name="long">
-							<!--<input type="url" class="getscaled" id="getscaled_autocomplete" name="pic" value="Scale image" required>-->
-							<div id="imgdirpath" style="display:none">
+							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete" name="long">												
+							
+							<!--old image url input <input type="url" class="getscaled" id="getscaled_autocomplete" name="pic" value="Scale image" required>-->
+							<!--<div id="imgdirpath" style="display:none">
 								<input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>">
+							</div>-->
 							</div>
+							<!--Form Part 2-->
+							<div id="imagepov" style="display:none">
+							<label id="piclabel"></label><br/>
+							<label id="picaddress"></label><br/>
+							<label>Adjust the Google Viewpoint to match the image.</label>
+							<div id="streetwrapper"><!-- style="display:none"-->
+		<div id="panoInfo">
+	  	latitude: <input type="text" id="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" size="10"><br/>
+	  	heading: <input type="text" id="heading_cell" size="9">, 
+	  	pitch: <input type="text" id="pitch_cell" size="9">, 
+	  	zoom: <input type="text" id="zoom_cell" size="1">
+	  </div>
+	  <br/>
+		<div id="panoblock">	
+		  <div id="pano"></div>
+		  <div id="imageview"></div>
+	  </div>
+	</div>
 							</div>
 							
 							<input type="submit" name="submit" value="Save Images" style="display:none">
@@ -652,7 +672,9 @@ JSON data).--><br><br>
 						var mygc = new google.maps.Geocoder();
 						mygc.geocode({'address' : streetAddress }, function(results, status){
 						$('#latitude_autocomplete').attr("value", results[0].geometry.location.lat());
-						$('#longitude_autocomplete').attr("value", results[0].geometry.location.lng());		    
+						$('#longitude_autocomplete').attr("value", results[0].geometry.location.lng());
+						$('#lat_cell').attr("value", results[0].geometry.location.lat());
+						$('#lng_cell').attr("value", results[0].geometry.location.lng());	
 						});
 						if(document.getElementById("addressLabel").style.color == 'red'){
 						document.getElementById("addressLabel").innerHTML = "Street Address:";
@@ -711,26 +733,30 @@ JSON data).--><br><br>
 					//$('#identifier_' + recidno).attr("value", identifier);
 				}				
 			});
-			
+			document.getElementById("titleStreet").style.display="none";
+			document.getElementById("imagepov").style.display="inline";
+			document.getElementById("piclabel").innerHTML=$("#itemtitle").val();
+			document.getElementById("picaddress").innerHTML=$("#autocomplete").val();
 		}	
 		}
 							</script>
 						</form>
 						</div>
-						<?php } else { echo html($_POST['somevalue']);?>
+						<!--<?php } else { echo html($_POST['somevalue']);?>
 
-						<div id="imgView" <!--style="display:none"-->>
+						<div id="imgView" <!--style="display:none">
 						<form role="form" id="formimg" name="formadd" method="POST" action="do_query.php">
 							<label>Adjust the Google Viewpoint to match the image.</label>
 							<label><?php echo $_POST["itemtitle"]?></label>
 							<label><?php echo $_POST["getLatLong"]?></label>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
+							
 							<button type="submit" class="btn btn-default">Save Image</button>
 							<!--<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
-							<!--<input type="submit" name="addline" value="Add Line">-->
+							<!--<input type="submit" name="addline" value="Add Line">
 						</form>
 						</div>						
-						<?php } ?>
+						<?php } ?>-->
 					<br>
 					</div>
 					</div>
@@ -739,7 +765,7 @@ JSON data).--><br><br>
 					<!--<div class="panel-group" id="accordion">-->					
 			<?php
 					
-					#echo('<tr class="info"><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th><th></th></tr>');
+					# old table format: echo('<tr class="info"><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th><th></th></tr>');
 					$max = count($map_data);
 					for ($i = 0; $i < $max; $i++) {		
 			?>
