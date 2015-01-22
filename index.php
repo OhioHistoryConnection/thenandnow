@@ -616,6 +616,7 @@ JSON data).--><br><br>
 							<!--LAT & LONG STORAGE-->
 							<input type="text" class= "form-control" style="display:none" id="latitude_autocomplete" name="lat">
 							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete" name="long">												
+							<!--cdm url & identifier storage -->
 							
 							<!--old image url input <input type="url" class="getscaled" id="getscaled_autocomplete" name="pic" value="Scale image" required>-->
 							<!--<div id="imgdirpath" style="display:none">
@@ -626,18 +627,20 @@ JSON data).--><br><br>
 							<div id="imagepov" style="display:none">
 							<label id="piclabel"></label><br/>
 							<label id="picaddress"></label><br/>
+							<input id="cdmurl_new"type="text" style="display:none" required><!--style="display:none"-->
+							<input id="identifier_new"type="text" style="display:none" required>
 							<label>Adjust the Google Viewpoint to match the image.</label>
 							<div id="streetwrapper"><!-- style="display:none"-->
 		<div id="panoInfo">
 	  	latitude: <input type="text" id="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" size="10"><br/>
-	  	heading: <input type="text" id="heading_cell" size="9">, 
-	  	pitch: <input type="text" id="pitch_cell" size="9">, 
-	  	zoom: <input type="text" id="zoom_cell" size="1">
+	  	heading: <input type="text" id="heading_cell" size="9" value="0">, 
+	  	pitch: <input type="text" id="pitch_cell" size="9" value="0">, 
+	  	zoom: <input type="text" id="zoom_cell" size="1" value="0">
 	  </div>
 	  <br/>
 		<div id="panoblock">	
 		  <div id="pano"></div>
-		  <div id="imageview"></div>
+		  <img id="imageview"></img>
 	  </div>
 	</div>
 							</div>
@@ -708,7 +711,7 @@ JSON data).--><br><br>
 			// get collection alias and id as an array
 			var coll_id = cdmrefurl.replace(/^.*collection\/(.*?)\/id\/(.*).*$/,"$1,$2");
 			var refvals = coll_id.split(",");
-			alert(refvals);
+			//alert(refvals);
 			// use proxy to get image width and height, then scale and fill in
 			$.ajax({
 				type: "POST",
@@ -728,6 +731,11 @@ JSON data).--><br><br>
 					var formatted_scale = (scale * 100).toFixed(2);
 					if (imgwidth < img_size) { formatted_scale = 100; }
 					var imgPath = "<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=" + refvals[0] + '&CISOPTR=' + refvals[1] + '&action=2&DMSCALE=' + formatted_scale + '&DMWIDTH=' + targ_w + '&DMHEIGHT=' + targ_h + '&DMX=0&DMY=0';
+					$('#cdmurl_new').attr("value", imgPath);
+					$('#identifier_new').attr("value", identifier);
+					//alert(imgPath);
+					while( $("#cdmurl_new").length < 1){//alert($("#cdmurl_new").length);
+			}imagestudio(imgPath);
 					//1/20/2015 NEED HIDDEN INPUTS
 					//$('#cdmurl_' + recidno).attr("value", imgPath);
 					//$('#identifier_' + recidno).attr("value", identifier);
@@ -736,8 +744,75 @@ JSON data).--><br><br>
 			document.getElementById("titleStreet").style.display="none";
 			document.getElementById("imagepov").style.display="inline";
 			document.getElementById("piclabel").innerHTML=$("#itemtitle").val();
-			document.getElementById("picaddress").innerHTML=$("#autocomplete").val();
+			document.getElementById("picaddress").innerHTML=$("#autocomplete").val(); 
+			while( $("#cdmurl_new").length < 1){//alert($("#cdmurl_new").length);
+			}
+			//imagestudio(imgPath);
 		}	
+		}
+		function imagestudio(picSource){
+			$('#pano').empty();
+				$('#imageview').empty();
+				
+				//var recid = $(this).attr("id");
+				//var recidno = recid.replace(/.*_(.*)/,"$1");
+				//var maplat = "#latitude_" + recidno;
+				//var lat = $('#latitude_' + recidno).val();
+				//var lon = $('#longitude_' + recidno).val();
+				var lat = $("#latitude_autocomplete").val();
+				var lon = $("#longitude_autocomplete").val();
+				
+
+				if (!parseInt(lat) || !parseInt(lon)) {
+					alert("Need both a latitude and longitude");
+					return false;
+				}
+				
+				var povHead = 0;
+				var povPitch = 0;
+				var povZoom = 0;
+				//alert(picSource);
+				/*if ($('#cdmurl_new').indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=") < 0) {
+					alert("Need a valid CONTENTdm scaled image URL");
+					return false;
+				}*/
+				
+				$('#streetwrapper').show();
+				/*var imgPath = $("#cdmurl_new").val();
+				while(Boolean(imgPath)==false){alert(Boolean(imgPath));var imgPath = $("#cdmurl_new").val();}
+				var imgPath = $("#cdmurl_new").val();
+				alert(imgPath);
+				alert(imgPath);*/
+		  var thumbImg = $('<img />', {
+			//src: imgPath
+			src: picSource
+		  });
+		  document.getElementById('imageview').src=picSource;
+		  //$('#imageview').append(thumbImg);
+				var mapPos = new google.maps.LatLng(lat,lon);
+				var panoramaOptions = {
+			  position: mapPos,
+			  pov: {
+				heading: povHead,
+				pitch: povPitch,
+				zoom: povZoom
+			  },
+			  visible: true
+			};
+			var panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), panoramaOptions);
+				
+				// listen for changes to panorama area and update input blank values as needed
+			google.maps.event.addListener(panorama, 'position_changed', function() {
+			  $('#lat_cell').val(panorama.getPosition().lat().toString());
+			  $('#lng_cell').val(panorama.getPosition().lng().toString());      
+			});
+			google.maps.event.addListener(panorama, 'pov_changed', function() {
+			  $('#heading_cell').val(panorama.getPov().heading);
+			  $('#pitch_cell').val(panorama.getPov().pitch);
+			  $('#zoom_cell').val(panorama.getPov().zoom);
+			});
+					
+			//});
 		}
 							</script>
 						</form>
