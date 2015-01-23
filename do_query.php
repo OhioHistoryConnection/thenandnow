@@ -11,7 +11,8 @@
 define("ABS_PATH", dirname(__FILE__));
 
 // single blank record
-$new_record = '{"latitude":"0","longitude":"0","itemtitle":"Enter a title","cdmurl":"Enter a CDM reference URL","identifier":"Enter a local identifier","heading":"0","pitch":"0","zoom":"0"}';
+//$new_record = '{"latitude":"0","longitude":"0","itemtitle":"Enter a title","cdmurl":"Enter a CDM reference URL","identifier":"Enter a local identifier","heading":"0","pitch":"0","zoom":"0"}';
+$new_record="";
 $mapdata = "";
 $map_data_json = "";
 
@@ -30,6 +31,7 @@ if (isset($_GET["getmap"]) || isset($_POST["getmap"])) {
 		$map_data_json = $map_data_json_array[0]['mapdata'];
 	
 		if (isset($_POST["addline"])){
+			$new_record = '{"latitude":"'.$_POST["lat_cell"].'","longitude":"'.$_POST["lng_cell"].'","itemtitle":"'.$_POST["title"].'","cdmurl":"'.$_POST["cdmurl_new"].'","identifier":"'.$_POST["identifier_new"].'","heading":"'.$_POST["heading_cell"].'","pitch":"'.$_POST["pitch_cell"].'","zoom":"'.$_POST["zoom_cell"].'"}';
 			// if a record already exists
 			if (preg_match('/\{/', $map_data_json)) {
 				// append a new record
@@ -55,7 +57,7 @@ if (isset($_GET["getmap"]) || isset($_POST["getmap"])) {
 			header('Location: '.$config['THIS_HOST'].'/index.php?getmap='.$mapID);
 		} else {
 	    print($map_data_json);
-	  } 
+	  }
 	  $dbh = NULL;
 	}
 	catch(Exception $e)

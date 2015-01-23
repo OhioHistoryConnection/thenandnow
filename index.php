@@ -594,18 +594,18 @@ JSON data).--><br><br>
 							<div class="panel-body">
 					
 					<label>This is a 2 part process which includes inputting the picture information and then replicating the picture's focal point on Google street view.</label><br><br>
-					<?php if (!isset($_POST['_submit'])){ ?>
+					<form role="form" id="formadd" name="formadd" method="POST" action="do_query.php">
+					<!--Form Part 1-->
 					<div id="titleStreet" class="input-group">
 					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>
-						<!--<form role="form" id="formadd" name="formadd" method="POST" action="do_query.php">-->
-						<form role="form" id="formadd" name="formadd" method="POST" action="" ><!--action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>"-->
 						
-							<div class="form-group">
+						<div class="form-group">
 							<label id="itemlabel" for="itemtitle">Title: </label>
 							<input type="text" class="form-control" id="itemtitle" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";' onchange="validateTitle()" autofocus>
 							</div>
 							<div class="form-group">
-							<label id="addressLabel" for="getLatLong" style="display:none">Street Address: </label><input id="autocomplete" class="form-control" name="address" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()"  style="display:none"required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							<label id="addressLabel" for="getLatLong" style="display:none">Street Address: </label>
+							<input id="autocomplete" class="form-control" name="address" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()"  style="display:none"required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
 							<button type="button" id="convertAddress" onclick="myFunction()" style="display:none"role="group">Get Lat Long</button>
 							<div class="form-group">
@@ -620,32 +620,34 @@ JSON data).--><br><br>
 							
 							<!--old image url input <input type="url" class="getscaled" id="getscaled_autocomplete" name="pic" value="Scale image" required>-->
 							<!--<div id="imgdirpath" style="display:none">
-								<input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>">
+								<input title="Map Record <?php #echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php #echo $i ?>" value="<?php #echo $map_data[$i]["cdmurl"] ?>">
 							</div>-->
 							</div>
 							<!--Form Part 2-->
 							<div id="imagepov" style="display:none">
 							<label id="piclabel"></label><br/>
 							<label id="picaddress"></label><br/>
-							<input id="cdmurl_new"type="text" style="display:none" required><!--style="display:none"-->
-							<input id="identifier_new"type="text" style="display:none" required>
+							<input id="cdmurl_new" name="cdmurl_new"type="text" style="display:none" required><!--style="display:none"-->
+							<input id="identifier_new" name="identifier_new"type="text" style="display:none" required>
 							<label>Adjust the Google Viewpoint to match the image.</label>
 							<div id="streetwrapper"><!-- style="display:none"-->
 		<div id="panoInfo">
-	  	latitude: <input type="text" id="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" size="10"><br/>
-	  	heading: <input type="text" id="heading_cell" size="9" value="0">, 
-	  	pitch: <input type="text" id="pitch_cell" size="9" value="0">, 
-	  	zoom: <input type="text" id="zoom_cell" size="1" value="0">
+	  	latitude: <input type="text" id="lat_cell" name="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" name="lng_cell" size="10"><br/>
+	  	heading: <input type="text" id="heading_cell" name="heading_cell" size="9" value="0">, 
+	  	pitch: <input type="text" id="pitch_cell" name="pitch_cell" size="9" value="0">, 
+	  	zoom: <input type="text" id="zoom_cell" name="zoom_cell" size="1" value="0">
 	  </div>
 	  <br/>
 		<div id="panoblock">	
 		  <div id="pano"></div>
 		  <img id="imageview"></img>
-	  </div>
+		</div>
 	</div>
+							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
+				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							</div>
 							
-							<input type="submit" name="submit" value="Save Images" style="display:none">
+							<!--<input type="submit" name="submit" value="Save Images" style="display:none">-->
 							<script>
 							//copied from 138
 				function validateTitle(){
@@ -815,26 +817,27 @@ JSON data).--><br><br>
 			//});
 		}
 							</script>
+						
 						</form>
 						</div>
-						<!--<?php } else { echo html($_POST['somevalue']);?>
+						<!--<?php #} else { echo html($_POST['somevalue']);?>
 
 						<div id="imgView" <!--style="display:none">
 						<form role="form" id="formimg" name="formadd" method="POST" action="do_query.php">
 							<label>Adjust the Google Viewpoint to match the image.</label>
-							<label><?php echo $_POST["itemtitle"]?></label>
-							<label><?php echo $_POST["getLatLong"]?></label>
-							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
+							<label><?php #echo $_POST["itemtitle"]?></label>
+							<label><?php #echo $_POST["getLatLong"]?></label>
+							<input type="hidden" name="getmap" value="<?php #echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
 							
 							<button type="submit" class="btn btn-default">Save Image</button>
 							<!--<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							<!--<input type="submit" name="addline" value="Add Line">
 						</form>
 						</div>						
-						<?php } ?>-->
-					<br>
+						<?php #} ?>-->
+					<!--<br>-->
 					</div>
-					</div>
+					<!--</div>-->
 					<!--<div class="table table-responsive">
 					<table class="table table-hover"><!--twitter bootstrap-->
 					<!--<div class="panel-group" id="accordion">-->					
@@ -894,7 +897,7 @@ JSON data).--><br><br>
 								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="zoom" id="zoom_<?php echo $i ?>" value="<?php echo $map_data[$i]["zoom"] ?>" size="2"> </td></div>
 								<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
 								
-								<div id="streetwrapper" style="display:none">
+								<!--<div id="streetwrapper" style="display:none">
 									<div id="panoInfo">
 									&nbsp;&nbsp;&nbsp;latitude: <input type="text" id="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" size="10">
 									&nbsp;&nbsp;&nbsp;heading: <input type="text" id="heading_cell" size="9">, 
@@ -906,7 +909,7 @@ JSON data).--><br><br>
 									  <div id="pano"></div>
 									  <div id="imageview"></div>
 								  </div>
-								</div>								
+								</div>-->								
 							</div><!--reorg-->
 							
 							</div>
@@ -915,10 +918,10 @@ JSON data).--><br><br>
 					</div>
 				
 			<?php	} 
-					echo '<tr class="info"><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>';
+					#echo '<tr class="info"><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>';
 				} ?>
 			
-	</table>
+	<!--</table>-->
 	</div>
 	<?php if ($map_data_exists) { ?>
 	
