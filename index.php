@@ -295,47 +295,6 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 			window.open("<?php echo($config['THIS_HOST']) ?>/thenandnow.php?getmap=" + $('#bottomshowmap').val());
     	return false; 
 		});
-		// when "add line" is clicked either start a new map or add a new line
-		/*$("#formadd").submit(function (e) {
-			if ($('#getmap') == null || $('#getmap').val().length == 0) { 
-				var mapname = prompt("Type the name of your map (no spaces or punctuation)", "MyMap");
-			} else {
-				var mapname = $('#getmap').val();
-			}
-			if (mapname != '' && mapname != null) {
-				$.ajax({
-					type: "POST",
-					data: { getmap: mapname, addline: "addline" },
-					url: "do_query.php",
-					success: function(data) {
-						location.href = "<?php echo($config['THIS_HOST']) ?>/index.php?getmap=" + mapname;
-					}
-				});	
-			} else {
-				return false;
-			}
-			return false;
-		});
-		$("#bottomformadd").submit(function (e) {
-			if ($('#getmap') == null || $('#getmap').val().length == 0) { 
-				var mapname = prompt("Type the name of your map (no spaces or punctuation)", "MyMap");
-			} else {
-				var mapname = $('#getmap').val();
-			}
-			if (mapname != '' && mapname != null) {
-				$.ajax({
-					type: "POST",
-					data: { getmap: mapname, addline: "addline" },
-					url: "do_query.php",
-					success: function(data) {
-						location.href = "<?php echo($config['THIS_HOST']) ?>/index.php?getmap=" + mapname;
-					}
-				});	
-			} else {
-				return false;
-			}
-			return false;
-		});*/
 		// make sure map name is entered
 		$("#formgetmap").submit(function() {
 			if ($('#getmap') == null || $('#getmap').val().length == 0) { 
@@ -356,69 +315,42 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 		}
 	}
 	
-	//Google Address Autocomplete Script
+//Google Address Autocomplete Script
 	var placeSearch, autocomplete;
-var componentForm = {
-  street_number: 'short_name',
-  route: 'long_name',
-  locality: 'long_name',
-  administrative_area_level_1: 'short_name',
-  country: 'long_name',
-  postal_code: 'short_name'
-};
+	var componentForm = {
+	  street_number: 'short_name',
+	  route: 'long_name',
+	  locality: 'long_name',
+	  administrative_area_level_1: 'short_name',
+	  country: 'long_name',
+	  postal_code: 'short_name'
+	};
 
-function initialize() {
-  // Create the autocomplete object, restricting the search
-  // to geographical location types.
-  autocomplete = new google.maps.places.Autocomplete(
-      /** @type {HTMLInputElement}*/ (document.getElementById('autocomplete')),
-      { types: ['geocode'] });
-  // When the user selects an address from the dropdown,
-  // populate the address fields in the form.
-  /*google.maps.event.addListener(autocomplete, 'place_changed', function() {
-    fillInAddress();
-  });*/
-}
+	function initialize() {
+	  // Create the autocomplete object, restricting the search
+	  // to geographical location types.
+	  autocomplete = new google.maps.places.Autocomplete(
+		  /** @type {HTMLInputElement}*/ (document.getElementById('autocomplete')),
+		  { types: ['geocode'] });
+	}
 
-// [START region_fillform]
-/*function fillInAddress() {
-  // Get the place details from the autocomplete object.
-  var place = autocomplete.getPlace();
-
-  for (var component in componentForm) {
-    document.getElementById(component).value = '';
-    document.getElementById(component).disabled = false;
-  }
-
-  // Get each component of the address from the place details
-  // and fill the corresponding field on the form.
-  for (var i = 0; i < place.address_components.length; i++) {
-    var addressType = place.address_components[i].types[0];
-    if (componentForm[addressType]) {
-      var val = place.address_components[i][componentForm[addressType]];
-      document.getElementById(addressType).value = val;
-    }
-  }
-}*/
-// [END region_fillform]
-
-// [START region_geolocation]
-// Bias the autocomplete object to the user's geographical location,
-// as supplied by the browser's 'navigator.geolocation' object.
-function geolocate() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var geolocation = new google.maps.LatLng(
-          position.coords.latitude, position.coords.longitude);
-      var circle = new google.maps.Circle({
-        center: geolocation,
-        radius: position.coords.accuracy
-      });
-      autocomplete.setBounds(circle.getBounds());
-    });
-  }
-}
-// [END region_geolocation]
+	// [START region_geolocation]
+	// Bias the autocomplete object to the user's geographical location,
+	// as supplied by the browser's 'navigator.geolocation' object.
+	function geolocate() {
+	  if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position) {
+		  var geolocation = new google.maps.LatLng(
+			  position.coords.latitude, position.coords.longitude);
+		  var circle = new google.maps.Circle({
+			center: geolocation,
+			radius: position.coords.accuracy
+		  });
+		  autocomplete.setBounds(circle.getBounds());
+		});
+	  }
+	}
+	// [END region_geolocation]
 </script>
 <style type="text/css">
 body { 
@@ -543,7 +475,6 @@ JSON data).--><br><br>
 			?>
 			</div>
 			<button type="submit" class="btn btn-default" name="getdata" value="Get Map Data">Get Map Data</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<!--<input type="submit" name="getdata" value="Get Map Data"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
 			</div>
 		</form>
 	</div><br><br>
@@ -571,15 +502,8 @@ JSON data).--><br><br>
 						<form id="formshow" name="formshow">
 							<input type="hidden" id="showmap" name="showmap" value="<?php echo $mapID?>">
 							<button type="submit" class="btn btn-default" id="showsubmit" name="showsubmit" value="<?php echo $mapID?>">Show <?php echo ucfirst($mapID)?> Map</button>
-							<!--<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">-->
 							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						</form>
-
-						<!--<form id="formsave" name="formsave">
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
-							<button type="submit" class="btn btn-default" id="savesubmit" name="savesubmit" value="Save Map Data">Save Map Data</button>&nbsp;&nbsp;<span id="saved"></span>
-						</form>-->
 					</div><br>
 					<div class="panel-group" id="accordion">
 					<div class="panel panel-default">
@@ -594,48 +518,42 @@ JSON data).--><br><br>
 							<div class="panel-body">
 					
 					<label>This is a 2 part process which includes inputting the picture information and then replicating the picture's focal point on Google street view.</label><br><br>
-					<form role="form" id="formadd" name="formadd" method="POST" action="do_query.php">
+					<form role="form" id="formadd" name="formadd" onreset="resetImage()" method="POST" action="do_query.php">
 					<!--Form Part 1-->
 					<div id="titleStreet" class="input-group">
-					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>
-						
+					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>						
 						<div class="form-group">
 							<label id="itemlabel" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";' onchange="validateTitle()" autofocus>
+							<input type="text" class="form-control" id="itemtitle" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";' onblur="validateTitle()" autofocus><!--onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";'-->
 							</div>
 							<div class="form-group">
 							<label id="addressLabel" for="getLatLong" style="display:none">Street Address: </label>
 							<input id="autocomplete" class="form-control" name="address" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()"  style="display:none"required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
-							<button type="button" id="convertAddress" onclick="myFunction()" style="display:none"role="group">Get Lat Long</button>
+							<button type="button" id="convertAddress" onclick="validateAddress()" style="display:none"role="group">Get Lat Long</button>
 							<div class="form-group">
 							<label id="picturetitle" for="getscaled_autocomplete"style="display:none">ContentDM Image Upload: </label>
 							<input type="url" class="form-control" id="picturelocal" placeholder="Please enter a CONTENTdm reference URL" style="display:none" role="group" required>
 							</div>
 							<button type="button" id="sizepic" onclick="cdmpicture()" style="display:none"role="group">Get Picture</button>
-							<!--LAT & LONG STORAGE-->
+							<!--Hidden LAT & LONG Storage-->
 							<input type="text" class= "form-control" style="display:none" id="latitude_autocomplete" name="lat">
-							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete" name="long">												
-							<!--cdm url & identifier storage -->
-							
-							<!--old image url input <input type="url" class="getscaled" id="getscaled_autocomplete" name="pic" value="Scale image" required>-->
-							<!--<div id="imgdirpath" style="display:none">
-								<input title="Map Record <?php #echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php #echo $i ?>" value="<?php #echo $map_data[$i]["cdmurl"] ?>">
-							</div>-->
+							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete" name="long">
 							</div>
 							<!--Form Part 2-->
 							<div id="imagepov" style="display:none">
 							<label id="piclabel"></label><br/>
 							<label id="picaddress"></label><br/>
-							<input id="cdmurl_new" name="cdmurl_new"type="text" style="display:none" required><!--style="display:none"-->
+							<input id="cdmurl_new" name="cdmurl_new"type="text" style="display:none" required>
 							<input id="identifier_new" name="identifier_new"type="text" style="display:none" required>
 							<label>Adjust the Google Viewpoint to match the image.</label>
-							<div id="streetwrapper"><!-- style="display:none"-->
+							<div id="streetwrapper">
 		<div id="panoInfo">
-	  	latitude: <input type="text" id="lat_cell" name="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" name="lng_cell" size="10"><br/>
-	  	heading: <input type="text" id="heading_cell" name="heading_cell" size="9" value="0">, 
-	  	pitch: <input type="text" id="pitch_cell" name="pitch_cell" size="9" value="0">, 
-	  	zoom: <input type="text" id="zoom_cell" name="zoom_cell" size="1" value="0">
+	  	<input type="text" id="lat_cell" name="lat_cell" size="10" style="display:none">
+		<input type="text" id="lng_cell" name="lng_cell" size="10" style="display:none">
+	  	<input type="text" id="heading_cell" name="heading_cell" size="9" value="0" style="display:none">
+	  	<input type="text" id="pitch_cell" name="pitch_cell" size="9" value="0" style="display:none">
+	  	<input type="text" id="zoom_cell" name="zoom_cell" size="1" value="0" style="display:none">
 	  </div>
 	  <br/>
 		<div id="panoblock">	
@@ -646,34 +564,41 @@ JSON data).--><br><br>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
 				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							</div>
-							
-							<!--<input type="submit" name="submit" value="Save Images" style="display:none">-->
 							<script>
+				function resetImage(){
+				document.getElementById("itemlabel").innerHTML = "Title: ";
+				document.getElementById("itemlabel").style.color='black';
+				document.getElementById("itemtitle").focus();
+				document.getElementById("addressLabel").style.display="none"; document.getElementById("autocomplete").style.display="none";
+				document.getElementById("convertAddress").style.display="none";
+				document.getElementById("picturetitle").style.display="none";
+				document.getElementById("picturelocal").style.display="none";
+				document.getElementById("sizepic").style.display="none";
+				document.getElementById("imagepov").style.display="none";
+				}
 							//copied from 138
 				function validateTitle(){
 					var title = $("#itemtitle").val();
 					var titlepresent = Boolean(title);
-					if(titlepresent == false){// ||(title.length <4)){
-						//alert("wrong");
+					if(titlepresent == false){
 						document.getElementById("itemlabel").innerHTML = "A Picture Title is Required";
 						document.getElementById("itemlabel").style.color='red';						
 						document.getElementById("itemtitle").focus();
-						//document.getElementById("itemtitle").attribute.onchange= false;
 						}
 					else{
+					document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("autocomplete").focus(); document.getElementById("convertAddress").style.display="inline";
 					document.getElementById("itemlabel").innerHTML = "Title: ";
 					document.getElementById("itemlabel").style.color='black';}
 				}
 				
-				function myFunction(){
+				function validateAddress(){
 					var streetAddress= $("#autocomplete").val();
 					var x = Boolean(streetAddress);
 					if( (x == false) || (streetAddress.length <3)){
 						document.getElementById("addressLabel").innerHTML = "Complete Postal Address is Required";
 						document.getElementById("addressLabel").style.color='red';						
 						document.getElementById("autocomplete").focus();}
-					else{						
-						//alert(streetAddress);
+					else{
 						var mygc = new google.maps.Geocoder();
 						mygc.geocode({'address' : streetAddress }, function(results, status){
 						$('#latitude_autocomplete').attr("value", results[0].geometry.location.lat());
@@ -681,16 +606,15 @@ JSON data).--><br><br>
 						$('#lat_cell').attr("value", results[0].geometry.location.lat());
 						$('#lng_cell').attr("value", results[0].geometry.location.lng());	
 						});
-						if(document.getElementById("addressLabel").style.color == 'red'){
+						if(document.getElementById("addressLabel").style.color ==  'red'){
 						document.getElementById("addressLabel").innerHTML = "Street Address:";
 						document.getElementById("addressLabel").style.color='black';}
-						
 						document.getElementById("picturetitle").style.display="inline";
 						document.getElementById("picturelocal").style.display="inline";
 						document.getElementById("sizepic").style.display="inline";
-						validateTitle();
-						//document.getElementById("latitude_autocomplete").style.display="inline";
-						//document.getElementById("longitude_autocomplete").style.display="inline";
+						document.getElementById("convertAddress").style.display="none";
+						document.getElementById("picturelocal").focus();
+						//validateTitle();
 						}
 				}
 				
@@ -699,21 +623,16 @@ JSON data).--><br><br>
 			// verify thatURL is in the form: http://[CONTENTdm home]/cdm/ref/collection/[alias]/id/[id]
 			cdmrefurl = $("#picturelocal").val();
 			if ((Boolean(cdmrefurl) == false) || (cdmrefurl.length < 12) || (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0)){
-				alert(cdmrefurl);
+				//alert(cdmrefurl);
 				document.getElementById("picturetitle").innerHTML = "Need a valid CONTENTdm reference URL";
 				document.getElementById("picturetitle").style.color='red';
 				document.getElementById("picturelocal").value=null;
 				document.getElementById("picturelocal").focus();
 			}
 			else{
-			/*if (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0) {
-				alert("Need a valid CONTENTdm reference URL");
-				//return false;
-			}*/
 			// get collection alias and id as an array
 			var coll_id = cdmrefurl.replace(/^.*collection\/(.*?)\/id\/(.*).*$/,"$1,$2");
 			var refvals = coll_id.split(",");
-			//alert(refvals);
 			// use proxy to get image width and height, then scale and fill in
 			$.ajax({
 				type: "POST",
@@ -736,34 +655,22 @@ JSON data).--><br><br>
 					$('#cdmurl_new').attr("value", imgPath);
 					$('#identifier_new').attr("value", identifier);
 					//alert(imgPath);
-					while( $("#cdmurl_new").length < 1){//alert($("#cdmurl_new").length);
-			}imagestudio(imgPath);
-					//1/20/2015 NEED HIDDEN INPUTS
-					//$('#cdmurl_' + recidno).attr("value", imgPath);
-					//$('#identifier_' + recidno).attr("value", identifier);
+					while( $("#cdmurl_new").length < 1){}
+					imagestudio(imgPath);
 				}				
 			});
 			document.getElementById("titleStreet").style.display="none";
 			document.getElementById("imagepov").style.display="inline";
 			document.getElementById("piclabel").innerHTML=$("#itemtitle").val();
 			document.getElementById("picaddress").innerHTML=$("#autocomplete").val(); 
-			while( $("#cdmurl_new").length < 1){//alert($("#cdmurl_new").length);
-			}
-			//imagestudio(imgPath);
+			while( $("#cdmurl_new").length < 1){}
 		}	
 		}
 		function imagestudio(picSource){
 			$('#pano').empty();
 				$('#imageview').empty();
-				
-				//var recid = $(this).attr("id");
-				//var recidno = recid.replace(/.*_(.*)/,"$1");
-				//var maplat = "#latitude_" + recidno;
-				//var lat = $('#latitude_' + recidno).val();
-				//var lon = $('#longitude_' + recidno).val();
 				var lat = $("#latitude_autocomplete").val();
 				var lon = $("#longitude_autocomplete").val();
-				
 
 				if (!parseInt(lat) || !parseInt(lon)) {
 					alert("Need both a latitude and longitude");
@@ -773,24 +680,12 @@ JSON data).--><br><br>
 				var povHead = 0;
 				var povPitch = 0;
 				var povZoom = 0;
-				//alert(picSource);
-				/*if ($('#cdmurl_new').indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=") < 0) {
-					alert("Need a valid CONTENTdm scaled image URL");
-					return false;
-				}*/
 				
 				$('#streetwrapper').show();
-				/*var imgPath = $("#cdmurl_new").val();
-				while(Boolean(imgPath)==false){alert(Boolean(imgPath));var imgPath = $("#cdmurl_new").val();}
-				var imgPath = $("#cdmurl_new").val();
-				alert(imgPath);
-				alert(imgPath);*/
 		  var thumbImg = $('<img />', {
-			//src: imgPath
 			src: picSource
 		  });
 		  document.getElementById('imageview').src=picSource;
-		  //$('#imageview').append(thumbImg);
 				var mapPos = new google.maps.LatLng(lat,lon);
 				var panoramaOptions = {
 			  position: mapPos,
@@ -813,42 +708,14 @@ JSON data).--><br><br>
 			  $('#pitch_cell').val(panorama.getPov().pitch);
 			  $('#zoom_cell').val(panorama.getPov().zoom);
 			});
-					
-			//});
 		}
-							</script>
-						
+</script>
+	<input type="reset">
 						</form>
 						</div>
-						<!--<?php #} else { echo html($_POST['somevalue']);?>
-
-						<div id="imgView" <!--style="display:none">
-						<form role="form" id="formimg" name="formadd" method="POST" action="do_query.php">
-							<label>Adjust the Google Viewpoint to match the image.</label>
-							<label><?php #echo $_POST["itemtitle"]?></label>
-							<label><?php #echo $_POST["getLatLong"]?></label>
-							<input type="hidden" name="getmap" value="<?php #echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
-							
-							<button type="submit" class="btn btn-default">Save Image</button>
-							<!--<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
-							<!--<input type="submit" name="addline" value="Add Line">
-						</form>
-						</div>						
-						<?php #} ?>-->
-					<!--<br>-->
 					</div>
-					<!--</div>-->
-					<!--<div class="table table-responsive">
-					<table class="table table-hover"><!--twitter bootstrap-->
-					<!--<div class="panel-group" id="accordion">-->					
-			<?php
-					
-					# old table format: echo('<tr class="info"><th></th><th>Latitude:</th><th>Longitude:</th><th>Title:</th><th></th><th>CDM scaled image:</th><th>Identifier:</th><th></th><th>Heading:</th><th>Pitch:</th><th>Zoom:</th><th></th></tr>');
-					$max = count($map_data);
-					for ($i = 0; $i < $max; $i++) {		
-			?>
-				
-			
+			<?php $max = count($map_data);
+					for ($i = 0; $i < $max; $i++) {	?>
 						<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
@@ -864,25 +731,78 @@ JSON data).--><br><br>
 								<div id="maindisplay" class="panel-body">
 									<div id="dbpics">	
 									 
-									  <div id="imagepreview">
+									  <div id="imagepreview<?php echo $i ?>">
 											<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="260" height="180">
-									  <img src=https://maps.googleapis.com/maps/api/streetview?location=<?php echo $map_data[$i]["latitude"]?>,<?php echo $map_data[$i]["longitude"]?>&pitch=<?php echo $map_data[$i]["pitch"] ?>&heading=<?php echo $map_data[$i]["heading"] ?>&zoom=<?php echo $map_data[$i]["zoom"]?>0&size=260x180>
+									
+									  <img id="staticMapImg<?php echo $i ?>" src='https://maps.googleapis.com/maps/api/streetview?location=<?php echo $map_data[$i]["latitude"]?>,<?php echo $map_data[$i]["longitude"]?>&pitch=<?php echo $map_data[$i]["pitch"] ?>&heading=<?php echo $map_data[$i]["heading"] ?>&fov=<?php echo $map_data[$i]["zoom"]?>&size=260x180'>
+									  <script>
+									  //convert zoom to FOV for static map view
+									var zoom = Number(<?php echo $map_data[$i]["zoom"]?>);
+									var fovNum = Math.min(Math.max((Math.round(3.9018*Math.pow(zoom,2) - 42.432*zoom + 123)),10),120);
+									//fov=fovNum.toString();
+									var staticUrl = "https://maps.googleapis.com/maps/api/streetview?location=<?php echo $map_data[$i]['latitude']?>,<?php echo $map_data[$i]['longitude']?>&pitch=<?php echo $map_data[$i]['pitch'] ?>&heading=<?php echo $map_data[$i]['heading'] ?>&fov="+fovNum+"&size=260x180";
+									document.getElementById("staticMapImg<?php echo $i ?>").src=staticUrl;
+									</script>
 									</div>
 									</div>
 									<?php if( $map_data[$i]["zoom"] >1){?>
 									<p><br>The map image will be magnified by <?php echo $map_data[$i]["zoom"]?>.</p>
 									<?php } ?>
 									<div class="btn-group">
-									
 									<form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>">
-									<button class="btn" type="button" onclick="document.getElementById('EditOptions<?php echo $i ?>').style.display = 'inline';"}>Edit</button>
+									<button class="btn" type="button" onclick="document.getElementById('EditOptions<?php echo $i ?>').style.display = 'inline';">Edit</button>
 									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button></a></form>
 									</div>
 								</div>
+								
+								
+								<!--Edit Form-->
 								<div id="EditOptions<?php echo $i ?>" class="panel-body" style="display:none">
-								<td><input type="submit" class="getcoordinates" id="getcoords_<?php echo $i ?>" value="Get lat/lng"></td>
+								<!--Copy from add line-->
+														<div class="form-group">
+							<label id="itemlabel" for="itemtitle">Title: </label>
+							<input type="text" class="form-control" id="itemtitle" name="title" value="<?php echo $map_data[$i]["itemtitle"]; ?>" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onchange="validateTitle()">
+							</div>
+							<div class="form-group">
+							<label id="addressLabel" for="getLatLong" style="display:none">Street Address: </label>
+							<input id="autocomplete" class="form-control" name="address" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()"  required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							</div>
+							<button type="button" id="convertAddress" onclick="myFunction()" role="group">Get Lat Long</button>
+							<div class="form-group">
+							<label id="picturetitle" for="getscaled_autocomplete">ContentDM Image Upload: </label>
+							<input type="url" class="form-control" id="picturelocal" placeholder="Please enter a CONTENTdm reference URL" role="group" required>
+							</div>
+							<button type="button" id="sizepic" onclick="cdmpicture()" role="group">Get Picture</button>
+							<!--Hidden LAT & LONG Storage-->
+							<!--<input type="text" class= "form-control" id="latitude_autocomplete" name="lat">
+							<input type="text" class= "form-control" id="longitude_autocomplete" name="long">
+							</div>
+							<!--Form Part 2-->
+							<div id="imagepov">
+							<label id="piclabel"></label><br/>
+							<label id="picaddress"></label><br/>
+							<input id="cdmurl_new" name="cdmurl_new"type="text" value="<?php echo $map_data[$i]["cdmurl"] ?>" required>
+							<input id="identifier_new" name="identifier_new"type="text" value="<?php echo $map_data[$i]["identifier"] ?>" required>
+							<label>Adjust the Google Viewpoint to match the image.</label>
+							<div id="streetwrapper">
+		<div id="panoInfo">
+	  	latitude: <input type="text" id="lat_cell" name="lat_cell" value="<?php echo $map_data[$i]["latitude"] ?>" size="10">, longitude: <input type="text" id="lng_cell" name="lng_cell" value="<?php echo $map_data[$i]["longitude"] ?>" size="10"><br/>
+	  	heading: <input type="text" id="heading_cell" name="heading_cell" value="<?php echo $map_data[$i]["heading"] ?>" size="9">, 
+	  	pitch: <input type="text" id="pitch_cell" name="pitch_cell" size="9"  value="<?php echo $map_data[$i]["pitch"] ?>">, 
+	  	zoom: <input type="text" id="zoom_cell" name="zoom_cell" size="1"  value="<?php echo $map_data[$i]["zoom"] ?>">
+	  </div>
+	  <br/>
+		<div id="panoblock">	
+		  <div id="pano"></div>
+		  <img id="imageview"></img>
+		</div>
+	</div>
+							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
+				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
+							</div>
+								<!--<td><input type="submit" class="getcoordinates" id="getcoords_<?php echo $i ?>" value="Get lat/lng"></td>
 								</div>
-								<div style="display:none"><!--reorg-->
+								<div style="display:none">
 								<tr class="mapdatarow">
 								<td><input type="submit" class="getcoordinates" id="getcoords_<?php echo $i ?>" value="Get lat/lng"></td>
 								<div id="imgmaplocation"style="display:none"<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="latitude" id="latitude_<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>" size="10"></td>
@@ -895,33 +815,16 @@ JSON data).--><br><br>
 								<div id="viewmatch" style="display:none"><td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="heading" id="heading_<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="5"> </td>
 								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="pitch" id="pitch_<?php echo $i ?>" value="<?php echo $map_data[$i]["pitch"] ?>" size="5"> </td>
 								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="zoom" id="zoom_<?php echo $i ?>" value="<?php echo $map_data[$i]["zoom"] ?>" size="2"> </td></div>
-								<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td></tr>
+								<!--End of Edit--->
 								
-								<!--<div id="streetwrapper" style="display:none">
-									<div id="panoInfo">
-									&nbsp;&nbsp;&nbsp;latitude: <input type="text" id="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" size="10">
-									&nbsp;&nbsp;&nbsp;heading: <input type="text" id="heading_cell" size="9">, 
-									pitch: <input type="text" id="pitch_cell" size="9">, 
-									zoom: <input type="text" id="zoom_cell" size="1">
-								  </div>
-								  <br/>
-									<div id="panoblock">	
-									  <div id="pano"></div>
-									  <div id="imageview"></div>
-								  </div>
-								</div>-->								
-							</div><!--reorg-->
-							
+								<!--<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td>--></tr>					
 							</div>
-							
+							</div>
 						</div>
 					</div>
 				
 			<?php	} 
-					#echo '<tr class="info"><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>';
 				} ?>
-			
-	<!--</table>-->
 	</div>
 	<?php if ($map_data_exists) { ?>
 	
@@ -930,36 +833,11 @@ JSON data).--><br><br>
 		<form id="bottomformshow" name="bottomformshow">
 				<input type="hidden" id="bottomshowmap" name="bottomshowmap" value="<?php echo $mapID?>">
 				<button type="submit" class="btn btn-default" id="showsubmit" name="showsubmit" value="Show Map">Show Map</button>
-				<!--<input type="submit" id="showsubmit" name="showsubmit" value="Show Map">-->
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			</form>
-			<form id="bottomformadd" name="bottomformadd" method="POST" action="do_query.php">
-				<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
-				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
-				<!--<input type="submit" name="addline" value="Add Line">-->
-			</form>
-			<form id="bottomformsave" name="bottomformsave">
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="hidden" id="savemap" name="savemap" value="<?php echo $map_data_exists ? $mapID : '' #$mapref : '' ?>">
-				<button type="submit" class="btn btn-default" id="savesubmit" name="savesubmit" value="Save Map Data">Save Map Data</button>&nbsp;&nbsp;<span id="saved"></span>
-				<!--<input type="submit" id="savesubmit" name="savesubmit" value="Save Map Data">&nbsp;&nbsp;<span id="saved"></span>-->
 			</form>
 	</div>
 	<br>
-	<!--<div id="streetwrapper" style="display:none">
-		<div id="panoInfo">
-	  	&nbsp;&nbsp;&nbsp;latitude: <input type="text" id="lat_cell" size="10">, longitude: <input type="text" id="lng_cell" size="10">
-	  	&nbsp;&nbsp;&nbsp;heading: <input type="text" id="heading_cell" size="9">, 
-	  	pitch: <input type="text" id="pitch_cell" size="9">, 
-	  	zoom: <input type="text" id="zoom_cell" size="1">
-	  </div>
-	  <br/>
-		<div id="panoblock">	
-		  <div id="pano"></div>
-		  <div id="imageview"></div>
-	  </div>
-	</div>-->
-	</div><!--container-fluid!-->
+	</div>
 	<?php } ?>
 	
 </body>

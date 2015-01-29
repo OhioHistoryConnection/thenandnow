@@ -42,6 +42,7 @@ if (isset($_GET["getmap"]) || isset($_POST["getmap"])) {
 			}
 			$sql = "INSERT OR REPLACE INTO maprecord (mapid, mapdata) VALUES ('".$mapID."', '".$mapdata."');";
 			$dbh->exec($sql);
+			header('Location: '.$config['THIS_HOST'].'/index.php?getmap='.$mapID);
 		} else if (isset($_POST["savedata"])) {
 			// strips all tags, <script>, html or otherwise. Don't put angle brackets in data...
 			$mapdata = strip_tags($_POST["savedata"]);
