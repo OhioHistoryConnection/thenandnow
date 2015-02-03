@@ -41,12 +41,6 @@ catch(Exception $e){
 }
 // get map data
 if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
-	/*if(isset($_POST['getmap'])){
-		$mapID=$_POST['getmap'];
-	}
-	else if(isset($_GET['getmap'])){
-		$mapID= $_GET['getmap'];
-	}*/
 	$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
 		for ($i = 0; $i < $max; $i++) {
 			if($map_id_json_array[$i]['mapid'] == $mapID){
@@ -64,22 +58,6 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 		echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
 		$map_data_exists = false;
 	}
-	/*if($mapID != null){
-		$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
-		for ($i = 0; $i < $max; $i++) {
-			if($map_id_json_array[$i]['mapid'] == $mapID){
-				$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapID);
-				// send curl with entry data to an sqlite db somewhere
-				$map_data = do_curl($curl_url);
-				$map_data_exists = true;
-				break;
-			}
-			$map_data_exists = false;
-		}
-	}
-	
-}*/
-
 ?>
 	
 <!DOCTYPE html>
