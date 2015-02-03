@@ -41,18 +41,30 @@ catch(Exception $e){
 }
 // get map data
 if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
-	if(isset($_POST['getmap'])){
+	/*if(isset($_POST['getmap'])){
 		$mapID=$_POST['getmap'];
 	}
 	else if(isset($_GET['getmap'])){
 		$mapID= $_GET['getmap'];
+	}*/
+	$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
+		for ($i = 0; $i < $max; $i++) {
+			if($map_id_json_array[$i]['mapid'] == $mapID){
+				$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapID);
+				// send curl with entry data to an sqlite db somewhere
+				$map_data = do_curl($curl_url);
+				$map_data_exists = true;
+				break;
+			}
+			$map_data_exists = false;
+		}
 	}
 	else{
 		$mapID =null;
 		echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
 		$map_data_exists = false;
 	}
-	if($mapID != null){
+	/*if($mapID != null){
 		$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
 		for ($i = 0; $i < $max; $i++) {
 			if($map_id_json_array[$i]['mapid'] == $mapID){
@@ -66,7 +78,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 		}
 	}
 	
-}
+}*/
 
 ?>
 	
@@ -88,59 +100,6 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 <script>
 	var mapname = location.search.replace( '?getmap=', '' );
 	$(document).ready(function() {
-		
-		// for purposes of getting a scaled image from CDM reference URL
-		/*$('.getscaled').click(function() {
-			var recid = $(this).attr("id");
-			var recidno = recid.replace(/.*_(.*)/,"$1");
-			// verify thatURL is in the form: http://[CONTENTdm home]/cdm/ref/collection/[alias]/id/[id]
-			var cdmrefurl = prompt("Please enter a CONTENTdm reference URL","<?php echo($config['CDMURL_PROMPT']) ?>");
-			if (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0) {
-				alert("Need a valid CONTENTdm reference URL");
-				return false;
-			}
-			// get collection alias and id as an array
-			var coll_id = cdmrefurl.replace(/^.*collection\/(.*?)\/id\/(.*).*$/,"$1,$2");
-			var refvals = coll_id.split(",");
-			// use proxy to get image width and height, then scale and fill in
-			$.ajax({
-				type: "POST",
-				data: { coll: refvals[0], ptr: refvals[1], getmap: mapname },
-				url: "do_cdm_curl.php",
-				success: function(xml) {
-					var imgwidth = $(xml).find('width').text();
-					var imgheight = $(xml).find('height').text();
-					var identifier = $(xml).find('identifier').text();
-					var img_size = 340;
-					if (imgwidth > imgheight) { img_size = 400; }
-					var longest_side = (imgwidth > imgheight) ? imgwidth : imgheight;
-					var trimmed_scale = "20";
-					var scale = img_size/longest_side;
-					var targ_w = (imgwidth*scale).toFixed(2);
-					var targ_h = (imgheight*scale).toFixed(2);
-					var formatted_scale = (scale * 100).toFixed(2);
-					if (imgwidth < img_size) { formatted_scale = 100; }
-					var imgPath = "<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=" + refvals[0] + '&CISOPTR=' + refvals[1] + '&action=2&DMSCALE=' + formatted_scale + '&DMWIDTH=' + targ_w + '&DMHEIGHT=' + targ_h + '&DMX=0&DMY=0';
-					$('#cdmurl_' + recidno).attr("value", imgPath);
-					$('#identifier_' + recidno).attr("value", identifier);
-				}
-				
-			});
-			
-		});*/
-		
-		// use Google Geocoder to get latitude and longitude based on an address
-		$('.getcoordinates').click(function() {
-			var recid = $(this).attr("id");
-			var recidno = recid.replace(/.*_(.*)/,"$1");
-			var streetAddress = prompt("Please enter a street address","88 South High Street, Columbus, OH");
-			var mygc = new google.maps.Geocoder();
-			mygc.geocode({'address' : streetAddress}, function(results, status){
-		    $('#latitude_' + recidno).attr("value", results[0].geometry.location.lat());
-		    $('#longitude_' + recidno).attr("value", results[0].geometry.location.lng());
-			});
-		});
-		
 		// creates side by side view for historic image and Google Street View
 		$('.changeRecord').click(function() {
 			
@@ -189,7 +148,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 			// listen for changes to panorama area and update input blank values as needed
 	    google.maps.event.addListener(panorama, 'position_changed', function() {
 	      $('#lat_cell').val(panorama.getPosition().lat().toString());
-	      $('#lng_cell').val(panorama.getPosition().lng().toString());      
+	      $('#lng_cell').val(panorama.getPosition().lng().toString());     
 	    });
 	    google.maps.event.addListener(panorama, 'pov_changed', function() {
 	      $('#heading_cell').val(panorama.getPov().heading);
@@ -198,80 +157,6 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 	    });
 				
 		});
-		
-		// serialize all values and store them somewhere (in this case SQLite)
-		$('#formsave').submit(function(e) {
-			e.preventDefault();
-			if ($('#savemap') == null || $('#savemap').val().length == 0) { 
-				alert("Please enter a map name"); 
-				return false; 
-			}
-			var mapname = $("#savemap").val();
-			var numRows = $(".mapdatarow").length;
-			var mapDataArray = new Array(numRows);
-			for (i = 0; i < numRows; i++) {
-				var mapDataRow = {};
-				mapDataRow.latitude = $('#latitude_' + i).val();
-				mapDataRow.longitude = $('#longitude_' + i).val();
-				mapDataRow.itemtitle = $('#itemtitle_' + i).val();
-				mapDataRow.cdmurl = $('#cdmurl_' + i).val();
-				mapDataRow.identifier = $('#identifier_' + i).val();
-				mapDataRow.heading = $('#heading_' + i).val();
-				mapDataRow.pitch = $('#pitch_' + i).val();
-				mapDataRow.zoom = $('#zoom_' + i).val();
-				mapDataArray[i] = mapDataRow;
-			}
-			
-			var mapDataArrayJSON = JSON.stringify(mapDataArray);
-			
-			var request = $.ajax({
-				type: "POST",
-				data: { getmap: mapname, savedata: mapDataArrayJSON },
-				url: "do_query.php",
-				success: function(data) {
-					$('#saved').html('<b>saved!</b>');
-					setTimeout("$('#saved').empty()",1000);
-				}
-			});
-			
-		});
-		
-		/*$('#bottomformsave').submit(function(e) {
-			e.preventDefault();
-			if ($('#savemap') == null || $('#savemap').val().length == 0) { 
-				alert("Please enter a map name"); 
-				return false; 
-			}
-			var mapname = $("#savemap").val();
-			var numRows = $(".mapdatarow").length;
-			var mapDataArray = new Array(numRows);
-			for (i = 0; i < numRows; i++) {
-				var mapDataRow = {};
-				mapDataRow.latitude = $('#latitude_' + i).val();
-				mapDataRow.longitude = $('#longitude_' + i).val();
-				mapDataRow.itemtitle = $('#itemtitle_' + i).val();
-				mapDataRow.cdmurl = $('#cdmurl_' + i).val();
-				mapDataRow.identifier = $('#identifier_' + i).val();
-				mapDataRow.heading = $('#heading_' + i).val();
-				mapDataRow.pitch = $('#pitch_' + i).val();
-				mapDataRow.zoom = $('#zoom_' + i).val();
-				mapDataArray[i] = mapDataRow;
-			}
-			
-			var mapDataArrayJSON = JSON.stringify(mapDataArray);
-			
-			var request = $.ajax({
-				type: "POST",
-				data: { getmap: mapname, savedata: mapDataArrayJSON },
-				url: "do_query.php",
-				success: function(data) {
-					$('#saved').html('<b>saved!</b>');
-					setTimeout("$('#saved').empty()",1000);
-				}
-			});
-			
-		});*/
-		
 		// set input value on blur
 		$('.mapinput').blur(function() {
 			var setDomVal = $(this).val();
@@ -524,7 +409,7 @@ JSON data).--><br><br>
 					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>						
 						<div class="form-group">
 							<label id="itemlabel" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";' onblur="validateTitle()" autofocus><!--onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";'-->
+							<input type="text" class="form-control" id="itemtitle" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";' onblur="validateTitle()" autofocus>
 							</div>
 							<div class="form-group">
 							<label id="addressLabel" for="getLatLong" style="display:none">Street Address: </label>
@@ -734,7 +619,7 @@ JSON data).--><br><br>
 									  <div id="imagepreview<?php echo $i ?>">
 											<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="260" height="180">
 									
-									  <img id="staticMapImg<?php echo $i ?>" src='https://maps.googleapis.com/maps/api/streetview?location=<?php echo $map_data[$i]["latitude"]?>,<?php echo $map_data[$i]["longitude"]?>&pitch=<?php echo $map_data[$i]["pitch"] ?>&heading=<?php echo $map_data[$i]["heading"] ?>&fov=<?php echo $map_data[$i]["zoom"]?>&size=260x180'>
+									  <img id="staticMapImg<?php echo $i ?>"><!-- src='https://maps.googleapis.com/maps/api/streetview?location=<?php //echo $map_data[$i]["latitude"]?>,<?php// echo $map_data[$i]["longitude"]?>&pitch=<?php //echo $map_data[$i]["pitch"] ?>&heading=<?php //echo $map_data[$i]["heading"] ?>&fov=<?php //echo $map_data[$i]["zoom"]?>&size=260x180'>-->
 									  <script>
 									  //convert zoom to FOV for static map view
 									var zoom = Number(<?php echo $map_data[$i]["zoom"]?>);
@@ -800,24 +685,8 @@ JSON data).--><br><br>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
 				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							</div>
-								<!--<td><input type="submit" class="getcoordinates" id="getcoords_<?php echo $i ?>" value="Get lat/lng"></td>
-								</div>
-								<div style="display:none">
-								<tr class="mapdatarow">
-								<td><input type="submit" class="getcoordinates" id="getcoords_<?php echo $i ?>" value="Get lat/lng"></td>
-								<div id="imgmaplocation"style="display:none"<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="latitude" id="latitude_<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>" size="10"></td>
-								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="longitude" id="longitude_<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>" size="10"> </td>
-								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="itemtitle" id="itemtitle_<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  style="wordwrap:initial; width:20 height:60 px"> </td></div>
-								<td><input type="submit" class="getscaled" id="getscaled_<?php echo $i ?>" value="Scale image"></td>
-								<div id="imgdirpath" style="display:none"><td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="cdmurl" id="cdmurl_<?php echo $i ?>" value="<?php echo $map_data[$i]["cdmurl"] ?>"> </td>
-								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="identifier" id="identifier_<?php echo $i ?>" value="<?php echo $map_data[$i]["identifier"] ?>"> </td></div>
-								<td><input type="submit" class="changeRecord" id="change_<?php echo $i ?>" value="Set orientation"></td>
-								<div id="viewmatch" style="display:none"><td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="heading" id="heading_<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="5"> </td>
-								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="pitch" id="pitch_<?php echo $i ?>" value="<?php echo $map_data[$i]["pitch"] ?>" size="5"> </td>
-								<td><input title="Map Record <?php echo $i ?>" class="mapinput" type="text" name="zoom" id="zoom_<?php echo $i ?>" value="<?php echo $map_data[$i]["zoom"] ?>" size="2"> </td></div>
-								<!--End of Edit--->
-								
-								<!--<td><form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>"><input type="submit" name="deldata" value="Delete"></a></form></td>--></tr>					
+							<!--End of Edit--->
+							</tr>					
 							</div>
 							</div>
 						</div>
