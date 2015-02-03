@@ -624,16 +624,16 @@ JSON data).--><br><br>
 								<!--Copy from add line-->
 														<div class="form-group">
 							<label id="itemlabel" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle" name="title" value="<?php echo $map_data[$i]["itemtitle"]; ?>" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onchange="validateTitle()">
+							<input type="text" class="form-control" id="itemtitle" name="title" value="<?php echo $map_data[$i]["itemtitle"]; ?>" required pattern="a-zA-Z\ \" onchange="validateTitle()">
 							</div>
 							<div class="form-group">
-							<label id="addressLabel" for="getLatLong" style="display:none">Street Address: </label>
-							<input id="autocomplete" class="form-control" name="address" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()"  required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							<label id="addressLabel" for="getLatLong">Street Address: </label>
+							<input id="autocomplete" class="form-control" name="address" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate()"  required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
 							<button type="button" id="convertAddress" onclick="myFunction()" role="group">Get Lat Long</button>
 							<div class="form-group">
 							<label id="picturetitle" for="getscaled_autocomplete">ContentDM Image Upload: </label>
-							<input type="url" class="form-control" id="picturelocal" placeholder="Please enter a CONTENTdm reference URL" role="group" required>
+							<input type="url" class="form-control" id="picturelocal" placeholder="New CDM URL if image needs changed" role="group" required>
 							</div>
 							<button type="button" id="sizepic" onclick="cdmpicture()" role="group">Get Picture</button>
 							<!--Hidden LAT & LONG Storage-->
@@ -641,11 +641,11 @@ JSON data).--><br><br>
 							<input type="text" class= "form-control" id="longitude_autocomplete" name="long">
 							</div>
 							<!--Form Part 2-->
-							<div id="imagepov">
+							<!--<div id="imagepov">
 							<label id="piclabel"></label><br/>
 							<label id="picaddress"></label><br/>
-							<input id="cdmurl_new" name="cdmurl_new"type="text" value="<?php echo $map_data[$i]["cdmurl"] ?>" required>
-							<input id="identifier_new" name="identifier_new"type="text" value="<?php echo $map_data[$i]["identifier"] ?>" required>
+							<input id="cdmurl_new" name="cdmurl_new"type="text" value="<?php echo $map_data[$i]["cdmurl"] ?>" style="display:none;" required>
+							<input id="identifier_new" name="identifier_new"type="text" value="<?php echo $map_data[$i]["identifier"] ?>" style="display:none;" required>
 							<label>Adjust the Google Viewpoint to match the image.</label>
 							<div id="streetwrapper">
 		<div id="panoInfo">
@@ -662,7 +662,7 @@ JSON data).--><br><br>
 	</div>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
 				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
-							</div>
+							</div>-->
 							<!--End of Edit--->
 							</tr>					
 							</div>
