@@ -55,7 +55,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 	}
 	else{
 		$mapID =null;
-		echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
+		//echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
 		$map_data_exists = false;
 	}
 ?>
@@ -65,6 +65,119 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 <head>
 <meta charset="utf-8">
 <title>Get Street View data</title>
+<!--For Load Performance-->
+<style type="text/css">
+body { 
+	font-family: Arial, Verdana, Geneva;
+	font-size: 90%; 
+	background-image:url(img/1-1249480650QT9U.jpg);
+	/* picture src: http://www.publicdomainpictures.net/view-image.php?image=3560&picture=paper-background&large=1 */
+	background-color: #cccccc;
+}
+.mapinput {
+	font-size: 80%;
+}
+.title {
+	text-align:center;
+	padding: 10px;
+}
+th {
+	font-size: 90%;
+}
+
+#formgetmap b{
+	font-size: 230%;
+	background: default;
+}
+
+<?php if ($map_data_exists) { ?>
+	#formgetmap{
+		font-size: 100%;
+		display: inline-block;
+		margin-top: 0;
+		background:inherit;
+		padding: 0 3em;
+		border: none;
+	}
+	#formgetmap b{
+		text-decoration: none;
+	}
+	#intro{
+		display: none;
+	}
+<?php } else{ ?>
+#formgetmap { 
+  display: inline-block;
+  font-size: 140%;
+  margin-top: 10em;
+  background: #F8F8F8;
+  border: solid;
+  padding: 6em;
+}
+<!--#formgetmap b{
+	font-size: 230%;
+	background: default;
+}-->
+<?php } ?>
+#formshow {
+	display: inline-block;
+}
+#formadd { 
+  display: inline-block;
+}
+#formsave {
+	display: inline-block;
+}
+#bottomformshow {
+	display: inline-block;
+}
+#bottomformadd { 
+  display: inline-block;
+}
+#bottomformsave {
+	display: inline-block;
+}
+
+#streetwrapper {
+	/*float:left;*/
+	width:100%;
+	height:500px;
+	text-align: center;
+}
+#panoInfo {
+	/*width: 420px;*/ 
+	/*height: 370px;*/
+	/*float:left;*/
+}
+#panoblock {
+	height: 420px;
+	width:900px;
+	margin-left:auto;
+	margin-right:auto;
+	/*display: inline;*/
+}
+#pano {
+	width: 420px; 
+	height: 370px;
+	padding:10px;
+	/*margin-right: -800px;*/
+	float:left;
+	display: inline-block;
+}
+#imageview {
+	padding:10px;
+	width: 420px; 
+	height: 370px;
+	float:left;
+	display: inline;
+	/*display: inline-block;*/
+}
+th {
+	text-align: left;
+}
+</style>
+<link media="ALL" rel="stylesheet" type="text/css" href="css/bootstrap.css"></link>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <!--Google autocomplete-->
@@ -72,9 +185,6 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json2/20130526/json2.min.js"></script>
 <script type="text/javascript" src="js/jquery-1.11.1.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
-<!--<script type="text/css" src="css/bootstrap.css"></script>-->
-
-
 <script>
 	var mapname = location.search.replace( '?getmap=', '' );
 	$(document).ready(function() {
@@ -215,95 +325,6 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 	}
 	// [END region_geolocation]
 </script>
-<style type="text/css">
-body { 
-	font-family: Arial, Verdana, Geneva;
-	font-size: 90%; 
-	background-image:url(img/1-1249480650QT9U.jpg);
-	/* picture src: http://www.publicdomainpictures.net/view-image.php?image=3560&picture=paper-background&large=1 */
-	background-color: #cccccc;
-}
-.mapinput {
-	font-size: 80%;
-}
-.title {
-	text-align:center;
-	padding: 10px;
-}
-th {
-	font-size: 90%;
-}
-#formgetmap { 
-  display: inline-block;
-  font-size: 140%;
-  margin-top: 10em;
-  background: #F8F8F8;
-  border: solid;
-  padding: 6em;
-}
-#formgetmap b{
-	font-size: 230%;
-	background: default;
-}
-#formshow {
-	display: inline-block;
-}
-#formadd { 
-  display: inline-block;
-}
-#formsave {
-	display: inline-block;
-}
-#bottomformshow {
-	display: inline-block;
-}
-#bottomformadd { 
-  display: inline-block;
-}
-#bottomformsave {
-	display: inline-block;
-}
-
-#streetwrapper {
-	/*float:left;*/
-	width:100%;
-	height:500px;
-	text-align: center;
-}
-#panoInfo {
-	/*width: 420px;*/ 
-	/*height: 370px;*/
-	/*float:left;*/
-}
-#panoblock {
-	height: 420px;
-	width:900px;
-	margin-left:auto;
-	margin-right:auto;
-	/*display: inline;*/
-}
-#pano {
-	width: 420px; 
-	height: 370px;
-	padding:10px;
-	/*margin-right: -800px;*/
-	float:left;
-	display: inline-block;
-}
-#imageview {
-	padding:10px;
-	width: 420px; 
-	height: 370px;
-	float:left;
-	display: inline;
-	/*display: inline-block;*/
-}
-th {
-	text-align: left;
-}
-</style>
-<link media="ALL" rel="stylesheet" type="text/css" href="css/bootstrap.css"></link>
-
 </head>
 <body onload="initialize()">
 	<div class = "container-fluid"><!--bootstrap!-->
@@ -341,26 +362,8 @@ JSON data).--><br><br>
 			</div>
 		</form>
 	</div><br><br>
-				<?php 
+				<?php
 				if ($map_data_exists) { ?>
-										
-					<style>
-						#formgetmap{
-							font-size: 100%;
-							display: inline-block;
-							margin-top: 0;
-							background:inherit;
-							padding: 0 3em;
-							border: none;
-						}
-						#formgetmap b{
-						text-decoration: none;
-						}
-						#intro{
-							display: none;
-						}
-						
-					</style>
 					<div class="title">
 						<form id="formshow" name="formshow">
 							<input type="hidden" id="showmap" name="showmap" value="<?php echo $mapID?>">
