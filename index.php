@@ -114,10 +114,6 @@ th {
   border: solid;
   padding: 6em;
 }
-<!--#formgetmap b{
-	font-size: 230%;
-	background: default;
-}-->
 <?php } ?>
 #formshow {
 	display: inline-block;
@@ -137,7 +133,9 @@ th {
 #bottomformsave {
 	display: inline-block;
 }
-
+.staticMapImg{
+width:260px; height:180px;
+}
 #streetwrapper {
 	/*float:left;*/
 	width:100%;
@@ -178,10 +176,13 @@ th {
 </style>
 <link media="ALL" rel="stylesheet" type="text/css" href="css/bootstrap.css"></link>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<?php if ($map_data_exists) { ?>
 <!--Google autocomplete-->
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<?php } ?>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json2/20130526/json2.min.js"></script>
 <script type="text/javascript" src="js/jquery-1.11.1.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
@@ -362,8 +363,7 @@ JSON data).--><br><br>
 			</div>
 		</form>
 	</div><br><br>
-				<?php
-				if ($map_data_exists) { ?>
+				<?php if ($map_data_exists) { ?>
 					<div class="title">
 						<form id="formshow" name="formshow">
 							<input type="hidden" id="showmap" name="showmap" value="<?php echo $mapID?>">
@@ -600,7 +600,7 @@ JSON data).--><br><br>
 									  <div id="imagepreview<?php echo $i ?>">
 											<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="260" height="180">
 									
-									  <img id="staticMapImg<?php echo $i ?>"><!-- src='https://maps.googleapis.com/maps/api/streetview?location=<?php //echo $map_data[$i]["latitude"]?>,<?php// echo $map_data[$i]["longitude"]?>&pitch=<?php //echo $map_data[$i]["pitch"] ?>&heading=<?php //echo $map_data[$i]["heading"] ?>&fov=<?php //echo $map_data[$i]["zoom"]?>&size=260x180'>-->
+									  <img class="staticMapImg" id="staticMapImg<?php echo $i ?>"><!-- src='https://maps.googleapis.com/maps/api/streetview?location=<?php //echo $map_data[$i]["latitude"]?>,<?php// echo $map_data[$i]["longitude"]?>&pitch=<?php //echo $map_data[$i]["pitch"] ?>&heading=<?php //echo $map_data[$i]["heading"] ?>&fov=<?php //echo $map_data[$i]["zoom"]?>&size=260x180'>-->
 									  <script>
 									  //convert zoom to FOV for static map view
 									var zoom = Number(<?php echo $map_data[$i]["zoom"]?>);
@@ -676,13 +676,13 @@ JSON data).--><br><br>
 			<?php	} 
 				} ?>
 	</div>
-	<?php if ($map_data_exists) { ?>
+	<?php if ($map_data_exists && ($max > 4)) { ?>
 	
 	<hr/>
 	<div class="title">
 		<form id="bottomformshow" name="bottomformshow">
 				<input type="hidden" id="bottomshowmap" name="bottomshowmap" value="<?php echo $mapID?>">
-				<button type="submit" class="btn btn-default" id="showsubmit" name="showsubmit" value="Show Map">Show Map</button>
+				<button type="submit" class="btn btn-default" id="showsubmit" name="showsubmit" value="<?php echo $mapID?>">Show <?php echo ucfirst($mapID)?> Map</button>
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</form>
 	</div>
