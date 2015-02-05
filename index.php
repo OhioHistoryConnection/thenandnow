@@ -66,6 +66,7 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 <meta charset="utf-8">
 <title>Get Street View data</title>
 <!--For Load Performance-->
+<link media="ALL" rel="stylesheet" type="text/css" href="css/bootstrap.css"></link>
 <style type="text/css">
 body { 
 	font-family: Arial, Verdana, Geneva;
@@ -81,15 +82,20 @@ body {
 	text-align:center;
 	padding: 10px;
 }
-th {
-	font-size: 90%;
-}
-
 #formgetmap b{
 	font-size: 230%;
 	background: default;
 }
-
+<?php if ($map_data_exists == false) { ?>
+#formgetmap { 
+  display: inline-block;
+  font-size: 140%;
+  margin-top: 10em;
+  background: #F8F8F8;
+  border: solid;
+  padding: 6em;
+}
+<?php } ?>
 <?php if ($map_data_exists) { ?>
 	#formgetmap{
 		font-size: 100%;
@@ -105,32 +111,14 @@ th {
 	#intro{
 		display: none;
 	}
-<?php } else{ ?>
-#formgetmap { 
-  display: inline-block;
-  font-size: 140%;
-  margin-top: 10em;
-  background: #F8F8F8;
-  border: solid;
-  padding: 6em;
-}
-<?php } ?>
+
 #formshow {
 	display: inline-block;
 }
 #formadd { 
   display: inline-block;
 }
-#formsave {
-	display: inline-block;
-}
 #bottomformshow {
-	display: inline-block;
-}
-#bottomformadd { 
-  display: inline-block;
-}
-#bottomformsave {
 	display: inline-block;
 }
 .staticMapImg{
@@ -141,11 +129,6 @@ width:260px; height:180px;
 	width:100%;
 	height:500px;
 	text-align: center;
-}
-#panoInfo {
-	/*width: 420px;*/ 
-	/*height: 370px;*/
-	/*float:left;*/
 }
 #panoblock {
 	height: 420px;
@@ -163,26 +146,16 @@ width:260px; height:180px;
 	display: inline-block;
 }
 #imageview {
-	padding:10px;
+	border:10px;
 	width: 420px; 
 	height: 370px;
+	color: #7C7C68;
 	float:left;
 	display: inline;
 	/*display: inline-block;*/
 }
-th {
-	text-align: left;
-}
-</style>
-<link media="ALL" rel="stylesheet" type="text/css" href="css/bootstrap.css"></link>
-
-<?php if ($map_data_exists) { ?>
-<!--Google autocomplete-->
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <?php } ?>
+</style>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json2/20130526/json2.min.js"></script>
 <script type="text/javascript" src="js/jquery-1.11.1.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
@@ -307,7 +280,6 @@ th {
 		  /** @type {HTMLInputElement}*/ (document.getElementById('autocomplete')),
 		  { types: ['geocode'] });
 	}
-
 	// [START region_geolocation]
 	// Bias the autocomplete object to the user's geographical location,
 	// as supplied by the browser's 'navigator.geolocation' object.
@@ -325,7 +297,157 @@ th {
 	  }
 	}
 	// [END region_geolocation]
+
+	function resetImage(){
+		document.getElementById("itemlabel").innerHTML = "Title: ";
+		document.getElementById("itemlabel").style.color='black';
+		document.getElementById("itemtitle").focus();
+		document.getElementById("addressLabel").style.display="none"; document.getElementById("autocomplete").style.display="none";
+		document.getElementById("convertAddress").style.display="none";
+		document.getElementById("picturetitle").style.display="none";
+		document.getElementById("picturelocal").style.display="none";
+		document.getElementById("sizepic").style.display="none";
+		document.getElementById("imagepov").style.display="none";
+	}
+	//copied from 138
+	function validateTitle(){
+		var title = $("#itemtitle").val();
+		var titlepresent = Boolean(title);
+		if(titlepresent == false){
+			document.getElementById("itemlabel").innerHTML = "A Picture Title is Required";
+			document.getElementById("itemlabel").style.color='red';						
+			document.getElementById("itemtitle").focus();
+		}
+		else{
+			document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("autocomplete").focus(); document.getElementById("convertAddress").style.display="inline";
+			document.getElementById("itemlabel").innerHTML = "Title: ";
+			document.getElementById("itemlabel").style.color='black';
+		}
+	}
+				
+	function validateAddress(){
+		var streetAddress= $("#autocomplete").val();
+		var x = Boolean(streetAddress);
+		if( (x == false) || (streetAddress.length <3)){
+			document.getElementById("addressLabel").innerHTML = "Complete Postal Address is Required";
+			document.getElementById("addressLabel").style.color='red';						
+			document.getElementById("autocomplete").focus();
+		}
+		else{
+			var mygc = new google.maps.Geocoder();
+			mygc.geocode({'address' : streetAddress }, function(results, status){
+				$('#latitude_autocomplete').attr("value", results[0].geometry.location.lat());
+				$('#longitude_autocomplete').attr("value", results[0].geometry.location.lng());
+				$('#lat_cell').attr("value", results[0].geometry.location.lat());
+				$('#lng_cell').attr("value", results[0].geometry.location.lng());	
+			});
+			if(document.getElementById("addressLabel").style.color ==  'red'){
+				document.getElementById("addressLabel").innerHTML = "Street Address:";
+				document.getElementById("addressLabel").style.color='black';
+			}
+			document.getElementById("picturetitle").style.display="inline";
+			document.getElementById("picturelocal").style.display="inline";
+			document.getElementById("sizepic").style.display="inline";
+			document.getElementById("convertAddress").style.display="none";
+			document.getElementById("picturelocal").focus();
+			//validateTitle();
+		}
+	}
+				
+	// for purposes of getting a scaled image from CDM reference URL
+	function cdmpicture(){
+		// verify thatURL is in the form: http://[CONTENTdm home]/cdm/ref/collection/[alias]/id/[id]
+		cdmrefurl = $("#picturelocal").val();
+		if ((Boolean(cdmrefurl) == false) || (cdmrefurl.length < 12) || (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0)){
+			//alert(cdmrefurl);
+			document.getElementById("picturetitle").innerHTML = "Need a valid CONTENTdm reference URL";
+			document.getElementById("picturetitle").style.color='red';
+			document.getElementById("picturelocal").value=null;
+			document.getElementById("picturelocal").focus();
+		}
+		else{
+			// get collection alias and id as an array
+			var coll_id = cdmrefurl.replace(/^.*collection\/(.*?)\/id\/(.*).*$/,"$1,$2");
+			var refvals = coll_id.split(",");
+			// use proxy to get image width and height, then scale and fill in
+			$.ajax({
+				type: "POST",
+				data: { coll: refvals[0], ptr: refvals[1], getmap: mapname },
+				url: "do_cdm_curl.php",
+				success: function(xml) {
+					var imgwidth = $(xml).find('width').text();
+					var imgheight = $(xml).find('height').text();
+					var identifier = $(xml).find('identifier').text();
+					var img_size = 340;
+					if (imgwidth > imgheight) { img_size = 400; }
+					var longest_side = (imgwidth > imgheight) ? imgwidth : imgheight;
+					var trimmed_scale = "20";
+					var scale = img_size/longest_side;
+					var targ_w = (imgwidth*scale).toFixed(2);
+					var targ_h = (imgheight*scale).toFixed(2);
+					var formatted_scale = (scale * 100).toFixed(2);
+					if (imgwidth < img_size) { formatted_scale = 100; }
+					var imgPath = "<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=" + refvals[0] + '&CISOPTR=' + refvals[1] + '&action=2&DMSCALE=' + formatted_scale + '&DMWIDTH=' + targ_w + '&DMHEIGHT=' + targ_h + '&DMX=0&DMY=0';
+					$('#cdmurl_new').attr("value", imgPath);
+					$('#identifier_new').attr("value", identifier);
+					//alert(imgPath);
+					while( $("#cdmurl_new").length < 1){}
+					imagestudio(imgPath);
+				}				
+			});
+			document.getElementById("titleStreet").style.display="none";
+			document.getElementById("imagepov").style.display="inline";
+			document.getElementById("piclabel").innerHTML=$("#itemtitle").val();
+			document.getElementById("picaddress").innerHTML=$("#autocomplete").val(); 
+			while( $("#cdmurl_new").length < 1){}
+		}	
+	}
+	function imagestudio(picSource){
+		$('#pano').empty();
+		$('#imageview').empty();
+		var lat = $("#latitude_autocomplete").val();
+		var lon = $("#longitude_autocomplete").val();
+		if (!parseInt(lat) || !parseInt(lon)) {
+			alert("Need both a latitude and longitude");
+			return false;
+		}
+		var povHead = 0;
+		var povPitch = 0;
+		var povZoom = 0;
+		$('#streetwrapper').show();
+		var thumbImg = $('<img />', {
+			src: picSource
+		});
+		document.getElementById('imageview').src=picSource;
+		var mapPos = new google.maps.LatLng(lat,lon);
+		var panoramaOptions = {
+			position: mapPos,
+			pov: {
+				heading: povHead,
+				pitch: povPitch,
+				zoom: povZoom
+			},
+			visible: true
+		};
+		var panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), panoramaOptions);
+		// listen for changes to panorama area and update input blank values as needed
+		google.maps.event.addListener(panorama, 'position_changed', function() {
+			$('#lat_cell').val(panorama.getPosition().lat().toString());
+			$('#lng_cell').val(panorama.getPosition().lng().toString());      
+		});
+		google.maps.event.addListener(panorama, 'pov_changed', function() {
+			$('#heading_cell').val(panorama.getPov().heading);
+			$('#pitch_cell').val(panorama.getPov().pitch);
+			$('#zoom_cell').val(panorama.getPov().zoom);
+		});
+	}	
 </script>
+<?php if ($map_data_exists) { ?>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<!--Google autocomplete-->
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+<?php } ?>
 </head>
 <body onload="initialize()">
 	<div class = "container-fluid"><!--bootstrap!-->
@@ -430,152 +552,6 @@ JSON data).--><br><br>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
 				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							</div>
-							<script>
-				function resetImage(){
-				document.getElementById("itemlabel").innerHTML = "Title: ";
-				document.getElementById("itemlabel").style.color='black';
-				document.getElementById("itemtitle").focus();
-				document.getElementById("addressLabel").style.display="none"; document.getElementById("autocomplete").style.display="none";
-				document.getElementById("convertAddress").style.display="none";
-				document.getElementById("picturetitle").style.display="none";
-				document.getElementById("picturelocal").style.display="none";
-				document.getElementById("sizepic").style.display="none";
-				document.getElementById("imagepov").style.display="none";
-				}
-							//copied from 138
-				function validateTitle(){
-					var title = $("#itemtitle").val();
-					var titlepresent = Boolean(title);
-					if(titlepresent == false){
-						document.getElementById("itemlabel").innerHTML = "A Picture Title is Required";
-						document.getElementById("itemlabel").style.color='red';						
-						document.getElementById("itemtitle").focus();
-						}
-					else{
-					document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("autocomplete").focus(); document.getElementById("convertAddress").style.display="inline";
-					document.getElementById("itemlabel").innerHTML = "Title: ";
-					document.getElementById("itemlabel").style.color='black';}
-				}
-				
-				function validateAddress(){
-					var streetAddress= $("#autocomplete").val();
-					var x = Boolean(streetAddress);
-					if( (x == false) || (streetAddress.length <3)){
-						document.getElementById("addressLabel").innerHTML = "Complete Postal Address is Required";
-						document.getElementById("addressLabel").style.color='red';						
-						document.getElementById("autocomplete").focus();}
-					else{
-						var mygc = new google.maps.Geocoder();
-						mygc.geocode({'address' : streetAddress }, function(results, status){
-						$('#latitude_autocomplete').attr("value", results[0].geometry.location.lat());
-						$('#longitude_autocomplete').attr("value", results[0].geometry.location.lng());
-						$('#lat_cell').attr("value", results[0].geometry.location.lat());
-						$('#lng_cell').attr("value", results[0].geometry.location.lng());	
-						});
-						if(document.getElementById("addressLabel").style.color ==  'red'){
-						document.getElementById("addressLabel").innerHTML = "Street Address:";
-						document.getElementById("addressLabel").style.color='black';}
-						document.getElementById("picturetitle").style.display="inline";
-						document.getElementById("picturelocal").style.display="inline";
-						document.getElementById("sizepic").style.display="inline";
-						document.getElementById("convertAddress").style.display="none";
-						document.getElementById("picturelocal").focus();
-						//validateTitle();
-						}
-				}
-				
-		// for purposes of getting a scaled image from CDM reference URL
-		function cdmpicture(){
-			// verify thatURL is in the form: http://[CONTENTdm home]/cdm/ref/collection/[alias]/id/[id]
-			cdmrefurl = $("#picturelocal").val();
-			if ((Boolean(cdmrefurl) == false) || (cdmrefurl.length < 12) || (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0)){
-				//alert(cdmrefurl);
-				document.getElementById("picturetitle").innerHTML = "Need a valid CONTENTdm reference URL";
-				document.getElementById("picturetitle").style.color='red';
-				document.getElementById("picturelocal").value=null;
-				document.getElementById("picturelocal").focus();
-			}
-			else{
-			// get collection alias and id as an array
-			var coll_id = cdmrefurl.replace(/^.*collection\/(.*?)\/id\/(.*).*$/,"$1,$2");
-			var refvals = coll_id.split(",");
-			// use proxy to get image width and height, then scale and fill in
-			$.ajax({
-				type: "POST",
-				data: { coll: refvals[0], ptr: refvals[1], getmap: mapname },
-				url: "do_cdm_curl.php",
-				success: function(xml) {
-					var imgwidth = $(xml).find('width').text();
-					var imgheight = $(xml).find('height').text();
-					var identifier = $(xml).find('identifier').text();
-					var img_size = 340;
-					if (imgwidth > imgheight) { img_size = 400; }
-					var longest_side = (imgwidth > imgheight) ? imgwidth : imgheight;
-					var trimmed_scale = "20";
-					var scale = img_size/longest_side;
-					var targ_w = (imgwidth*scale).toFixed(2);
-					var targ_h = (imgheight*scale).toFixed(2);
-					var formatted_scale = (scale * 100).toFixed(2);
-					if (imgwidth < img_size) { formatted_scale = 100; }
-					var imgPath = "<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=" + refvals[0] + '&CISOPTR=' + refvals[1] + '&action=2&DMSCALE=' + formatted_scale + '&DMWIDTH=' + targ_w + '&DMHEIGHT=' + targ_h + '&DMX=0&DMY=0';
-					$('#cdmurl_new').attr("value", imgPath);
-					$('#identifier_new').attr("value", identifier);
-					//alert(imgPath);
-					while( $("#cdmurl_new").length < 1){}
-					imagestudio(imgPath);
-				}				
-			});
-			document.getElementById("titleStreet").style.display="none";
-			document.getElementById("imagepov").style.display="inline";
-			document.getElementById("piclabel").innerHTML=$("#itemtitle").val();
-			document.getElementById("picaddress").innerHTML=$("#autocomplete").val(); 
-			while( $("#cdmurl_new").length < 1){}
-		}	
-		}
-		function imagestudio(picSource){
-			$('#pano').empty();
-				$('#imageview').empty();
-				var lat = $("#latitude_autocomplete").val();
-				var lon = $("#longitude_autocomplete").val();
-
-				if (!parseInt(lat) || !parseInt(lon)) {
-					alert("Need both a latitude and longitude");
-					return false;
-				}
-				
-				var povHead = 0;
-				var povPitch = 0;
-				var povZoom = 0;
-				
-				$('#streetwrapper').show();
-		  var thumbImg = $('<img />', {
-			src: picSource
-		  });
-		  document.getElementById('imageview').src=picSource;
-				var mapPos = new google.maps.LatLng(lat,lon);
-				var panoramaOptions = {
-			  position: mapPos,
-			  pov: {
-				heading: povHead,
-				pitch: povPitch,
-				zoom: povZoom
-			  },
-			  visible: true
-			};
-			var panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), panoramaOptions);
-				
-				// listen for changes to panorama area and update input blank values as needed
-			google.maps.event.addListener(panorama, 'position_changed', function() {
-			  $('#lat_cell').val(panorama.getPosition().lat().toString());
-			  $('#lng_cell').val(panorama.getPosition().lng().toString());      
-			});
-			google.maps.event.addListener(panorama, 'pov_changed', function() {
-			  $('#heading_cell').val(panorama.getPov().heading);
-			  $('#pitch_cell').val(panorama.getPov().pitch);
-			  $('#zoom_cell').val(panorama.getPov().zoom);
-			});
-		}
-</script>
 	<input type="reset">
 						</form>
 						</div>
@@ -601,22 +577,19 @@ JSON data).--><br><br>
 											<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="260" height="180">
 									
 									  <img class="staticMapImg" id="staticMapImg<?php echo $i ?>"><!-- src='https://maps.googleapis.com/maps/api/streetview?location=<?php //echo $map_data[$i]["latitude"]?>,<?php// echo $map_data[$i]["longitude"]?>&pitch=<?php //echo $map_data[$i]["pitch"] ?>&heading=<?php //echo $map_data[$i]["heading"] ?>&fov=<?php //echo $map_data[$i]["zoom"]?>&size=260x180'>-->
-									  <script>
-									  //convert zoom to FOV for static map view
-									var zoom = Number(<?php echo $map_data[$i]["zoom"]?>);
-									var fovNum = Math.min(Math.max((Math.round(3.9018*Math.pow(zoom,2) - 42.432*zoom + 123)),10),120);
-									//fov=fovNum.toString();
-									var staticUrl = "https://maps.googleapis.com/maps/api/streetview?location=<?php echo $map_data[$i]['latitude']?>,<?php echo $map_data[$i]['longitude']?>&pitch=<?php echo $map_data[$i]['pitch'] ?>&heading=<?php echo $map_data[$i]['heading'] ?>&fov="+fovNum+"&size=260x180";
-									document.getElementById("staticMapImg<?php echo $i ?>").src=staticUrl;
-									</script>
+<script>
+	//convert zoom to FOV for static map view
+	var zoom = Number(<?php echo $map_data[$i]["zoom"]?>);
+	var fovNum = Math.min(Math.max((Math.round(3.9018*Math.pow(zoom,2) - 42.432*zoom + 123)),10),120);
+	//fov=fovNum.toString();
+	var staticUrl = "https://maps.googleapis.com/maps/api/streetview?location=<?php echo $map_data[$i]['latitude']?>,<?php echo $map_data[$i]['longitude']?>&pitch=<?php echo $map_data[$i]['pitch'] ?>&heading=<?php echo $map_data[$i]['heading'] ?>&fov="+fovNum+"&size=260x180";
+	document.getElementById("staticMapImg<?php echo $i ?>").src=staticUrl;
+</script>
 									</div>
 									</div>
-									<?php if( $map_data[$i]["zoom"] >1){?>
-									<p><br>The map image will be magnified by <?php echo $map_data[$i]["zoom"]?>.</p>
-									<?php } ?>
 									<div class="btn-group">
 									<form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>">
-									<button class="btn" type="button" onclick="document.getElementById('EditOptions<?php echo $i ?>').style.display = 'inline';">Edit</button>
+									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline';">Edit</button>
 									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button></a></form>
 									</div>
 								</div>
@@ -624,6 +597,7 @@ JSON data).--><br><br>
 								
 								<!--Edit Form-->
 								<div id="EditOptions<?php echo $i ?>" class="panel-body" style="display:none">
+								
 								<!--Copy from add line-->
 														<div class="form-group">
 							<label id="itemlabel" for="itemtitle">Title: </label>
@@ -641,33 +615,33 @@ JSON data).--><br><br>
 							<button type="button" id="sizepic" onclick="cdmpicture()" role="group">Get Picture</button>
 							<!--Hidden LAT & LONG Storage-->
 							<!--<input type="text" class= "form-control" id="latitude_autocomplete" name="lat">
-							<input type="text" class= "form-control" id="longitude_autocomplete" name="long">
+							<input type="text" class= "form-control" id="longitude_autocomplete" name="long">-->
 							</div>
 							<!--Form Part 2-->
-							<!--<div id="imagepov">
-							<label id="piclabel"></label><br/>
-							<label id="picaddress"></label><br/>
-							<input id="cdmurl_new" name="cdmurl_new"type="text" value="<?php echo $map_data[$i]["cdmurl"] ?>" style="display:none;" required>
-							<input id="identifier_new" name="identifier_new"type="text" value="<?php echo $map_data[$i]["identifier"] ?>" style="display:none;" required>
+							<div id="imagepov<?php echo $i ?>" style="display:none;">
+							<label id="piclabel<?php echo $i ?>"></label><br/>
+							<label id="picaddress<?php echo $i ?>"></label><br/>
+							<input id="cdmurl_<?php echo $i ?>" name="cdmurl_<?php echo $i ?>"type="text" value="<?php echo $map_data[$i]["cdmurl"] ?>" style="display:none;" required>
+							<input id="identifier_<?php echo $i ?>" name="identifier_<?php echo $i ?>"type="text" value="<?php echo $map_data[$i]["identifier"] ?>" style="display:none;" required>
 							<label>Adjust the Google Viewpoint to match the image.</label>
-							<div id="streetwrapper">
-		<div id="panoInfo">
-	  	latitude: <input type="text" id="lat_cell" name="lat_cell" value="<?php echo $map_data[$i]["latitude"] ?>" size="10">, longitude: <input type="text" id="lng_cell" name="lng_cell" value="<?php echo $map_data[$i]["longitude"] ?>" size="10"><br/>
-	  	heading: <input type="text" id="heading_cell" name="heading_cell" value="<?php echo $map_data[$i]["heading"] ?>" size="9">, 
-	  	pitch: <input type="text" id="pitch_cell" name="pitch_cell" size="9"  value="<?php echo $map_data[$i]["pitch"] ?>">, 
-	  	zoom: <input type="text" id="zoom_cell" name="zoom_cell" size="1"  value="<?php echo $map_data[$i]["zoom"] ?>">
+							<div id="streetwrapper<?php echo $i ?>">
+		<div id="panoInfo<?php echo $i ?>">
+	  	latitude: <input type="text" id="lat_cell<?php echo $i ?>" name="lat_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>" size="10">, longitude: <input type="text" id="lng_cell<?php echo $i ?>" name="lng_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>" size="10"><br/>
+	  	heading: <input type="text" id="heading_cell<?php echo $i ?>" name="heading_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="9">, 
+	  	pitch: <input type="text" id="pitch_cell<?php echo $i ?>" name="pitch_cell<?php echo $i ?>" size="9"  value="<?php echo $map_data[$i]["pitch"] ?>">, 
+	  	zoom: <input type="text" id="zoom_cell<?php echo $i ?>" name="zoom_cell<?php echo $i ?>" size="1"  value="<?php echo $map_data[$i]["zoom"] ?>">
 	  </div>
 	  <br/>
-		<div id="panoblock">	
-		  <div id="pano"></div>
-		  <img id="imageview"></img>
+		<div id="panoblock<?php echo $i ?>">	
+		  <div id="pano<?php echo $i ?>"></div>
+		  <img id="imageview<?php echo $i ?>"></img>
 		</div>
 	</div>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
 				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
-							</div>-->
+							</div>
 							<!--End of Edit--->
-							</tr>					
+							<!--</tr>					-->
 							</div>
 							</div>
 						</div>
@@ -692,5 +666,3 @@ JSON data).--><br><br>
 	
 </body>
 </html>
-
-
