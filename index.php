@@ -48,6 +48,8 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 				// send curl with entry data to an sqlite db somewhere
 				$map_data = do_curl($curl_url);
 				$map_data_exists = true;
+				//number of images in city map db
+				$maxImages = count($map_data);
 				break;
 			}
 			$map_data_exists = false;
@@ -124,20 +126,20 @@ body {
 .staticMapImg{
 width:260px; height:180px;
 }
-#streetwrapper {
+.streetwrapper {
 	/*float:left;*/
 	width:100%;
 	height:500px;
 	text-align: center;
 }
-#panoblock {
+.panoblock {
 	height: 420px;
 	width:900px;
 	margin-left:auto;
 	margin-right:auto;
 	/*display: inline;*/
 }
-#pano {
+.pano {
 	width: 420px; 
 	height: 370px;
 	padding:10px;
@@ -145,7 +147,7 @@ width:260px; height:180px;
 	float:left;
 	display: inline-block;
 }
-#imageview {
+.imageview {
 	border:10px;
 	width: 420px; 
 	height: 370px;
@@ -163,7 +165,7 @@ width:260px; height:180px;
 	var mapname = location.search.replace( '?getmap=', '' );
 	$(document).ready(function() {
 		// creates side by side view for historic image and Google Street View
-		$('.changeRecord').click(function() {
+		/*$('.changeRecord').click(function() {
 			
 			$('#pano').empty();
 			$('#imageview').empty();
@@ -218,7 +220,7 @@ width:260px; height:180px;
 	      $('#zoom_cell').val(panorama.getPov().zoom);
 	    });
 				
-		});
+		});*/
 		// set input value on blur
 		$('.mapinput').blur(function() {
 			var setDomVal = $(this).val();
@@ -273,13 +275,14 @@ width:260px; height:180px;
 	  postal_code: 'short_name'
 	};
 
-	function initialize() {
+	function initialize(row) {
 	  // Create the autocomplete object, restricting the search
 	  // to geographical location types.
 	  autocomplete = new google.maps.places.Autocomplete(
-		  /** @type {HTMLInputElement}*/ (document.getElementById('autocomplete')),
+		  /** @type {HTMLInputElement}*/ (document.getElementById('autocomplete'+row)),
 		  { types: ['geocode'] });
 	}
+	
 	// [START region_geolocation]
 	// Bias the autocomplete object to the user's geographical location,
 	// as supplied by the browser's 'navigator.geolocation' object.
@@ -298,72 +301,72 @@ width:260px; height:180px;
 	}
 	// [END region_geolocation]
 
-	function resetImage(){
-		document.getElementById("itemlabel").innerHTML = "Title: ";
-		document.getElementById("itemlabel").style.color='black';
-		document.getElementById("itemtitle").focus();
-		document.getElementById("addressLabel").style.display="none"; document.getElementById("autocomplete").style.display="none";
-		document.getElementById("convertAddress").style.display="none";
-		document.getElementById("picturetitle").style.display="none";
-		document.getElementById("picturelocal").style.display="none";
-		document.getElementById("sizepic").style.display="none";
-		document.getElementById("imagepov").style.display="none";
+	function resetImage(row){
+		document.getElementById("itemlabel"+row).innerHTML = "Title: ";
+		document.getElementById("itemlabel"+row).style.color='black';
+		document.getElementById("itemtitle"+row).focus();
+		document.getElementById("addressLabel"+row).style.display="none"; document.getElementById("autocomplete"+row).style.display="none";
+		document.getElementById("convertAddress"+row).style.display="none";
+		document.getElementById("picturetitle"+row).style.display="none";
+		document.getElementById("picturelocal"+row).style.display="none";
+		document.getElementById("sizepic"+row).style.display="none";
+		document.getElementById("imagepov"+row).style.display="none";
 	}
 	//copied from 138
-	function validateTitle(){
-		var title = $("#itemtitle").val();
+	function validateTitle(row){
+		var title = $("#itemtitle"+row).val();
 		var titlepresent = Boolean(title);
 		if(titlepresent == false){
-			document.getElementById("itemlabel").innerHTML = "A Picture Title is Required";
-			document.getElementById("itemlabel").style.color='red';						
-			document.getElementById("itemtitle").focus();
+			document.getElementById("itemlabel"+row).innerHTML = "A Picture Title is Required";
+			document.getElementById("itemlabel"+row).style.color='red';						
+			document.getElementById("itemtitle"+row).focus();
 		}
 		else{
-			document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("autocomplete").focus(); document.getElementById("convertAddress").style.display="inline";
-			document.getElementById("itemlabel").innerHTML = "Title: ";
-			document.getElementById("itemlabel").style.color='black';
+			document.getElementById("addressLabel"+row).style.display="inline"; document.getElementById("autocomplete"+row).style.display="inline"; document.getElementById("autocomplete"+row).focus(); document.getElementById("convertAddress"+row).style.display="inline";
+			document.getElementById("itemlabel"+row).innerHTML = "Title: ";
+			document.getElementById("itemlabel"+row).style.color='black';
 		}
 	}
 				
-	function validateAddress(){
-		var streetAddress= $("#autocomplete").val();
+	function validateAddress(row){
+		var streetAddress= $("#autocomplete"+row).val();
 		var x = Boolean(streetAddress);
 		if( (x == false) || (streetAddress.length <3)){
-			document.getElementById("addressLabel").innerHTML = "Complete Postal Address is Required";
-			document.getElementById("addressLabel").style.color='red';						
-			document.getElementById("autocomplete").focus();
+			document.getElementById("addressLabel"+row).innerHTML = "Complete Postal Address is Required";
+			document.getElementById("addressLabel"+row).style.color='red';						
+			document.getElementById("autocomplete"+row).focus();
 		}
 		else{
 			var mygc = new google.maps.Geocoder();
 			mygc.geocode({'address' : streetAddress }, function(results, status){
-				$('#latitude_autocomplete').attr("value", results[0].geometry.location.lat());
-				$('#longitude_autocomplete').attr("value", results[0].geometry.location.lng());
-				$('#lat_cell').attr("value", results[0].geometry.location.lat());
-				$('#lng_cell').attr("value", results[0].geometry.location.lng());	
+				$('#latitude_autocomplete'+row).attr("value", results[0].geometry.location.lat());
+				$('#longitude_autocomplete'+row).attr("value", results[0].geometry.location.lng());
+				$('#lat_cell'+row).attr("value", results[0].geometry.location.lat());
+				$('#lng_cell'+row).attr("value", results[0].geometry.location.lng());	
 			});
-			if(document.getElementById("addressLabel").style.color ==  'red'){
-				document.getElementById("addressLabel").innerHTML = "Street Address:";
-				document.getElementById("addressLabel").style.color='black';
+			if(document.getElementById("addressLabel"+row).style.color ==  'red'){
+				document.getElementById("addressLabel"+row).innerHTML = "Street Address:";
+				document.getElementById("addressLabel"+row).style.color='black';
 			}
-			document.getElementById("picturetitle").style.display="inline";
-			document.getElementById("picturelocal").style.display="inline";
-			document.getElementById("sizepic").style.display="inline";
-			document.getElementById("convertAddress").style.display="none";
-			document.getElementById("picturelocal").focus();
+			document.getElementById("picturetitle"+row).style.display="inline";
+			document.getElementById("picturelocal"+row).style.display="inline";
+			document.getElementById("sizepic"+row).style.display="inline";
+			document.getElementById("convertAddress"+row).style.display="none";
+			document.getElementById("picturelocal"+row).focus();
 			//validateTitle();
 		}
 	}
 				
 	// for purposes of getting a scaled image from CDM reference URL
-	function cdmpicture(){
+	function cdmpicture(row){
 		// verify thatURL is in the form: http://[CONTENTdm home]/cdm/ref/collection/[alias]/id/[id]
-		cdmrefurl = $("#picturelocal").val();
+		cdmrefurl = $("#picturelocal"+row).val();
 		if ((Boolean(cdmrefurl) == false) || (cdmrefurl.length < 12) || (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0)){
 			//alert(cdmrefurl);
-			document.getElementById("picturetitle").innerHTML = "Need a valid CONTENTdm reference URL";
-			document.getElementById("picturetitle").style.color='red';
-			document.getElementById("picturelocal").value=null;
-			document.getElementById("picturelocal").focus();
+			document.getElementById("picturetitle"+row).innerHTML = "Need a valid CONTENTdm reference URL";
+			document.getElementById("picturetitle"+row).style.color='red';
+			document.getElementById("picturelocal"+row).value=null;
+			document.getElementById("picturelocal"+row).focus();
 		}
 		else{
 			// get collection alias and id as an array
@@ -388,37 +391,37 @@ width:260px; height:180px;
 					var formatted_scale = (scale * 100).toFixed(2);
 					if (imgwidth < img_size) { formatted_scale = 100; }
 					var imgPath = "<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=" + refvals[0] + '&CISOPTR=' + refvals[1] + '&action=2&DMSCALE=' + formatted_scale + '&DMWIDTH=' + targ_w + '&DMHEIGHT=' + targ_h + '&DMX=0&DMY=0';
-					$('#cdmurl_new').attr("value", imgPath);
-					$('#identifier_new').attr("value", identifier);
+					$('#cdmurl_'+row).attr("value", imgPath);
+					$('#identifier_'+row).attr("value", identifier);
 					//alert(imgPath);
-					while( $("#cdmurl_new").length < 1){}
-					imagestudio(imgPath);
+					while( $("#cdmurl_"+row).length < 1){}
+					imagestudio(imgPath, row);
 				}				
 			});
-			document.getElementById("titleStreet").style.display="none";
-			document.getElementById("imagepov").style.display="inline";
-			document.getElementById("piclabel").innerHTML=$("#itemtitle").val();
-			document.getElementById("picaddress").innerHTML=$("#autocomplete").val(); 
-			while( $("#cdmurl_new").length < 1){}
+			document.getElementById("titleStreet"+row).style.display="none";
+			document.getElementById("imagepov"+row).style.display="inline";
+			document.getElementById("piclabel"+row).innerHTML=$("#itemtitle"+row).val();
+			document.getElementById("picaddress"+row).innerHTML=$("#autocomplete").val(); 
+			while( $("#cdmurl_"+row).length < 1){}
 		}	
 	}
-	function imagestudio(picSource){
-		$('#pano').empty();
-		$('#imageview').empty();
-		var lat = $("#latitude_autocomplete").val();
-		var lon = $("#longitude_autocomplete").val();
+	function imagestudio(picSource,row){
+		$('#pano'+row).empty();
+		$('#imageview'+row).empty();
+		var lat = $("#latitude_autocomplete"+row).val();
+		var lon = $("#longitude_autocomplete"+row).val();
 		if (!parseInt(lat) || !parseInt(lon)) {
 			alert("Need both a latitude and longitude");
 			return false;
 		}
-		var povHead = 0;
-		var povPitch = 0;
-		var povZoom = 0;
-		$('#streetwrapper').show();
-		var thumbImg = $('<img />', {
+		var povHead = Math.round($('#heading_cell'+row).val());
+		var povPitch = Math.round($('#pitch_cell'+row).val());
+		var povZoom = Math.round($('#zoom_cell'+row).val());
+		$('#streetwrapper'+row).show();
+		/*var thumbImg = $('<img />', {
 			src: picSource
-		});
-		document.getElementById('imageview').src=picSource;
+		});*/
+		document.getElementById('imageview'+row).src=picSource;
 		var mapPos = new google.maps.LatLng(lat,lon);
 		var panoramaOptions = {
 			position: mapPos,
@@ -429,16 +432,16 @@ width:260px; height:180px;
 			},
 			visible: true
 		};
-		var panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), panoramaOptions);
+		var panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"+row), panoramaOptions);
 		// listen for changes to panorama area and update input blank values as needed
 		google.maps.event.addListener(panorama, 'position_changed', function() {
-			$('#lat_cell').val(panorama.getPosition().lat().toString());
-			$('#lng_cell').val(panorama.getPosition().lng().toString());      
+			$('#lat_cell'+row).val(panorama.getPosition().lat().toString());
+			$('#lng_cell'+row).val(panorama.getPosition().lng().toString());      
 		});
 		google.maps.event.addListener(panorama, 'pov_changed', function() {
-			$('#heading_cell').val(panorama.getPov().heading);
-			$('#pitch_cell').val(panorama.getPov().pitch);
-			$('#zoom_cell').val(panorama.getPov().zoom);
+			$('#heading_cell'+row).val(panorama.getPov().heading);
+			$('#pitch_cell'+row).val(panorama.getPov().pitch);
+			$('#zoom_cell'+row).val(panorama.getPov().zoom);
 		});
 	}	
 </script>
@@ -449,7 +452,8 @@ width:260px; height:180px;
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <?php } ?>
 </head>
-<body onload="initialize()">
+<!--<body onload="initialize()"> removed on 2/6-->
+	<body>
 	<div class = "container-fluid"><!--bootstrap!-->
 	<div id="output"></div>
 	<div class="title">
@@ -499,65 +503,64 @@ JSON data).--><br><br>
 							<h4 class="panel-title">
 							<a data-toggle="collapse" data-parent="#accordion" href="#collapseImage">
 								Add Image
-							</a>							
+							</a>					
 							</h4>
 						</div>
 						<div id="collapseImage" class="panel-collapse collapse">
 							<div class="panel-body">
 					
 					<label>This is a 2 part process which includes inputting the picture information and then replicating the picture's focal point on Google street view.</label><br><br>
-					<form role="form" id="formadd" name="formadd" onreset="resetImage()" method="POST" action="do_query.php">
+					<form role="form" id="formadd" name="formadd" onreset="resetImage(<?php echo ($maxImages+1); ?>)" method="POST" action="do_query.php">
 					<!--Form Part 1-->
-					<div id="titleStreet" class="input-group">
+					<div id="titleStreet<?php echo ($maxImages+1); ?>" class="input-group">
 					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>						
 						<div class="form-group">
-							<label id="itemlabel" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel").style.display="inline"; document.getElementById("autocomplete").style.display="inline"; document.getElementById("convertAddress").style.display="inline";' onblur="validateTitle()" autofocus>
+							<label id="itemlabel<?php echo ($maxImages+1); ?>" for="itemtitle">Title: </label>
+							<input type="text" class="form-control" id="itemtitle<?php echo ($maxImages+1); ?>" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel<?php echo ($maxImages+1); ?>").style.display="inline"; document.getElementById("autocomplete<?php echo ($maxImages+1); ?>").style.display="inline"; document.getElementById("convertAddress<?php echo ($maxImages+1); ?>").style.display="inline"; initialize(<?php echo ($maxImages+1); ?>)' onblur="validateTitle(<?php echo ($maxImages+1); ?>)" autofocus>
 							</div>
 							<div class="form-group">
-							<label id="addressLabel" for="getLatLong" style="display:none">Street Address: </label>
-							<input id="autocomplete" class="form-control" name="address" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()"  style="display:none"required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							<label id="addressLabel<?php echo ($maxImages+1); ?>" for="getLatLong" style="display:none">Street Address: </label>
+							<input id="autocomplete<?php echo ($maxImages+1); ?>" class="form-control" name="address<?php echo ($maxImages+1); ?>" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()"  style="display:none"required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
-							<button type="button" id="convertAddress" onclick="validateAddress()" style="display:none"role="group">Get Lat Long</button>
+							<button type="button" class="btn btn-default" id="convertAddress<?php echo ($maxImages+1); ?>" onclick="validateAddress(<?php echo ($maxImages+1); ?>)" style="display:none"role="group">Get Lat Long</button>
 							<div class="form-group">
-							<label id="picturetitle" for="getscaled_autocomplete"style="display:none">ContentDM Image Upload: </label>
-							<input type="url" class="form-control" id="picturelocal" placeholder="Please enter a CONTENTdm reference URL" style="display:none" role="group" required>
+							<label id="picturetitle<?php echo ($maxImages+1); ?>" for="getscaled_autocomplete"style="display:none">ContentDM Image Upload: </label>
+							<input type="url" class="form-control" id="picturelocal<?php echo ($maxImages+1); ?>" placeholder="Please enter a CONTENTdm reference URL" style="display:none" role="group" required>
 							</div>
-							<button type="button" id="sizepic" onclick="cdmpicture()" style="display:none"role="group">Get Picture</button>
+							<button type="button" class="btn btn-default" id="sizepic<?php echo ($maxImages+1); ?>" onclick="cdmpicture(<?php echo ($maxImages+1); ?>)" style="display:none"role="group">Get Picture</button>
 							<!--Hidden LAT & LONG Storage-->
-							<input type="text" class= "form-control" style="display:none" id="latitude_autocomplete" name="lat">
-							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete" name="long">
+							<input type="text" class= "form-control" style="display:none" id="latitude_autocomplete<?php echo ($maxImages+1); ?>" name="lat<?php echo ($maxImages+1); ?>">
+							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete<?php echo ($maxImages+1); ?>" name="long<?php echo ($maxImages+1); ?>">
 							</div>
 							<!--Form Part 2-->
-							<div id="imagepov" style="display:none">
-							<label id="piclabel"></label><br/>
-							<label id="picaddress"></label><br/>
-							<input id="cdmurl_new" name="cdmurl_new"type="text" style="display:none" required>
-							<input id="identifier_new" name="identifier_new"type="text" style="display:none" required>
+							<div id="imagepov<?php echo ($maxImages+1); ?>" style="display:none">
+							<label id="piclabel<?php echo ($maxImages+1); ?>"></label><br/>
+							<label id="picaddress<?php echo ($maxImages+1); ?>"></label><br/>
+							<input id="cdmurl_<?php echo ($maxImages+1); ?>" name="cdmurl_new"type="text" style="display:none" required>
+							<input id="identifier_<?php echo ($maxImages+1); ?>" name="identifier_new"type="text" style="display:none" required>
 							<label>Adjust the Google Viewpoint to match the image.</label>
-							<div id="streetwrapper">
-		<div id="panoInfo">
-	  	<input type="text" id="lat_cell" name="lat_cell" size="10" style="display:none">
-		<input type="text" id="lng_cell" name="lng_cell" size="10" style="display:none">
-	  	<input type="text" id="heading_cell" name="heading_cell" size="9" value="0" style="display:none">
-	  	<input type="text" id="pitch_cell" name="pitch_cell" size="9" value="0" style="display:none">
-	  	<input type="text" id="zoom_cell" name="zoom_cell" size="1" value="0" style="display:none">
+							<div class="streetwrapper" id="streetwrapper<?php echo ($maxImages+1); ?>">
+		<div id="panoInfo<?php echo ($maxImages+1); ?>">
+	  	<input type="text" id="lat_cell<?php echo ($maxImages+1); ?>" name="lat_cell" size="10" style="display:none">
+		<input type="text" id="lng_cell<?php echo ($maxImages+1); ?>" name="lng_cell" size="10" style="display:none">
+	  	<input type="text" id="heading_cell<?php echo ($maxImages+1); ?>" name="heading_cell" size="9" value="0" style="display:none">
+	  	<input type="text" id="pitch_cell<?php echo ($maxImages+1); ?>" name="pitch_cell" size="9" value="0" style="display:none">
+	  	<input type="text" id="zoom_cell<?php echo ($maxImages+1); ?>" name="zoom_cell" size="1" value="0" style="display:none">
 	  </div>
 	  <br/>
-		<div id="panoblock">	
-		  <div id="pano"></div>
-		  <img id="imageview"></img>
+		<div class="panoblock" id="panoblock<?php echo ($maxImages+1); ?>">	
+		  <div class="pano" id="pano<?php echo ($maxImages+1); ?>"></div>
+		  <img class="imageview" id="imageview<?php echo ($maxImages+1); ?>"></img>
 		</div>
 	</div>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
 				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							</div>
-	<input type="reset">
+	<input type="reset" class="btn">
 						</form>
 						</div>
 					</div>
-			<?php $max = count($map_data);
-					for ($i = 0; $i < $max; $i++) {	?>
+			<?php for ($i = 0; $i < $maxImages; $i++) {	?>
 						<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
@@ -587,9 +590,9 @@ JSON data).--><br><br>
 </script>
 									</div>
 									</div>
-									<div class="btn-group">
+									<div id="editButtons<?php echo $i ?>" class="btn-group">
 									<form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>">
-									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline';">Edit</button>
+									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit</button>
 									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button></a></form>
 									</div>
 								</div>
@@ -614,8 +617,8 @@ JSON data).--><br><br>
 							</div>
 							<button type="button" id="sizepic" onclick="cdmpicture()" role="group">Get Picture</button>
 							<!--Hidden LAT & LONG Storage-->
-							<!--<input type="text" class= "form-control" id="latitude_autocomplete" name="lat">
-							<input type="text" class= "form-control" id="longitude_autocomplete" name="long">-->
+							<input type="text" class= "form-control" id="latitude_autocomplete<?php echo $i ?>" name="lat<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>">
+							<input type="text" class= "form-control" id="longitude_autocomplete<?php echo $i ?>" name="long<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>">
 							</div>
 							<!--Form Part 2-->
 							<div id="imagepov<?php echo $i ?>" style="display:none;">
@@ -632,16 +635,15 @@ JSON data).--><br><br>
 	  	zoom: <input type="text" id="zoom_cell<?php echo $i ?>" name="zoom_cell<?php echo $i ?>" size="1"  value="<?php echo $map_data[$i]["zoom"] ?>">
 	  </div>
 	  <br/>
-		<div id="panoblock<?php echo $i ?>">	
-		  <div id="pano<?php echo $i ?>"></div>
-		  <img id="imageview<?php echo $i ?>"></img>
+		<div class="panoblock" id="panoblock<?php echo $i ?>">	
+		  <div class="pano" id="pano<?php echo $i ?>"></div>
+		  <img class="imageview" id="imageview<?php echo $i ?>"></img>
 		</div>
 	</div>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
-				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
+				<!--<button type="submit" class="btn btn-default" name="addline" value="Add Line">Update</button>-->
 							</div>
 							<!--End of Edit--->
-							<!--</tr>					-->
 							</div>
 							</div>
 						</div>
@@ -650,7 +652,7 @@ JSON data).--><br><br>
 			<?php	} 
 				} ?>
 	</div>
-	<?php if ($map_data_exists && ($max > 4)) { ?>
+	<?php if ($map_data_exists && ($maxImages > 4)) { ?>
 	
 	<hr/>
 	<div class="title">
