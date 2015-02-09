@@ -340,8 +340,8 @@ width:260px; height:180px;
 		else{
 			var mygc = new google.maps.Geocoder();
 			mygc.geocode({'address' : streetAddress }, function(results, status){
-				$('#latitude_autocomplete'+row).attr("value", results[0].geometry.location.lat());
-				$('#longitude_autocomplete'+row).attr("value", results[0].geometry.location.lng());
+				/*$('#latitude_autocomplete'+row).attr("value", results[0].geometry.location.lat());
+				$('#longitude_autocomplete'+row).attr("value", results[0].geometry.location.lng());*/
 				//var city =results[0].address_components.types.locality();
 				place = autocomplete.getPlace();
 			  alert([streetAddress]);//place.address_components[2].types[0]);
@@ -412,8 +412,8 @@ width:260px; height:180px;
 	function imagestudio(picSource,row){
 		$('#pano'+row).empty();
 		$('#imageview'+row).empty();
-		var lat = $("#latitude_autocomplete"+row).val();
-		var lon = $("#longitude_autocomplete"+row).val();
+		var lat = $('#lat_cell'+row).val();
+		var lon = $('#lng_cell'+row).val();
 		if (!parseInt(lat) || !parseInt(lon)) {
 			alert("Need both a latitude and longitude");
 			return false;
@@ -532,9 +532,6 @@ JSON data).--><br><br>
 							<input type="url" class="form-control" id="picturelocal<?php echo ($maxImages+1); ?>" placeholder="Please enter a CONTENTdm reference URL" style="display:none" role="group" required>
 							</div>
 							<button type="button" class="btn btn-default" id="sizepic<?php echo ($maxImages+1); ?>" onclick="cdmpicture(<?php echo ($maxImages+1); ?>)" style="display:none"role="group">Get Picture</button>
-							<!--Hidden LAT & LONG Storage-->
-							<input type="text" class= "form-control" style="display:none" id="latitude_autocomplete<?php echo ($maxImages+1); ?>" name="lat<?php echo ($maxImages+1); ?>">
-							<input type="text" class= "form-control" style="display:none" id="longitude_autocomplete<?php echo ($maxImages+1); ?>" name="long<?php echo ($maxImages+1); ?>">
 							</div>
 							<!--Form Part 2-->
 							<div id="imagepov<?php echo ($maxImages+1); ?>" style="display:none">
@@ -561,7 +558,8 @@ JSON data).--><br><br>
 				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							</div>
 	<input type="reset" class="btn">
-	<!--<button class="btn" onclick="document.getElementById('formadd').reset(); document.getElementById('collapseImage').display=none;">Cancel</button>-->
+	<!--Cancel Function Option
+	<button class="btn" onclick="document.getElementById('formadd').reset(); document.getElementById('collapseImage').display=none;">Cancel</button>-->
 						</form>
 						</div>
 					</div>
@@ -618,14 +616,12 @@ JSON data).--><br><br>
 							<input id="autocomplete" class="form-control" name="address" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate()"  required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
 							<button type="button" id="convertAddress" onclick="myFunction()" role="group">Get Lat Long</button>
-							<!--<div class="form-group">
+							<!--Feature Option: Change CDM picture
+							<div class="form-group">
 							<label id="picturetitle" for="getscaled_autocomplete">ContentDM Image Upload: </label>
 							<input type="url" class="form-control" id="picturelocal" placeholder="New CDM URL if image needs changed" role="group" required>
 							</div>
-							<button type="button" id="sizepic" onclick="cdmpicture()" role="group">Get Picture</button>
-							<!--Hidden LAT & LONG Storage-->
-							<input type="text" class= "form-control" id="latitude_autocomplete<?php echo $i ?>" name="lat<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>">
-							<input type="text" class= "form-control" id="longitude_autocomplete<?php echo $i ?>" name="long<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>">
+							<button type="button" id="sizepic" onclick="cdmpicture()" role="group">Get Picture</button>-->
 							<button id="cancelStreet<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('EditOptions<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
 							</div>
 							<!--Form Part 2-->
