@@ -274,6 +274,7 @@ width:260px; height:180px;
 	  country: 'long_name',
 	  postal_code: 'short_name'
 	};
+	var cityDb = "<?php echo $mapID?>";
 
 	function initialize(row) {
 	  // Create the autocomplete object, restricting the search
@@ -341,6 +342,9 @@ width:260px; height:180px;
 			mygc.geocode({'address' : streetAddress }, function(results, status){
 				$('#latitude_autocomplete'+row).attr("value", results[0].geometry.location.lat());
 				$('#longitude_autocomplete'+row).attr("value", results[0].geometry.location.lng());
+				//var city =results[0].address_components.types.locality();
+				place = autocomplete.getPlace();
+			  alert([streetAddress]);//place.address_components[2].types[0]);
 				$('#lat_cell'+row).attr("value", results[0].geometry.location.lat());
 				$('#lng_cell'+row).attr("value", results[0].geometry.location.lng());	
 			});
@@ -557,6 +561,7 @@ JSON data).--><br><br>
 				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							</div>
 	<input type="reset" class="btn">
+	<!--<button class="btn" onclick="document.getElementById('formadd').reset(); document.getElementById('collapseImage').display=none;">Cancel</button>-->
 						</form>
 						</div>
 					</div>
@@ -592,12 +597,14 @@ JSON data).--><br><br>
 									</div>
 									<div id="editButtons<?php echo $i ?>" class="btn-group">
 									<form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>">
-									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit</button>
+									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('EditOptions<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit Meta Data</button>
+									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit Picture View</button>
 									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button></a></form>
 									</div>
 								</div>
 								
 								
+					<form role="form" id="formupdate" name="formupdate" onreset="resetImage(<?php echo ($maxImages+1); ?>)" method="POST" action="do_query.php">
 								<!--Edit Form-->
 								<div id="EditOptions<?php echo $i ?>" class="panel-body" style="display:none">
 								
@@ -611,7 +618,7 @@ JSON data).--><br><br>
 							<input id="autocomplete" class="form-control" name="address" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate()"  required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
 							<button type="button" id="convertAddress" onclick="myFunction()" role="group">Get Lat Long</button>
-							<div class="form-group">
+							<!--<div class="form-group">
 							<label id="picturetitle" for="getscaled_autocomplete">ContentDM Image Upload: </label>
 							<input type="url" class="form-control" id="picturelocal" placeholder="New CDM URL if image needs changed" role="group" required>
 							</div>
@@ -619,6 +626,7 @@ JSON data).--><br><br>
 							<!--Hidden LAT & LONG Storage-->
 							<input type="text" class= "form-control" id="latitude_autocomplete<?php echo $i ?>" name="lat<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>">
 							<input type="text" class= "form-control" id="longitude_autocomplete<?php echo $i ?>" name="long<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>">
+							<button id="cancelStreet<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('EditOptions<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
 							</div>
 							<!--Form Part 2-->
 							<div id="imagepov<?php echo $i ?>" style="display:none;">
@@ -639,11 +647,13 @@ JSON data).--><br><br>
 		  <div class="pano" id="pano<?php echo $i ?>"></div>
 		  <img class="imageview" id="imageview<?php echo $i ?>"></img>
 		</div>
+		<button id="cancelStreet<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('imagepov<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
 	</div>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
 				<!--<button type="submit" class="btn btn-default" name="addline" value="Add Line">Update</button>-->
 							</div>
 							<!--End of Edit--->
+							</form>
 							</div>
 							</div>
 						</div>
