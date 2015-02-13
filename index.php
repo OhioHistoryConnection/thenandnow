@@ -313,7 +313,7 @@ width:260px; height:180px;
 		document.getElementById("sizepic"+row).style.display="none";
 		document.getElementById("imagepov"+row).style.display="none";
 	}
-	//copied from 138
+	
 	function validateTitle(row){
 		var title = $("#itemtitle"+row).val();
 		var titlepresent = Boolean(title);
@@ -340,11 +340,9 @@ width:260px; height:180px;
 		else{
 			var mygc = new google.maps.Geocoder();
 			mygc.geocode({'address' : streetAddress }, function(results, status){
-				/*$('#latitude_autocomplete'+row).attr("value", results[0].geometry.location.lat());
-				$('#longitude_autocomplete'+row).attr("value", results[0].geometry.location.lng());*/
 				//var city =results[0].address_components.types.locality();
 				place = autocomplete.getPlace();
-			  alert([streetAddress]);//place.address_components[2].types[0]);
+				//alert([streetAddress]);//place.address_components[2].types[0]);
 				$('#lat_cell'+row).attr("value", results[0].geometry.location.lat());
 				$('#lng_cell'+row).attr("value", results[0].geometry.location.lng());	
 			});
@@ -456,7 +454,6 @@ width:260px; height:180px;
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 <?php } ?>
 </head>
-<!--<body onload="initialize()"> removed on 2/6-->
 	<body>
 	<div class = "container-fluid"><!--bootstrap!-->
 	<div id="output"></div>
@@ -602,18 +599,19 @@ JSON data).--><br><br>
 								</div>
 								
 								
-					<form role="form" id="formupdate" name="formupdate" onreset="resetImage(<?php echo ($maxImages+1); ?>)" method="POST" action="do_query.php">
+					<form role="form" id="updateLine" name="updateLine" onreset="resetImage(<?php echo ($maxImages+1); ?>)" method="POST" action="do_query.php">
+					<input type="hidden" name="recordno" value="<?php echo $i ?>">
 								<!--Edit Form-->
 								<div id="EditOptions<?php echo $i ?>" class="panel-body" style="display:none">
 								
 								<!--Copy from add line-->
 														<div class="form-group">
 							<label id="itemlabel" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle" name="title" value="<?php echo $map_data[$i]["itemtitle"]; ?>" required pattern="a-zA-Z\ \" onchange="validateTitle()">
+							<input type="text" class="form-control" id="itemtitle" name="title<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  pattern="a-zA-Z\ \" onchange="validateTitle()">
 							</div>
 							<div class="form-group">
 							<label id="addressLabel" for="getLatLong">Street Address: </label>
-							<input id="autocomplete" class="form-control" name="address" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate()"  required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							<input id="autocomplete" class="form-control" name="address<?php echo $i ?>" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate()"   pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
 							<button type="button" id="convertAddress" onclick="myFunction()" role="group">Get Lat Long</button>
 							<!--Feature Option: Change CDM picture
@@ -643,6 +641,7 @@ JSON data).--><br><br>
 		  <div class="pano" id="pano<?php echo $i ?>"></div>
 		  <img class="imageview" id="imageview<?php echo $i ?>"></img>
 		</div>
+		<button class="btn"type="submit" name="updateLine">Update Image</button>
 		<button id="cancelStreet<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('imagepov<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
 	</div>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">

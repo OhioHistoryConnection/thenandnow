@@ -31,7 +31,7 @@ if (isset($_GET["getmap"]) || isset($_POST["getmap"])) {
 		$map_data_json = $map_data_json_array[0]['mapdata'];
 	
 		if (isset($_POST["addline"])){
-			$new_record = '{"latitude":"'.$_POST["lat_cell"].'","longitude":"'.$_POST["lng_cell"].'","itemtitle":"'.$_POST["title"].'","cdmurl":"'.$_POST["cdmurl_new"].'","identifier":"'.$_POST["identifier_new"].'","heading":"'.$_POST["heading_cell"].'","pitch":"'.$_POST["pitch_cell"].'","zoom":"'.$_POST["zoom_cell"].'"}';
+			$new_record = '{"latitude":"'.strip_tags($_POST["lat_cell"]).'","longitude":"'.strip_tags($_POST["lng_cell"]).'","itemtitle":"'.strip_tags($_POST["title"]).'","cdmurl":"'.strip_tags($_POST["cdmurl_new"]).'","identifier":"'.strip_tags($_POST["identifier_new"]).'","heading":"'.strip_tags($_POST["heading_cell"]).'","pitch":"'.strip_tags($_POST["pitch_cell"]).'","zoom":"'.strip_tags($_POST["zoom_cell"]).'"}';
 			// if a record already exists
 			if (preg_match('/\{/', $map_data_json)) {
 				// append a new record
@@ -43,10 +43,15 @@ if (isset($_GET["getmap"]) || isset($_POST["getmap"])) {
 			$sql = "INSERT OR REPLACE INTO maprecord (mapid, mapdata) VALUES ('".$mapID."', '".$mapdata."');";
 			$dbh->exec($sql);
 			header('Location: '.$config['THIS_HOST'].'/index.php?getmap='.$mapID);
-		} else if (isset($_POST["savedata"])) {
-			// strips all tags, <script>, html or otherwise. Don't put angle brackets in data...
-			$mapdata = strip_tags($_POST["savedata"]);
-			$sql = "UPDATE maprecord SET mapdata = '".$mapdata."' WHERE mapid = '".$mapID."';";
+		} else if (isset($_POST["updateLine"])) {
+			$offset = $_POST["recordno"];
+			$update_line ='{"latitude":"'.strip_tags($_POST["lat_cell".$offset]).'","longitude":"'.strip_tags($_POST["lng_cell".$offset]).'","itemtitle":"'.strip_tags($_POST["title".$offset]).'","cdmurl":"'.strip_tags($_POST["cdmurl_".$offset]).'","identifier":"'.strip_tags($_POST["identifier_".$offset]).'","heading":"'.strip_tags($_POST["heading_cell".$offset]).'","pitch":"'.strip_tags($_POST["pitch_cell".$offset]).'","zoom":"'.strip_tags($_POST["zoom_cell".$offset]).'"}';
+			$map_data_array = json_decode($map_data_json, true);
+			$mapDataTop = json_encode(array_slice($map_data_array, 0, $offset));
+			$mapDataAppend = preg_replace('/(^.*)\]$/', '$1,'.$update_line."]", $mapDataTop);
+			$newDataTop = json_decode($mapDataAppend, true);
+			$new_map_data = json_encode (array_merge($newDataTop, array_slice($map_data_array, $offset+1)));
+			$sql = "INSERT OR REPLACE INTO maprecord (mapid, mapdata) VALUES ('".$mapID."', '".$new_map_data."');";
 			$dbh->exec($sql);
 			header('Location: '.$config['THIS_HOST'].'/index.php?getmap='.$mapID);
 		} else if (isset($_POST["deldata"])) {
