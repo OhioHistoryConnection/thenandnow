@@ -323,10 +323,17 @@ width:260px; height:180px;
 			document.getElementById("itemtitle"+row).focus();
 		}
 		else{
-			document.getElementById("addressLabel"+row).style.display="inline"; document.getElementById("autocomplete"+row).style.display="inline"; document.getElementById("autocomplete"+row).focus(); document.getElementById("convertAddress"+row).style.display="inline";
 			document.getElementById("itemlabel"+row).innerHTML = "Title: ";
 			document.getElementById("itemlabel"+row).style.color='black';
+			if(row > <?php echo $max ?>){addressInput(row);}
 		}
+	}
+	
+	function addressInput(row){
+		/*Add Line */
+			document.getElementById("addressLabel"+row).style.display="inline"; document.getElementById("autocomplete"+row).style.display="inline"; document.getElementById("autocomplete"+row).focus(); document.getElementById("convertAddress"+row).style.display="inline"; document.getElementById("convertAddress"+row).style.display="inline";
+		//if((row < <?php echo $max ?>) ||(row == <?php echo $max ?>)){
+		document.getElementById("cancelStreet"+row).style.diplay="inline";document.getElementById("submitGroup"+row).style.diplay="none";//}
 	}
 				
 	function validateAddress(row){
@@ -350,12 +357,13 @@ width:260px; height:180px;
 				document.getElementById("addressLabel"+row).innerHTML = "Street Address:";
 				document.getElementById("addressLabel"+row).style.color='black';
 			}
+		/**Add and Edit**/
 			document.getElementById("picturetitle"+row).style.display="inline";
 			document.getElementById("picturelocal"+row).style.display="inline";
 			document.getElementById("sizepic"+row).style.display="inline";
 			document.getElementById("convertAddress"+row).style.display="none";
 			document.getElementById("picturelocal"+row).focus();
-			//validateTitle();
+			if(row <= <?php echo $max ?>){document.getElementById("cancelStreet"+row).style.diplay="none";document.getElementById("submitGroup"+row).style.diplay="inline";}
 		}
 	}
 				
@@ -592,7 +600,7 @@ JSON data).--><br><br>
 									</div>
 									<div id="editButtons<?php echo $i ?>" class="btn-group">
 									<form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>">
-									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('EditOptions<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit Meta Data</button>
+									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('titleStreet<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('submitGroup<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit Meta Data</button>
 									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit Picture View</button>
 									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button></a></form>
 									</div>
@@ -600,27 +608,29 @@ JSON data).--><br><br>
 								
 								
 					<form role="form" id="updateLine" name="updateLine" onreset="resetImage(<?php echo ($maxImages+1); ?>)" method="POST" action="do_query.php">
-					<input type="hidden" name="recordno" value="<?php echo $i ?>">
+					<input type="hidden" name="recordno" value="<?php echo $i ?>"> 
 								<!--Edit Form-->
-								<div id="EditOptions<?php echo $i ?>" class="panel-body" style="display:none">
+								<div id="titleStreet<?php echo $i ?>" class="panel-body" style="display:none">
 								
 								<!--Copy from add line-->
 														<div class="form-group">
-							<label id="itemlabel" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle" name="title<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  pattern="a-zA-Z\ \" onchange="validateTitle()">
+							<label id="itemlabel<?php echo $i ?>" for="itemtitle">Title: </label>
+							<input type="text" class="form-control" id="itemtitle<?php echo $i ?>" name="title<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  pattern="a-zA-Z\ \" onchange="validateTitle()">
 							</div>
+							<button class="btn" type="button" id="displayAddress<?php echo $i ?>" onclick="addressInput(<?php echo $i ?>); document.getElementById('displayPicture<?php echo $i ?>').style.display='inline';" role="group">Change Address</button>
+							<button class="btn" type="button" id="displayPicture<?php echo $i ?>" onclick="document.getElementById('displayAddress<?php echo $i ?>').style.display='inline'; document.getElementById('picturetitle<?php echo $i ?>').style.display='inline'; document.getElementById('picturelocal<?php echo $i ?>').style.display='inline'; document.getElementById('sizepic<?php echo $i ?>').style.display='inline'; " role="group">Change CONTENTdm URL</button><!--document.getElementById('cancelStreet<?php echo $i ?>').style.display='inline';-->
 							<div class="form-group">
-							<label id="addressLabel" for="getLatLong">Street Address: </label>
-							<input id="autocomplete" class="form-control" name="address<?php echo $i ?>" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate()"   pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							<label id="addressLabel<?php echo $i ?>" style="display:none;" for="getLatLong">Street Address: </label>
+							<input id="autocomplete<?php echo $i ?>" class="form-control" style="display:none;" name="address<?php echo $i ?>" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate()"   pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
-							<button type="button" id="convertAddress" onclick="myFunction()" role="group">Get Lat Long</button>
-							<!--Feature Option: Change CDM picture
+							<button class="btn" type="button" id="convertAddress<?php echo $i ?>" style="display:none;" onclick="myFunction()" role="group">Get Lat Long</button>
+							<!--Feature Option: Change CDM picture-->
 							<div class="form-group">
-							<label id="picturetitle" for="getscaled_autocomplete">ContentDM Image Upload: </label>
-							<input type="url" class="form-control" id="picturelocal" placeholder="New CDM URL if image needs changed" role="group" required>
+							<label id="picturetitle<?php echo $i ?>" for="getscaled_autocomplete" style="display:none;">ContentDM Image Upload: </label>
+							<input type="url" class="form-control" id="picturelocal<?php echo $i ?>" placeholder="New CDM URL if image needs changed" role="group" style="display:none;" required>
 							</div>
-							<button type="button" id="sizepic" onclick="cdmpicture()" role="group">Get Picture</button>-->
-							<button id="cancelStreet<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('EditOptions<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
+							<button type="button" class="btn" id="sizepic<?php echo $i ?>" onclick="cdmpicture(<?php echo $i ?>)" role="group" style="display:none;">Get Picture</button>
+							<!--<button id="cancelStreet<?php echo $i ?>"  class="btn" type="button" style="display:none;" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>-->
 							</div>
 							<!--Form Part 2-->
 							<div id="imagepov<?php echo $i ?>" style="display:none;">
@@ -640,13 +650,14 @@ JSON data).--><br><br>
 		<div class="panoblock" id="panoblock<?php echo $i ?>">	
 		  <div class="pano" id="pano<?php echo $i ?>"></div>
 		  <img class="imageview" id="imageview<?php echo $i ?>"></img>
-		</div>
-		<button class="btn"type="submit" name="updateLine">Update Image</button>
-		<button id="cancelStreet<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('imagepov<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
+		</div>		
 	</div>
 							<input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>">
-				<!--<button type="submit" class="btn btn-default" name="addline" value="Add Line">Update</button>-->
 							</div>
+							<div id="submitGroup<?php echo $i ?>" style="display:none;">
+		<br/><button class="btn"type="submit" name="updateLine">Update Image</button>
+		<button id="cancelUpdate<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
+		</div>
 							<!--End of Edit--->
 							</form>
 							</div>
