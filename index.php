@@ -74,7 +74,6 @@ body {
 	font-family: Arial, Verdana, Geneva;
 	font-size: 90%; 
 	background-image:url(img/1-1249480650QT9U.jpg);
-	/* picture src: http://www.publicdomainpictures.net/view-image.php?image=3560&picture=paper-background&large=1 */
 	background-color: #cccccc;
 }
 .mapinput {
@@ -84,7 +83,6 @@ body {
 	text-align:center;
 	padding: 10px;
 }
-/*#formgetmap b{*/
 #mapIntro b{
 	font-size: 230%;
 	background: default;
@@ -94,7 +92,6 @@ body {
 #formnewmap{display:none;}
 #cancelintroform{display:none;}
 <?php if ($map_data_exists == false) { ?>
-/*#formgetmap { */
 #mapIntro{
   display: inline-block;
   font-size: 140%;
@@ -105,7 +102,6 @@ body {
 }
 <?php } ?>
 <?php if ($map_data_exists) { ?>
-	/*#formgetmap { */
 	#mapIntro{
 		font-size: 100%;
 		display: inline-block;
@@ -114,7 +110,6 @@ body {
 		padding: 0 3em;
 		border: none;
 	}
-	/*#formgetmap b{ */
 	#mapIntro b{
 		text-decoration: none;
 	}
@@ -135,7 +130,6 @@ body {
 width:260px; height:180px;
 }
 .streetwrapper {
-	/*float:left;*/
 	width:100%;
 	height:500px;
 	text-align: center;
@@ -145,13 +139,11 @@ width:260px; height:180px;
 	width:900px;
 	margin-left:auto;
 	margin-right:auto;
-	/*display: inline;*/
 }
 .pano {
 	width: 420px; 
 	height: 370px;
 	padding:10px;
-	/*margin-right: -800px;*/
 	float:left;
 	display: inline-block;
 }
@@ -162,7 +154,6 @@ width:260px; height:180px;
 	color: #7C7C68;
 	float:left;
 	display: inline;
-	/*display: inline-block;*/
 }
 <?php } ?>
 </style>
