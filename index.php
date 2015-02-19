@@ -84,12 +84,18 @@ body {
 	text-align:center;
 	padding: 10px;
 }
-#formgetmap b{
+/*#formgetmap b{*/
+#mapIntro b{
 	font-size: 230%;
 	background: default;
 }
+#formgetmap {
+	display:none;}
+#formnewmap{display:none;}
+#cancelintroform{display:none;}
 <?php if ($map_data_exists == false) { ?>
-#formgetmap { 
+/*#formgetmap { */
+#mapIntro{
   display: inline-block;
   font-size: 140%;
   margin-top: 10em;
@@ -99,7 +105,8 @@ body {
 }
 <?php } ?>
 <?php if ($map_data_exists) { ?>
-	#formgetmap{
+	/*#formgetmap { */
+	#mapIntro{
 		font-size: 100%;
 		display: inline-block;
 		margin-top: 0;
@@ -107,7 +114,8 @@ body {
 		padding: 0 3em;
 		border: none;
 	}
-	#formgetmap b{
+	/*#formgetmap b{ */
+	#mapIntro b{
 		text-decoration: none;
 	}
 	#intro{
@@ -466,7 +474,8 @@ width:260px; height:180px;
 	<div class = "container-fluid"><!--bootstrap!-->
 	<div id="output"></div>
 	<div class="title">
-		<form class="form-inline" role="form" id="formgetmap" name="formgetmap" method="POST" action="index.php">
+		<div id="mapIntro" class="title">
+		
 			<b>"Then and Now" Map Helper</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<br><br>
 			<p id="intro">
@@ -474,7 +483,7 @@ width:260px; height:180px;
 with historic photos stored in the Ohio Memory Collection.<!--a CONTENTdm collection. It makes use of an SQLite
 database (but could easily be substituted by any other means of storing/retrieving 
 JSON data).--><br><br>
-
+	<form class="form-inline" role="form" id="formgetmap" name="formgetmap" method="POST" action="index.php">
 			Please choose the name of the city to retrieve the relevant images and markers.</p>
 			<!--<div class="input-append">!-->
 			<div class="btn-group" role="group">
@@ -497,7 +506,20 @@ JSON data).--><br><br>
 			<button type="submit" class="btn btn-default" name="getdata" value="Get Map Data">Get Map Data</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</div>
 		</form>
-	</div><br><br>
+		<form class="form-inline" role="form" id="formnewmap" name="formnewmap" method="POST" action="do_query.php"><br/>
+		<div class="form-group">
+			<p>Type the name of the new city.</p>
+			<label>City Name:</label>
+			<input type="text" class="form-control"id="cityName" onblur="newCity()">
+			<button type="submit" class="btn btn-default" name="createmap" value="Create Map">Create Map</button>
+		</div>
+		</form>
+	<br/><br/><div id="introSelection" class="btn-group" role="group">
+	<button id="mapexistform" class="btn btn-default" onclick="document.getElementById('formgetmap').style.display='inline'; document.getElementById('mapexistform').style.display='none';document.getElementById('formnewmap').style.display='none'; document.getElementById('newmapform').style.display='inline';document.getElementById('cancelintroform').style.display='inline';">Select A Saved Map</button> <button id="newmapform" class="btn" onclick="document.getElementById('formnewmap').style.display='inline'; document.getElementById('formgetmap').style.display='none'; document.getElementById('newmapform').style.display='none';document.getElementById('mapexistform').style.display='inline';document.getElementById('cancelintroform').style.display='inline';">Create New Map</button>
+	<button id="cancelintroform" class="btn" onclick="document.getElementById('formnewmap').style.display='none'; document.getElementById('formgetmap').style.display='none'; document.getElementById('newmapform').style.display='inline';document.getElementById('mapexistform').style.display='inline';document.getElementById('cancelintroform').style.display='none';">Cancel</button>
+</div>
+</div>
+	<!--Notepad lines up w/committed out div--></div><br><br>
 				<?php if ($map_data_exists) { ?>
 					<div class="title">
 						<form id="formshow" name="formshow">
@@ -602,7 +624,8 @@ JSON data).--><br><br>
 									<form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>">
 									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('titleStreet<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('submitGroup<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit Meta Data</button>
 									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit Picture View</button>
-									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button></a></form>
+									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button></a>
+									</form>
 									</div>
 								</div>
 								
