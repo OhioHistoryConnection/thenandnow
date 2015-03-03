@@ -500,13 +500,39 @@ JSON data).--><br><br>
 		<form class="form-inline" role="form" id="formnewmap" name="formnewmap" method="POST" action="do_query.php"><br/>
 		<div class="form-group">
 			<p>Type the name of the new city.</p>
-			<label>City Name:</label>
-			<input type="text" class="form-control"id="cityName" onblur="newCity()">
-			<button type="submit" class="btn btn-default" name="createmap" value="Create Map">Create Map</button>
+			<label id="newCityLabel">City Name:</label>
+			<input type="text" class="form-control"id="cityName" onkeydown="clearwarning()">
+			<button type="submit" class="btn btn-default" name="createmap" onfocus="newCity()" onmouseover="newCity()" value="Create Map">Create Map</button>
 		</div>
 		</form>
+		<script>
+	/*	function newCity(){alert("works");}	*/
+	function clearwarning(){
+		document.getElementById("newCityLabel").innerHTML = "City Name:";
+		document.getElementById("newCityLabel").style.color='black';
+	}
+	function newCity(){
+	<?php for ($i = 0; $i < $max; $i++) {
+					if($map_id_json_array[$i]['mapid'] <> $mapID){
+						echo 'var cityExist = "'.$map_id_json_array[$i]['mapid'].'";';?>
+						//var cityExist = "Columbus";
+						var cityInput = $("input:text").val();//"columbus";
+						//alert(cityInput);
+						if(cityExist == cityInput){
+							document.getElementById("newCityLabel").innerHTML = "City Already Exists";
+							document.getElementById("newCityLabel").style.color='red';
+							document.getElementById("cityName").value=null;
+							document.getElementById("cityName").focus();
+							
+						}
+					<?php }
+				}?>
+						//alert("works");		
+	}
+	
+		</script>
 	<br/><br/><div id="introSelection" class="btn-group" role="group">
-	<button id="mapexistform" class="btn btn-default" onclick="document.getElementById('formgetmap').style.display='inline'; document.getElementById('mapexistform').style.display='none';document.getElementById('formnewmap').style.display='none'; document.getElementById('newmapform').style.display='inline';document.getElementById('cancelintroform').style.display='inline';">Select A Saved Map</button> <button id="newmapform" class="btn" onclick="document.getElementById('formnewmap').style.display='inline'; document.getElementById('formgetmap').style.display='none'; document.getElementById('newmapform').style.display='none';document.getElementById('mapexistform').style.display='inline';document.getElementById('cancelintroform').style.display='inline';">Create New Map</button>
+	<button id="mapexistform" class="btn btn-default" onclick="document.getElementById('formgetmap').style.display='inline'; document.getElementById('mapexistform').style.display='none';document.getElementById('formnewmap').style.display='none'; document.getElementById('newmapform').style.display='inline';document.getElementById('cancelintroform').style.display='inline';">Select A Saved Map</button> <button id="newmapform" class="btn" onclick="document.getElementById('formnewmap').style.display='inline'; document.getElementById('formgetmap').style.display='none'; document.getElementById('newmapform').style.display='none';document.getElementById('mapexistform').style.display='inline';document.getElementById('cancelintroform').style.display='inline';document.getElementById('cityName').focus();">Create New Map</button>
 	<button id="cancelintroform" class="btn" onclick="document.getElementById('formnewmap').style.display='none'; document.getElementById('formgetmap').style.display='none'; document.getElementById('newmapform').style.display='inline';document.getElementById('mapexistform').style.display='inline';document.getElementById('cancelintroform').style.display='none';">Cancel</button>
 </div>
 </div>
