@@ -11,7 +11,6 @@
 define("ABS_PATH", dirname(__FILE__));
 
 // single blank record
-//$new_record = '{"latitude":"0","longitude":"0","itemtitle":"Enter a title","cdmurl":"Enter a CDM reference URL","identifier":"Enter a local identifier","heading":"0","pitch":"0","zoom":"0"}';
 $new_record="";
 $mapdata = "";
 $map_data_json = "";
@@ -71,6 +70,34 @@ if (isset($_GET["getmap"]) || isset($_POST["getmap"])) {
 		print 'Exception : '.$e->getMessage();
 	}
 
+}
+
+else{
+if(isset($GET_["createmap"]) || isset($_POST["createmap"])){
+$mapPath="columbus";
+$mapID=strip_tags($_POST["cityName"]);
+$mapdata=null;
+//call mapID for drop down and $_POST comparison
+try	{
+	include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
+
+		$dbh = new PDO('sqlite:'.$config['PATH_TO_SQLITE']);
+		$sql = $dbh->prepare("SELECT mapid FROM maprecord");# where mapdata <>NULL");
+		$sql->execute();
+		$map_id_json_array = $sql->fetchAll(); //[0]['mapdata'];
+		$map_id_json = $map_id_json_array[0]['mapid'];#[0]['mapdata'];
+		$max = count($map_id_json_array);
+		
+		$sql = "INSERT INTO maprecord (mapid, mapdata) VALUES ('".$mapID."', '".$mapdata."');";
+		$dbh->exec($sql);
+		header('Location: '.$config['THIS_HOST'].'/index.php?getmap='.$mapID);
+}
+catch(Exception $e){
+				print 'Exception : '.$e->getMessage();
+}
+$dbh = NULL;
+}
+else{echo "crap";} 
 }
 
 ?>

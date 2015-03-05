@@ -1,5 +1,4 @@
 <?php
-
 /**
   * Script to manage "Then and Now" map data in an SQLite database
   * Phil Sager <psager@ohiohistory.org>.
@@ -57,9 +56,9 @@ if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
 	}
 	else{
 		$mapID =null;
-		//echo("<script> alert(\"Please enter a valid city to continue.\");</script>");
 		$map_data_exists = false;
 	}
+	
 ?>
 	
 <!DOCTYPE html>
@@ -476,7 +475,6 @@ database (but could easily be substituted by any other means of storing/retrievi
 JSON data).--><br><br>
 	<form class="form-inline" role="form" id="formgetmap" name="formgetmap" method="POST" action="index.php">
 			Please choose the name of the city to retrieve the relevant images and markers.</p>
-			<!--<div class="input-append">!-->
 			<div class="btn-group" role="group">
 			<div class="btn-group" role="group" aria-label="...">
 			<?php
@@ -501,12 +499,11 @@ JSON data).--><br><br>
 		<div class="form-group">
 			<p>Type the name of the new city.</p>
 			<label id="newCityLabel">City Name:</label>
-			<input type="text" class="form-control"id="cityName" onkeydown="clearwarning()">
+			<input type="text" class="form-control"id="cityName" name="cityName" onkeydown="clearwarning()">
 			<button type="submit" class="btn btn-default" name="createmap" onfocus="newCity()" onmouseover="newCity()" value="Create Map">Create Map</button>
 		</div>
 		</form>
 		<script>
-	/*	function newCity(){alert("works");}	*/
 	function clearwarning(){
 		document.getElementById("newCityLabel").innerHTML = "City Name:";
 		document.getElementById("newCityLabel").style.color='black';
@@ -515,19 +512,15 @@ JSON data).--><br><br>
 	<?php for ($i = 0; $i < $max; $i++) {
 					if($map_id_json_array[$i]['mapid'] <> $mapID){
 						echo 'var cityExist = "'.$map_id_json_array[$i]['mapid'].'";';?>
-						//var cityExist = "Columbus";
-						var cityInput = $("input:text").val();//"columbus";
-						//alert(cityInput);
-						if(cityExist == cityInput){
+						var cityInput = $("input:text").val();
+						if(cityExist == cityInput.toLowerCase()){
 							document.getElementById("newCityLabel").innerHTML = "City Already Exists";
 							document.getElementById("newCityLabel").style.color='red';
 							document.getElementById("cityName").value=null;
-							document.getElementById("cityName").focus();
-							
+							document.getElementById("cityName").focus();		
 						}
 					<?php }
-				}?>
-						//alert("works");		
+				}?>	
 	}
 	
 		</script>
@@ -535,8 +528,7 @@ JSON data).--><br><br>
 	<button id="mapexistform" class="btn btn-default" onclick="document.getElementById('formgetmap').style.display='inline'; document.getElementById('mapexistform').style.display='none';document.getElementById('formnewmap').style.display='none'; document.getElementById('newmapform').style.display='inline';document.getElementById('cancelintroform').style.display='inline';">Select A Saved Map</button> <button id="newmapform" class="btn" onclick="document.getElementById('formnewmap').style.display='inline'; document.getElementById('formgetmap').style.display='none'; document.getElementById('newmapform').style.display='none';document.getElementById('mapexistform').style.display='inline';document.getElementById('cancelintroform').style.display='inline';document.getElementById('cityName').focus();">Create New Map</button>
 	<button id="cancelintroform" class="btn" onclick="document.getElementById('formnewmap').style.display='none'; document.getElementById('formgetmap').style.display='none'; document.getElementById('newmapform').style.display='inline';document.getElementById('mapexistform').style.display='inline';document.getElementById('cancelintroform').style.display='none';">Cancel</button>
 </div>
-</div>
-	<!--Notepad lines up w/committed out div--></div><br><br>
+</div></div><br><br>
 				<?php if ($map_data_exists) { ?>
 					<div class="title">
 						<form id="formshow" name="formshow">
@@ -626,7 +618,7 @@ JSON data).--><br><br>
 									  <div id="imagepreview<?php echo $i ?>">
 											<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="260" height="180">
 									
-									  <img class="staticMapImg" id="staticMapImg<?php echo $i ?>"><!-- src='https://maps.googleapis.com/maps/api/streetview?location=<?php //echo $map_data[$i]["latitude"]?>,<?php// echo $map_data[$i]["longitude"]?>&pitch=<?php //echo $map_data[$i]["pitch"] ?>&heading=<?php //echo $map_data[$i]["heading"] ?>&fov=<?php //echo $map_data[$i]["zoom"]?>&size=260x180'>-->
+									  <img class="staticMapImg" id="staticMapImg<?php echo $i ?>">
 <script>
 	//convert zoom to FOV for static map view
 	var zoom = Number(<?php echo $map_data[$i]["zoom"]?>);
@@ -650,10 +642,7 @@ JSON data).--><br><br>
 					<form role="form" id="updateLine" name="updateLine" onreset="resetImage(<?php echo ($maxImages+1); ?>)" method="POST" action="do_query.php">
 					<input type="hidden" name="recordno" value="<?php echo $i ?>"> 
 								<!--Edit Form-->
-								<div id="titleStreet<?php echo $i ?>" class="panel-body" style="display:none">
-								
-								<!--Copy from add line-->
-														<div class="form-group">
+								<div id="titleStreet<?php echo $i ?>" class="panel-body" style="display:none">			<div class="form-group">
 							<label id="itemlabel<?php echo $i ?>" for="itemtitle">Title: </label>
 							<input type="text" class="form-control" id="itemtitle<?php echo $i ?>" name="title<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  pattern="a-zA-Z\ \" onchange="validateTitle()">
 							</div>
