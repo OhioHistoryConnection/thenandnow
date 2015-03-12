@@ -162,63 +162,6 @@ width:260px; height:180px;
 <script>
 	var mapname = location.search.replace( '?getmap=', '' );
 	$(document).ready(function() {
-		// creates side by side view for historic image and Google Street View
-		/*$('.changeRecord').click(function() {
-			
-			$('#pano').empty();
-			$('#imageview').empty();
-			
-			var recid = $(this).attr("id");
-			var recidno = recid.replace(/.*_(.*)/,"$1");
-			var maplat = "#latitude_" + recidno;
-			
-			var lat = $('#latitude_' + recidno).val();
-			var lon = $('#longitude_' + recidno).val();
-
-			if (!parseInt(lat) || !parseInt(lon)) {
-				alert("Need both a latitude and longitude");
-				return false;
-			}
-			
-			var povHead = 0;
-			var povPitch = 0;
-			var povZoom = 0;
-			var imgPath = $('#cdmurl_' + recidno).val();
-			if (imgPath.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=") < 0) {
-				alert("Need a valid CONTENTdm scaled image URL");
-				return false;
-			}
-			
-			$('#streetwrapper').show();
-			
-      var thumbImg = $('<img />', {
-        src: imgPath
-      });
-      $('#imageview').append(thumbImg);
-			var mapPos = new google.maps.LatLng(lat,lon);
-			var panoramaOptions = {
-	      position: mapPos,
-	      pov: {
-	        heading: povHead,
-	        pitch: povPitch,
-	        zoom: povZoom
-	      },
-	      visible: true
-	    };
-	    var panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), panoramaOptions);
-			
-			// listen for changes to panorama area and update input blank values as needed
-	    google.maps.event.addListener(panorama, 'position_changed', function() {
-	      $('#lat_cell').val(panorama.getPosition().lat().toString());
-	      $('#lng_cell').val(panorama.getPosition().lng().toString());     
-	    });
-	    google.maps.event.addListener(panorama, 'pov_changed', function() {
-	      $('#heading_cell').val(panorama.getPov().heading);
-	      $('#pitch_cell').val(panorama.getPov().pitch);
-	      $('#zoom_cell').val(panorama.getPov().zoom);
-	    });
-				
-		});*/
 		// set input value on blur
 		$('.mapinput').blur(function() {
 			var setDomVal = $(this).val();
@@ -330,8 +273,7 @@ width:260px; height:180px;
 	function addressInput(row){
 		/*Add Line */
 			document.getElementById("addressLabel"+row).style.display="inline"; document.getElementById("autocomplete"+row).style.display="inline"; document.getElementById("autocomplete"+row).focus(); document.getElementById("convertAddress"+row).style.display="inline"; document.getElementById("convertAddress"+row).style.display="inline";
-		//if((row < <?php echo $max ?>) ||(row == <?php echo $max ?>)){
-		document.getElementById("cancelStreet"+row).style.diplay="inline";document.getElementById("submitGroup"+row).style.diplay="none";//}
+		document.getElementById("cancelStreet"+row).style.diplay="inline";document.getElementById("submitGroup"+row).style.diplay="none";
 	}
 				
 	function validateAddress(row){
@@ -345,9 +287,7 @@ width:260px; height:180px;
 		else{
 			var mygc = new google.maps.Geocoder();
 			mygc.geocode({'address' : streetAddress }, function(results, status){
-				//var city =results[0].address_components.types.locality();
 				place = autocomplete.getPlace();
-				//alert([streetAddress]);//place.address_components[2].types[0]);
 				$('#lat_cell'+row).attr("value", results[0].geometry.location.lat());
 				$('#lng_cell'+row).attr("value", results[0].geometry.location.lng());	
 			});
@@ -370,7 +310,6 @@ width:260px; height:180px;
 		// verify thatURL is in the form: http://[CONTENTdm home]/cdm/ref/collection/[alias]/id/[id]
 		cdmrefurl = $("#picturelocal"+row).val();
 		if ((Boolean(cdmrefurl) == false) || (cdmrefurl.length < 12) || (cdmrefurl.indexOf("<?php echo($config['CONTENTDM_HOME']) ?>/cdm/ref/collection") < 0)){
-			//alert(cdmrefurl);
 			document.getElementById("picturetitle"+row).innerHTML = "Need a valid CONTENTdm reference URL";
 			document.getElementById("picturetitle"+row).style.color='red';
 			document.getElementById("picturelocal"+row).value=null;
@@ -401,7 +340,6 @@ width:260px; height:180px;
 					var imgPath = "<?php echo($config['CONTENTDM_HOME']) ?>/utils/ajaxhelper/?CISOROOT=" + refvals[0] + '&CISOPTR=' + refvals[1] + '&action=2&DMSCALE=' + formatted_scale + '&DMWIDTH=' + targ_w + '&DMHEIGHT=' + targ_h + '&DMX=0&DMY=0';
 					$('#cdmurl_'+row).attr("value", imgPath);
 					$('#identifier_'+row).attr("value", identifier);
-					//alert(imgPath);
 					while( $("#cdmurl_"+row).length < 1){}
 					imagestudio(imgPath, row);
 				}				
@@ -426,9 +364,6 @@ width:260px; height:180px;
 		var povPitch = Math.round($('#pitch_cell'+row).val());
 		var povZoom = Math.round($('#zoom_cell'+row).val());
 		$('#streetwrapper'+row).show();
-		/*var thumbImg = $('<img />', {
-			src: picSource
-		});*/
 		document.getElementById('imageview'+row).src=picSource;
 		var mapPos = new google.maps.LatLng(lat,lon);
 		var panoramaOptions = {
@@ -499,7 +434,7 @@ JSON data).--><br><br>
 		<div class="form-group">
 			<p>Type the name of the new city.</p>
 			<label id="newCityLabel">City Name:</label>
-			<input type="text" class="form-control"id="cityName" name="cityName" onkeydown="clearwarning()">
+			<input type="text" class="form-control"id="cityName" name="cityName" onchange="clearwarning()">
 			<button type="submit" class="btn btn-default" name="createmap" onfocus="newCity()" onmouseover="newCity()" value="Create Map">Create Map</button>
 		</div>
 		</form>
@@ -623,7 +558,6 @@ JSON data).--><br><br>
 	//convert zoom to FOV for static map view
 	var zoom = Number(<?php echo $map_data[$i]["zoom"]?>);
 	var fovNum = Math.min(Math.max((Math.round(3.9018*Math.pow(zoom,2) - 42.432*zoom + 123)),10),120);
-	//fov=fovNum.toString();
 	var staticUrl = "https://maps.googleapis.com/maps/api/streetview?location=<?php echo $map_data[$i]['latitude']?>,<?php echo $map_data[$i]['longitude']?>&pitch=<?php echo $map_data[$i]['pitch'] ?>&heading=<?php echo $map_data[$i]['heading'] ?>&fov="+fovNum+"&size=260x180";
 	document.getElementById("staticMapImg<?php echo $i ?>").src=staticUrl;
 </script>
@@ -659,7 +593,6 @@ JSON data).--><br><br>
 							<input type="url" class="form-control" id="picturelocal<?php echo $i ?>" placeholder="New CDM URL if image needs changed" role="group" style="display:none;" required>
 							</div>
 							<button type="button" class="btn" id="sizepic<?php echo $i ?>" onclick="cdmpicture(<?php echo $i ?>)" role="group" style="display:none;">Get Picture</button>
-							<!--<button id="cancelStreet<?php echo $i ?>"  class="btn" type="button" style="display:none;" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>-->
 							</div>
 							<!--Form Part 2-->
 							<div id="imagepov<?php echo $i ?>" style="display:none;">

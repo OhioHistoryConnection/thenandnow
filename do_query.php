@@ -97,7 +97,7 @@ catch(Exception $e){
 }
 $dbh = NULL;
 }
-else{echo "crap";} 
+
 }
 
 ?>
