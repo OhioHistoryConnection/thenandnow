@@ -35,6 +35,7 @@ include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
 
 	$(function() {
 		var mapname = location.search.replace( '?getmap=', '' );
+		var dbmapname = mapname.replace('%20', ' ');
 	    var myLatlng = new google.maps.LatLng(0, 0);
 	    var myOptions = {
 			zoom: 10,
@@ -48,7 +49,7 @@ include(ABS_PATH . '/conf/config_'.$mapPath.'.php');
 		$.ajax({
 		    type: 'GET',
 		    url: 'do_query.php',
-		    data: { getmap: mapname },
+			data: { getmap: dbmapname },
 		    success: function(data){	
 		    	var results = JSON.parse(data);    
 		      	// creates a variable used to hold the outer dimensions of map
