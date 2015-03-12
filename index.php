@@ -244,15 +244,16 @@ width:260px; height:180px;
 	// [END region_geolocation]
 
 	function resetImage(row){
+		document.getElementById("picturetitle"+row).style.display="none";
+		document.getElementById("picturelocal"+row).style.display="none";
+		document.getElementById("sizepic"+row).style.display="none";
+		document.getElementById("imagepov"+row).style.display="none";
+		document.getElementById("titleStreet"+row).style.display="inline";
 		document.getElementById("itemlabel"+row).innerHTML = "Title: ";
 		document.getElementById("itemlabel"+row).style.color='black';
 		document.getElementById("itemtitle"+row).focus();
 		document.getElementById("addressLabel"+row).style.display="none"; document.getElementById("autocomplete"+row).style.display="none";
 		document.getElementById("convertAddress"+row).style.display="none";
-		document.getElementById("picturetitle"+row).style.display="none";
-		document.getElementById("picturelocal"+row).style.display="none";
-		document.getElementById("sizepic"+row).style.display="none";
-		document.getElementById("imagepov"+row).style.display="none";
 	}
 	
 	function validateTitle(row){
