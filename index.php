@@ -574,12 +574,12 @@ JSON data).--><br><br>
 								</div>
 								
 								
-					<form role="form" id="updateLine" name="updateLine" onreset="resetImage(<?php echo ($maxImages+1); ?>)" method="POST" action="do_query.php">
+					<form role="form" id="formupdate" name="formupdate" method="POST" action="do_query.php" novalidate> <!-- onreset="resetImage(<?php echo ($maxImages+1); ?>)"-->
 					<input type="hidden" name="recordno" value="<?php echo $i ?>"> 
 								<!--Edit Form-->
 								<div id="titleStreet<?php echo $i ?>" class="panel-body" style="display:none">			<div class="form-group">
 							<label id="itemlabel<?php echo $i ?>" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle<?php echo $i ?>" name="title<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  pattern="a-zA-Z\ \" onchange="validateTitle()">
+							<input type="text" class="form-control" id="itemtitle<?php echo $i ?>" name="title<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  pattern="a-zA-Z\ \" onchange="validateTitle(<?php echo $i ?>)">
 							</div>
 							<button class="btn" type="button" id="displayAddress<?php echo $i ?>" onclick="addressInput(<?php echo $i ?>); document.getElementById('displayPicture<?php echo $i ?>').style.display='inline';" role="group">Change Address</button>
 							<button class="btn" type="button" id="displayPicture<?php echo $i ?>" onclick="document.getElementById('displayAddress<?php echo $i ?>').style.display='inline'; document.getElementById('picturetitle<?php echo $i ?>').style.display='inline'; document.getElementById('picturelocal<?php echo $i ?>').style.display='inline'; document.getElementById('sizepic<?php echo $i ?>').style.display='inline'; document.getElementById('addressLabel<?php echo $i ?>').style.display='none'; document.getElementById('autocomplete<?php echo $i ?>').style.display='none'; document.getElementById('convertAddress<?php echo $i ?>').style.display='none';" role="group">Change CONTENTdm URL</button><!--document.getElementById('cancelStreet<?php echo $i ?>').style.display='inline';-->
@@ -619,7 +619,7 @@ JSON data).--><br><br>
 							</div>
 							<div id="submitGroup<?php echo $i ?>" style="display:none;">
 		<br/><button class="btn"type="submit" name="updateLine">Update Image</button>
-		<button id="cancelUpdate<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
+		<button id="cancelUpdate<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'none'; document.getElementById('submitGroup<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
 		</div>
 							<!--End of Edit--->
 							</form>
