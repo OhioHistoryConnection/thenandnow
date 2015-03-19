@@ -228,7 +228,7 @@ width:260px; height:180px;
 	// [START region_geolocation]
 	// Bias the autocomplete object to the user's geographical location,
 	// as supplied by the browser's 'navigator.geolocation' object.
-	function geolocate() {
+	function geolocate(row) {
 	  if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function(position) {
 		  var geolocation = new google.maps.LatLng(
@@ -237,7 +237,8 @@ width:260px; height:180px;
 			center: geolocation,
 			radius: position.coords.accuracy
 		  });
-		  autocomplete.setBounds(circle.getBounds());
+var target = ("autocomplete"+row);		  
+alert(target);//target.setBounds(circle.getBounds());
 		});
 	  }
 	}
@@ -274,7 +275,8 @@ width:260px; height:180px;
 	function addressInput(row){
 		/*Add Line */
 			document.getElementById("addressLabel"+row).style.display="inline"; document.getElementById("autocomplete"+row).style.display="inline"; document.getElementById("autocomplete"+row).focus(); document.getElementById("convertAddress"+row).style.display="inline"; document.getElementById("convertAddress"+row).style.display="inline";
-		document.getElementById("cancelStreet"+row).style.diplay="inline";document.getElementById("submitGroup"+row).style.diplay="none";
+		//document.getElementById("cancelStreet"+row).style.diplay="inline";
+		document.getElementById("submitGroup"+row).style.diplay="none";
 	}
 				
 	function validateAddress(row){
@@ -302,7 +304,8 @@ width:260px; height:180px;
 			document.getElementById("sizepic"+row).style.display="inline";
 			document.getElementById("convertAddress"+row).style.display="none";
 			document.getElementById("picturelocal"+row).focus();
-			if(row <= <?php echo $max ?>){document.getElementById("cancelStreet"+row).style.diplay="none";document.getElementById("submitGroup"+row).style.diplay="inline";}
+			if(row <= <?php echo $max ?>){//document.getElementById("cancelStreet"+row).style.diplay="none";
+			document.getElementById("submitGroup"+row).style.diplay="inline";}
 		}
 	}
 				
@@ -496,7 +499,7 @@ JSON data).--><br><br>
 							</div>
 							<div class="form-group">
 							<label id="addressLabel<?php echo ($maxImages+1); ?>" for="getLatLong" style="display:none">Street Address: </label>
-							<input id="autocomplete<?php echo ($maxImages+1); ?>" class="form-control" name="address<?php echo ($maxImages+1); ?>" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate()"  style="display:none"required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							<input id="autocomplete<?php echo ($maxImages+1); ?>" class="form-control" name="address<?php echo ($maxImages+1); ?>" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate(<?php echo ($maxImages+1); ?>)"  style="display:none"required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
 							<button type="button" class="btn btn-default" id="convertAddress<?php echo ($maxImages+1); ?>" onclick="validateAddress(<?php echo ($maxImages+1); ?>)" style="display:none"role="group">Get Lat Long</button>
 							<div class="form-group">
@@ -530,8 +533,8 @@ JSON data).--><br><br>
 				<button type="submit" class="btn btn-default" name="addline" value="Add Line">Add Line</button>
 							</div>
 	<input type="reset" class="btn">
-	<!--Cancel Function Option
-	<button class="btn" onclick="document.getElementById('formadd').reset(); document.getElementById('collapseImage').display=none;">Cancel</button>-->
+	<!--Cancel Function Option-->
+	<button class="btn" id="cancelUpdate<?php echo ($maxImages+1); ?>" onclick="document.getElementById('formadd').reset(); document.getElementById('collapseImage').display=none;">Cancel</button>
 						</form>
 						</div>
 					</div>
@@ -581,11 +584,11 @@ JSON data).--><br><br>
 							<label id="itemlabel<?php echo $i ?>" for="itemtitle">Title: </label>
 							<input type="text" class="form-control" id="itemtitle<?php echo $i ?>" name="title<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  pattern="a-zA-Z\ \" onchange="validateTitle(<?php echo $i ?>)">
 							</div>
-							<button class="btn" type="button" id="displayAddress<?php echo $i ?>" onclick="addressInput(<?php echo $i ?>); document.getElementById('displayPicture<?php echo $i ?>').style.display='inline';" role="group">Change Address</button>
+							<button class="btn" type="button" id="displayAddress<?php echo $i ?>" onclick="addressInput(<?php echo $i ?>); document.getElementById('displayPicture<?php echo $i ?>').style.display='inline'; initialize(<?php echo $i ?>)" role="group">Change Address</button>
 							<button class="btn" type="button" id="displayPicture<?php echo $i ?>" onclick="document.getElementById('displayAddress<?php echo $i ?>').style.display='inline'; document.getElementById('picturetitle<?php echo $i ?>').style.display='inline'; document.getElementById('picturelocal<?php echo $i ?>').style.display='inline'; document.getElementById('sizepic<?php echo $i ?>').style.display='inline'; document.getElementById('addressLabel<?php echo $i ?>').style.display='none'; document.getElementById('autocomplete<?php echo $i ?>').style.display='none'; document.getElementById('convertAddress<?php echo $i ?>').style.display='none';" role="group">Change CONTENTdm URL</button><!--document.getElementById('cancelStreet<?php echo $i ?>').style.display='inline';-->
 							<div class="form-group">
 							<label id="addressLabel<?php echo $i ?>" style="display:none;" for="getLatLong">Street Address: </label>
-							<input id="autocomplete<?php echo $i ?>" class="form-control" style="display:none;" name="address<?php echo $i ?>" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate()"   pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							<input id="autocomplete<?php echo $i ?>" class="form-control" style="display:none;" name="address<?php echo $i ?>" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate(<?php echo $i ?>)"   pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
 							</div>
 							<button class="btn" type="button" id="convertAddress<?php echo $i ?>" style="display:none;" onclick="myFunction()" role="group">Get Lat Long</button>
 							<!--Feature Option: Change CDM picture-->
