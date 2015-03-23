@@ -355,6 +355,13 @@ alert(target);//target.setBounds(circle.getBounds());
 			while( $("#cdmurl_"+row).length < 1){}
 		}	
 	}
+	
+	function EditDisplay(imageUrl,row){
+		document.getElementById('imagepreview'+row).style.display = 'none';
+		imagestudio(imageUrl, row); 
+		document.getElementById('submitGroup' + row).style.display = 'inline';
+		document.getElementById('editButtons' + row).style.display = 'none';
+	}
 	function imagestudio(picSource,row){
 		$('#pano'+row).empty();
 		$('#imageview'+row).empty();
@@ -569,8 +576,8 @@ JSON data).--><br><br>
 									</div>
 									<div id="editButtons<?php echo $i ?>" class="btn-group">
 									<form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>">
-									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('titleStreet<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('submitGroup<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit Meta Data</button>
-									<button class="btn" type="button" onclick="document.getElementById('imagepreview<?php echo $i ?>').style.display = 'none';document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline';imagestudio('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>); document.getElementById('editButtons<?php echo $i ?>').style.display = 'none'; document.getElementById('submitGroup<?php echo $i ?>').style.display = 'inline';">Edit Picture View</button>
+									<button class="btn" type="button" id="editMData" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'inline';EditDisplay('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>);">Edit Meta Data</button>
+									<button class="btn" type="button" id="editView" onclick="document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline'; EditDisplay('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>);">Edit Picture View</button>
 									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button></a>
 									</form>
 									</div>
@@ -604,8 +611,9 @@ JSON data).--><br><br>
 							<label id="picaddress<?php echo $i ?>"></label><br/>
 							<input id="cdmurl_<?php echo $i ?>" name="cdmurl_<?php echo $i ?>"type="text" value="<?php echo $map_data[$i]["cdmurl"] ?>" style="display:none;" required>
 							<input id="identifier_<?php echo $i ?>" name="identifier_<?php echo $i ?>"type="text" value="<?php echo $map_data[$i]["identifier"] ?>" style="display:none;" required>
-							<label>Adjust the Google Viewpoint to match the image.</label>
+							
 							<div id="streetwrapper<?php echo $i ?>">
+		<label>Adjust the Google Viewpoint to match the image.</label>
 		<div id="panoInfo<?php echo $i ?>">
 	  	latitude: <input type="text" id="lat_cell<?php echo $i ?>" name="lat_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>" size="10">, longitude: <input type="text" id="lng_cell<?php echo $i ?>" name="lng_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>" size="10"><br/>
 	  	heading: <input type="text" id="heading_cell<?php echo $i ?>" name="heading_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="9">, 
@@ -622,7 +630,7 @@ JSON data).--><br><br>
 							</div>
 							<div id="submitGroup<?php echo $i ?>" style="display:none;">
 		<br/><button class="btn"type="submit" name="updateLine">Update Image</button>
-		<button id="cancelUpdate<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'none'; document.getElementById('submitGroup<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
+		<button id="cancelUpdate<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'none'; document.getElementById('submitGroup<?php echo $i ?>').style.display = 'none'; document.getElementById('streetwrapper<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
 		</div>
 							<!--End of Edit--->
 							</form>
