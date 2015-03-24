@@ -194,7 +194,36 @@ width:260px; height:180px;
 		});
 			
 	});
-	
+	//Map Selection or Creation Forms
+	function mapListing(){
+		cancelNewCity();
+		hideNewMap();
+		document.getElementById('formgetmap').style.display='inline';
+		document.getElementById('mapexistform').style.display='none';		
+	}
+	function mapCreation(){
+		cancelNewCity();
+		displayMapSelection();
+		document.getElementById('formnewmap').style.display='inline';
+		document.getElementById('newmap').style.display='none';
+		document.getElementById('cityName').focus();
+	}
+	function cancelMap(){
+		document.getElementById('cancelintroform').style.display='none';
+		hideNewMap();
+		displayMapSelection();
+	}
+	function displayMapSelection(){
+		document.getElementById('formgetmap').style.display='none';
+		document.getElementById('mapexistform').style.display='inline';
+	}
+	function hideNewMap(){
+		document.getElementById('formnewmap').style.display='none'; 
+		document.getElementById('newmap').style.display='inline';
+	}
+	function cancelNewCity(){
+		document.getElementById('cancelintroform').style.display='inline';
+	}
 	// delete a line
 	function confirmDelete() {
 		var answer = confirm("Are you sure?");
@@ -471,8 +500,8 @@ JSON data).--><br><br>
 	
 		</script>
 	<br/><br/><div id="introSelection" class="btn-group" role="group">
-	<button id="mapexistform" class="btn btn-default" onclick="document.getElementById('formgetmap').style.display='inline'; document.getElementById('mapexistform').style.display='none';document.getElementById('formnewmap').style.display='none'; document.getElementById('newmapform').style.display='inline';document.getElementById('cancelintroform').style.display='inline';">Select A Saved Map</button> <button id="newmapform" class="btn" onclick="document.getElementById('formnewmap').style.display='inline'; document.getElementById('formgetmap').style.display='none'; document.getElementById('newmapform').style.display='none';document.getElementById('mapexistform').style.display='inline';document.getElementById('cancelintroform').style.display='inline';document.getElementById('cityName').focus();">Create New Map</button>
-	<button id="cancelintroform" class="btn" onclick="document.getElementById('formnewmap').style.display='none'; document.getElementById('formgetmap').style.display='none'; document.getElementById('newmapform').style.display='inline';document.getElementById('mapexistform').style.display='inline';document.getElementById('cancelintroform').style.display='none';">Cancel</button>
+	<button id="mapexistform" class="btn btn-default" onclick="mapListing();">Select A Saved Map</button><button id="newmap" class="btn" onclick="mapCreation();">Create New Map</button>
+	<button id="cancelintroform" class="btn" onclick="cancelMap();">Cancel</button>
 </div>
 </div></div><br><br>
 				<?php if ($map_data_exists) { ?>
