@@ -233,7 +233,13 @@ width:260px; height:180px;
 			return false;
 		}
 	}
-	
+//Start Calling Google for Addresses
+function getAddresses(row){
+	document.getElementById("addressLabel"+ row).style.display="inline"; 
+	document.getElementById("autocomplete"+row).style.display="inline"; 
+	document.getElementById("convertAddress" + row).style.display="inline";
+	initialize(row);
+}
 //Google Address Autocomplete Script
 	var placeSearch, autocomplete;
 	var componentForm = {
@@ -267,7 +273,7 @@ width:260px; height:180px;
 			radius: position.coords.accuracy
 		  });
 var target = ("autocomplete"+row);		  
-alert(target);//target.setBounds(circle.getBounds());
+target.setBounds(circle.getBounds());
 		});
 	  }
 	}
@@ -301,10 +307,10 @@ alert(target);//target.setBounds(circle.getBounds());
 		}
 	}
 	
-	function addressInput(row){
-		/*Add Line */
-			document.getElementById("addressLabel"+row).style.display="inline"; document.getElementById("autocomplete"+row).style.display="inline"; document.getElementById("autocomplete"+row).focus(); document.getElementById("convertAddress"+row).style.display="inline"; document.getElementById("convertAddress"+row).style.display="inline";
-		//document.getElementById("cancelStreet"+row).style.diplay="inline";
+	function addressUpdate(row){
+		getAddresses(row);
+		document.getElementById("autocomplete"+row).focus();
+		document.getElementById("displayPicture"+row).style.display='inline';
 		document.getElementById("submitGroup"+row).style.diplay="none";
 	}
 				
@@ -531,11 +537,11 @@ JSON data).--><br><br>
 					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>						
 						<div class="form-group">
 							<label id="itemlabel<?php echo ($maxImages+1); ?>" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle<?php echo ($maxImages+1); ?>" name="title" placeholder="The Ohio Statehouse" required pattern="a-zA-Z\ \" onkeydown='document.getElementById("addressLabel<?php echo ($maxImages+1); ?>").style.display="inline"; document.getElementById("autocomplete<?php echo ($maxImages+1); ?>").style.display="inline"; document.getElementById("convertAddress<?php echo ($maxImages+1); ?>").style.display="inline"; initialize(<?php echo ($maxImages+1); ?>)' onblur="validateTitle(<?php echo ($maxImages+1); ?>)" autofocus>
+							<input type="text" class="form-control" id="itemtitle<?php echo ($maxImages+1); ?>" name="title" placeholder="The Ohio Statehouse"  required pattern="a-zA-Z\ \" onkeydown="getAddresses(<?php echo ($maxImages+1); ?>)" onblur="validateTitle(<?php echo ($maxImages+1); ?>)"  autofocus>
 							</div>
 							<div class="form-group">
 							<label id="addressLabel<?php echo ($maxImages+1); ?>" for="getLatLong" style="display:none">Street Address: </label>
-							<input id="autocomplete<?php echo ($maxImages+1); ?>" class="form-control" name="address<?php echo ($maxImages+1); ?>" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate(<?php echo ($maxImages+1); ?>)"  style="display:none"required pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							<input id="autocomplete<?php echo ($maxImages+1); ?>" class="form-control" name="address<?php echo ($maxImages+1); ?>" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate(<?php echo ($maxImages+1); ?>)"  style="display:none" pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group" required></input>							
 							</div>
 							<button type="button" class="btn btn-default" id="convertAddress<?php echo ($maxImages+1); ?>" onclick="validateAddress(<?php echo ($maxImages+1); ?>)" style="display:none"role="group">Get Lat Long</button>
 							<div class="form-group">
@@ -570,7 +576,7 @@ JSON data).--><br><br>
 							</div>
 	<input type="reset" class="btn">
 	<!--Cancel Function Option-->
-	<button class="btn" id="cancelUpdate<?php echo ($maxImages+1); ?>" onclick="document.getElementById('formadd').reset(); document.getElementById('collapseImage').display=none;">Cancel</button>
+	<!--<button class="btn" type="button" id="cancelUpdate<?php echo ($maxImages+1); ?>" onclick='document.getElementById("formadd").reset(); document.getElementById("collapseImage").display="none";'>Cancel</button>-->
 						</form>
 						</div>
 					</div>
@@ -620,8 +626,8 @@ JSON data).--><br><br>
 							<label id="itemlabel<?php echo $i ?>" for="itemtitle">Title: </label>
 							<input type="text" class="form-control" id="itemtitle<?php echo $i ?>" name="title<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  pattern="a-zA-Z\ \" onchange="validateTitle(<?php echo $i ?>)">
 							</div>
-							<button class="btn" type="button" id="displayAddress<?php echo $i ?>" onclick="addressInput(<?php echo $i ?>); document.getElementById('displayPicture<?php echo $i ?>').style.display='inline'; initialize(<?php echo $i ?>)" role="group">Change Address</button>
-							<button class="btn" type="button" id="displayPicture<?php echo $i ?>" onclick="document.getElementById('displayAddress<?php echo $i ?>').style.display='inline'; document.getElementById('picturetitle<?php echo $i ?>').style.display='inline'; document.getElementById('picturelocal<?php echo $i ?>').style.display='inline'; document.getElementById('sizepic<?php echo $i ?>').style.display='inline'; document.getElementById('addressLabel<?php echo $i ?>').style.display='none'; document.getElementById('autocomplete<?php echo $i ?>').style.display='none'; document.getElementById('convertAddress<?php echo $i ?>').style.display='none';" role="group">Change CONTENTdm URL</button><!--document.getElementById('cancelStreet<?php echo $i ?>').style.display='inline';-->
+							<button class="btn" type="button" id="displayAddress<?php echo $i ?>" onclick=" addressUpdate(<?php echo $i ?>); " role="group">Change Address</button><!--initialize(<?php echo $i ?>)-->
+							<button class="btn" type="button" id="displayPicture<?php echo $i ?>" onclick="document.getElementById('displayAddress<?php echo $i ?>').style.display='inline'; document.getElementById('picturetitle<?php echo $i ?>').style.display='inline'; document.getElementById('picturelocal<?php echo $i ?>').style.display='inline'; document.getElementById('sizepic<?php echo $i ?>').style.display='inline'; document.getElementById('addressLabel<?php echo $i ?>').style.display='none'; document.getElementById('autocomplete<?php echo $i ?>').style.display='none'; document.getElementById('convertAddress<?php echo $i ?>').style.display='none';" role="group">Change CONTENTdm URL</button>
 							<div class="form-group">
 							<label id="addressLabel<?php echo $i ?>" style="display:none;" for="getLatLong">Street Address: </label>
 							<input id="autocomplete<?php echo $i ?>" class="form-control" style="display:none;" name="address<?php echo $i ?>" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate(<?php echo $i ?>)"   pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
