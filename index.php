@@ -115,7 +115,6 @@ body {
 	#intro{
 		display: none;
 	}
-
 #formshow {
 	display: inline-block;
 }
@@ -192,7 +191,6 @@ width:260px; height:180px;
 				return false;
 			}
 		});
-			
 	});
 	//Map Selection or Creation Forms
 	function mapListing(){
@@ -259,7 +257,6 @@ function getAddresses(row){
 		  /** @type {HTMLInputElement}*/ (document.getElementById('autocomplete'+row)),
 		  { types: ['geocode'] });
 	}
-	
 	// [START region_geolocation]
 	// Bias the autocomplete object to the user's geographical location,
 	// as supplied by the browser's 'navigator.geolocation' object.
@@ -278,7 +275,6 @@ target.setBounds(circle.getBounds());
 	  }
 	}
 	// [END region_geolocation]
-
 	function resetImage(row){
 		document.getElementById("picturetitle"+row).style.display="none";
 		document.getElementById("picturelocal"+row).style.display="none";
@@ -291,7 +287,6 @@ target.setBounds(circle.getBounds());
 		document.getElementById("addressLabel"+row).style.display="none"; document.getElementById("autocomplete"+row).style.display="none";
 		document.getElementById("convertAddress"+row).style.display="none";
 	}
-	
 	function validateTitle(row){
 		var title = $("#itemtitle"+row).val();
 		var titlepresent = Boolean(title);
@@ -306,14 +301,12 @@ target.setBounds(circle.getBounds());
 			if(row > <?php echo $max ?>){addressInput(row);}
 		}
 	}
-	
 	function addressUpdate(row){
 		getAddresses(row);
 		document.getElementById("autocomplete"+row).focus();
 		document.getElementById("displayPicture"+row).style.display='inline';
 		document.getElementById("submitGroup"+row).style.diplay="none";
-	}
-				
+	}			
 	function validateAddress(row){
 		var streetAddress= $("#autocomplete"+row).val();
 		var x = Boolean(streetAddress);
@@ -342,8 +335,7 @@ target.setBounds(circle.getBounds());
 			if(row <= <?php echo $max ?>){//document.getElementById("cancelStreet"+row).style.diplay="none";
 			document.getElementById("submitGroup"+row).style.diplay="inline";}
 		}
-	}
-				
+	}			
 	// for purposes of getting a scaled image from CDM reference URL
 	function cdmpicture(row){
 		// verify thatURL is in the form: http://[CONTENTdm home]/cdm/ref/collection/[alias]/id/[id]
@@ -390,7 +382,6 @@ target.setBounds(circle.getBounds());
 			while( $("#cdmurl_"+row).length < 1){}
 		}	
 	}
-	
 	function EditDisplay(imageUrl,row){
 		document.getElementById('imagepreview'+row).style.display = 'none';
 		imagestudio(imageUrl, row); 
@@ -432,7 +423,10 @@ target.setBounds(circle.getBounds());
 			$('#pitch_cell'+row).val(panorama.getPov().pitch);
 			$('#zoom_cell'+row).val(panorama.getPov().zoom);
 		});
-	}	
+	}
+	function UpdatePicture(row){
+		document.getElementById('displayAddress'+ row).style.display='inline'; document.getElementById('picturetitle'+ row).style.display='inline'; document.getElementById('picturelocal'+ row).style.display='inline'; document.getElementById('sizepic'+ row).style.display='inline'; document.getElementById('addressLabel'+ row).style.display='none'; document.getElementById('autocomplete'+ row).style.display='none'; document.getElementById('convertAddress'+ row).style.display='none';
+	}
 </script>
 <?php if ($map_data_exists) { ?>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
@@ -446,7 +440,6 @@ target.setBounds(circle.getBounds());
 	<div id="output"></div>
 	<div class="title">
 		<div id="mapIntro" class="title">
-		
 			<b>"Then and Now" Map Helper</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<br><br>
 			<p id="intro">
@@ -503,7 +496,6 @@ JSON data).--><br><br>
 					<?php }
 				}?>	
 	}
-	
 		</script>
 	<br/><br/><div id="introSelection" class="btn-group" role="group">
 	<button id="mapexistform" class="btn btn-default" onclick="mapListing();">Select A Saved Map</button><button id="newmap" class="btn" onclick="mapCreation();">Create New Map</button>
@@ -529,19 +521,18 @@ JSON data).--><br><br>
 						</div>
 						<div id="collapseImage" class="panel-collapse collapse">
 							<div class="panel-body">
-					
 					<label>This is a 2 part process which includes inputting the picture information and then replicating the picture's focal point on Google street view.</label><br><br>
 					<form role="form" id="formadd" name="formadd" onreset="resetImage(<?php echo ($maxImages+1); ?>)" method="POST" action="do_query.php">
 					<!--Form Part 1-->
 					<div id="titleStreet<?php echo ($maxImages+1); ?>" class="input-group">
-					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>						
+					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>					
 						<div class="form-group">
 							<label id="itemlabel<?php echo ($maxImages+1); ?>" for="itemtitle">Title: </label>
 							<input type="text" class="form-control" id="itemtitle<?php echo ($maxImages+1); ?>" name="title" placeholder="The Ohio Statehouse"  required pattern="a-zA-Z\ \" onkeydown="getAddresses(<?php echo ($maxImages+1); ?>)" onblur="validateTitle(<?php echo ($maxImages+1); ?>)"  autofocus>
 							</div>
 							<div class="form-group">
 							<label id="addressLabel<?php echo ($maxImages+1); ?>" for="getLatLong" style="display:none">Street Address: </label>
-							<input id="autocomplete<?php echo ($maxImages+1); ?>" class="form-control" name="address<?php echo ($maxImages+1); ?>" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate(<?php echo ($maxImages+1); ?>)"  style="display:none" pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group" required></input>							
+							<input id="autocomplete<?php echo ($maxImages+1); ?>" class="form-control" name="address<?php echo ($maxImages+1); ?>" placeholder="1 capitol square, Columbus, OH"  type="text" autocomplete="off" onFocus="geolocate(<?php echo ($maxImages+1); ?>)"  style="display:none" pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group" required></input>					
 							</div>
 							<button type="button" class="btn btn-default" id="convertAddress<?php echo ($maxImages+1); ?>" onclick="validateAddress(<?php echo ($maxImages+1); ?>)" style="display:none"role="group">Get Lat Long</button>
 							<div class="form-group">
@@ -587,18 +578,15 @@ JSON data).--><br><br>
 							<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="123" height="90">&nbsp&nbsp
 							<a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $i ?>">
 						  <?php echo $map_data[$i]["itemtitle"]; ?>
-							</a>							
+							</a>						
 							</h4>
 						</div>
 						<div id="collapse<?php echo $i ?>" class="panel-collapse collapse">
 							<div class="panel-body">
-								
 								<div id="maindisplay" class="panel-body">
-									<div id="dbpics">	
-									 
+									<div id="dbpics">
 									  <div id="imagepreview<?php echo $i ?>">
 											<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="260" height="180">
-									
 									  <img class="staticMapImg" id="staticMapImg<?php echo $i ?>">
 <script>
 	//convert zoom to FOV for static map view
@@ -617,20 +605,18 @@ JSON data).--><br><br>
 									</form>
 									</div>
 								</div>
-								
-								
-					<form role="form" id="formupdate" name="formupdate" method="POST" action="do_query.php" novalidate> <!-- onreset="resetImage(<?php echo ($maxImages+1); ?>)"-->
+					<form role="form" id="formupdate" name="formupdate" method="POST" action="do_query.php" novalidate>
 					<input type="hidden" name="recordno" value="<?php echo $i ?>"> 
 								<!--Edit Form-->
 								<div id="titleStreet<?php echo $i ?>" class="panel-body" style="display:none">			<div class="form-group">
 							<label id="itemlabel<?php echo $i ?>" for="itemtitle">Title: </label>
 							<input type="text" class="form-control" id="itemtitle<?php echo $i ?>" name="title<?php echo $i ?>" value="<?php echo $map_data[$i]["itemtitle"]; ?>"  pattern="a-zA-Z\ \" onchange="validateTitle(<?php echo $i ?>)">
 							</div>
-							<button class="btn" type="button" id="displayAddress<?php echo $i ?>" onclick=" addressUpdate(<?php echo $i ?>); " role="group">Change Address</button><!--initialize(<?php echo $i ?>)-->
-							<button class="btn" type="button" id="displayPicture<?php echo $i ?>" onclick="document.getElementById('displayAddress<?php echo $i ?>').style.display='inline'; document.getElementById('picturetitle<?php echo $i ?>').style.display='inline'; document.getElementById('picturelocal<?php echo $i ?>').style.display='inline'; document.getElementById('sizepic<?php echo $i ?>').style.display='inline'; document.getElementById('addressLabel<?php echo $i ?>').style.display='none'; document.getElementById('autocomplete<?php echo $i ?>').style.display='none'; document.getElementById('convertAddress<?php echo $i ?>').style.display='none';" role="group">Change CONTENTdm URL</button>
+							<button class="btn" type="button" id="displayAddress<?php echo $i ?>" onclick=" addressUpdate(<?php echo $i ?>); " role="group">Change Address</button>
+							<button class="btn" type="button" id="displayPicture<?php echo $i ?>" onclick="UpdatePicture(<?php echo $i ?>);" role="group">Change CONTENTdm URL</button>
 							<div class="form-group">
 							<label id="addressLabel<?php echo $i ?>" style="display:none;" for="getLatLong">Street Address: </label>
-							<input id="autocomplete<?php echo $i ?>" class="form-control" style="display:none;" name="address<?php echo $i ?>" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate(<?php echo $i ?>)"   pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>							
+							<input id="autocomplete<?php echo $i ?>" class="form-control" style="display:none;" name="address<?php echo $i ?>" placeholder="Enter new address"  type="text" autocomplete="off" onFocus="geolocate(<?php echo $i ?>)"   pattern="[a-zA-Z\d\s\-\,\#\.\+]+" role="group"></input>		
 							</div>
 							<button class="btn" type="button" id="convertAddress<?php echo $i ?>" style="display:none;" onclick="myFunction()" role="group">Get Lat Long</button>
 							<!--Feature Option: Change CDM picture-->
@@ -672,13 +658,11 @@ JSON data).--><br><br>
 							</div>
 							</div>
 						</div>
-					</div>
-				
+					</div>				
 			<?php	} 
 				} ?>
 	</div>
 	<?php if ($map_data_exists && ($maxImages > 4)) { ?>
-	
 	<hr/>
 	<div class="title">
 		<form id="bottomformshow" name="bottomformshow">
@@ -689,7 +673,6 @@ JSON data).--><br><br>
 	</div>
 	<br>
 	</div>
-	<?php } ?>
-	
+	<?php } ?>	
 </body>
 </html>
