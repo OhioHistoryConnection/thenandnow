@@ -427,6 +427,9 @@ target.setBounds(circle.getBounds());
 	function UpdatePicture(row){
 		document.getElementById('displayAddress'+ row).style.display='inline'; document.getElementById('picturetitle'+ row).style.display='inline'; document.getElementById('picturelocal'+ row).style.display='inline'; document.getElementById('sizepic'+ row).style.display='inline'; document.getElementById('addressLabel'+ row).style.display='none'; document.getElementById('autocomplete'+ row).style.display='none'; document.getElementById('convertAddress'+ row).style.display='none';
 	}
+	function UpdateCancel(row){
+		document.getElementById('titleStreet' + row).style.display = 'none'; document.getElementById('submitGroup' + row).style.display = 'none'; document.getElementById('streetwrapper' + row).style.display = 'none'; document.getElementById('imagepreview' + row).style.display = 'inline'; document.getElementById('editButtons' + row).style.display = 'inline';
+	}
 </script>
 <?php if ($map_data_exists) { ?>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
@@ -651,7 +654,7 @@ JSON data).--><br><br>
 							</div>
 							<div id="submitGroup<?php echo $i ?>" style="display:none;">
 		<br/><button class="btn"type="submit" name="updateLine">Update Image</button>
-		<button id="cancelUpdate<?php echo $i ?>"  class="btn" type="button" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'none'; document.getElementById('submitGroup<?php echo $i ?>').style.display = 'none'; document.getElementById('streetwrapper<?php echo $i ?>').style.display = 'none'; document.getElementById('imagepreview<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'inline';">Cancel</button>
+		<button id="cancelUpdate<?php echo $i ?>"  class="btn" type="button" onclick="UpdateCancel(<?php echo $i ?>);">Cancel</button>
 		</div>
 							<!--End of Edit--->
 							</form>
