@@ -275,7 +275,7 @@ target.setBounds(circle.getBounds());
 	  }
 	}
 	// [END region_geolocation]
-	function resetImage(row){
+	function cancelImage(row){
 		document.getElementById("picturetitle"+row).style.display="none";
 		document.getElementById("picturelocal"+row).style.display="none";
 		document.getElementById("sizepic"+row).style.display="none";
@@ -283,9 +283,12 @@ target.setBounds(circle.getBounds());
 		document.getElementById("titleStreet"+row).style.display="inline";
 		document.getElementById("itemlabel"+row).innerHTML = "Title: ";
 		document.getElementById("itemlabel"+row).style.color='black';
-		document.getElementById("itemtitle"+row).focus();
 		document.getElementById("addressLabel"+row).style.display="none"; document.getElementById("autocomplete"+row).style.display="none";
 		document.getElementById("convertAddress"+row).style.display="none";
+	}
+	function resetImage(row){
+		cancelImage(row);
+		document.getElementById("itemtitle"+row).focus();		
 	}
 	function validateTitle(row){
 		var title = $("#itemtitle"+row).val();
@@ -515,14 +518,14 @@ JSON data).--><br><br>
 					</div><br>
 					<div class="panel-group" id="accordion">
 					<div class="panel panel-default">
-						<div class="panel-heading">
+						<div class="panel-heading" onmouseover= 'document.getElementById("itemtitle<?php echo ($maxImages+1); ?>").focus();document.getElementById("itemtitle<?php echo ($maxImages+1); ?>").setAttribute("onblur", "validateTitle(<?php echo ($maxImages+1); ?>)");' >
 							<h4 class="panel-title">
 							<a data-toggle="collapse" data-parent="#accordion" href="#collapseImage">
 								Add Image
 							</a>					
 							</h4>
 						</div>
-						<div id="collapseImage" class="panel-collapse collapse">
+						<div id="collapseImage" class="panel-collapse collapse" >
 							<div class="panel-body">
 					<label>This is a 2 part process which includes inputting the picture information and then replicating the picture's focal point on Google street view.</label><br><br>
 					<form role="form" id="formadd" name="formadd" onreset="resetImage(<?php echo ($maxImages+1); ?>)" method="POST" action="do_query.php">
@@ -531,7 +534,7 @@ JSON data).--><br><br>
 					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>					
 						<div class="form-group">
 							<label id="itemlabel<?php echo ($maxImages+1); ?>" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle<?php echo ($maxImages+1); ?>" name="title" placeholder="The Ohio Statehouse"  required pattern="a-zA-Z\ \" onkeydown="getAddresses(<?php echo ($maxImages+1); ?>)" onblur="validateTitle(<?php echo ($maxImages+1); ?>)"  autofocus>
+							<input type="text" class="form-control" id="itemtitle<?php echo ($maxImages+1); ?>" name="title" placeholder="The Ohio Statehouse"  required pattern="a-zA-Z\ \" onkeydown="getAddresses(<?php echo ($maxImages+1); ?>)" onblur="validateTitle(<?php echo ($maxImages+1); ?>)" autofocus>
 							</div>
 							<div class="form-group">
 							<label id="addressLabel<?php echo ($maxImages+1); ?>" for="getLatLong" style="display:none">Street Address: </label>
@@ -570,7 +573,7 @@ JSON data).--><br><br>
 							</div>
 	<input type="reset" class="btn">
 	<!--Cancel Function Option-->
-	<!--<button class="btn" type="button" id="cancelUpdate<?php echo ($maxImages+1); ?>" onclick='document.getElementById("formadd").reset(); document.getElementById("collapseImage").display="none";'>Cancel</button>-->
+	<button class="btn" type="button" id="cancelUpdate<?php echo ($maxImages+1); ?>" onclick='document.getElementById("itemtitle<?php echo ($maxImages+1); ?>").removeAttribute("onblur"); cancelImage(<?php echo ($maxImages+1); ?>);' data-toggle="collapse" data-target="#collapseImage"novalidate>Cancel</button>
 						</form>
 						</div>
 					</div>
