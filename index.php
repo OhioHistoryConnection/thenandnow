@@ -518,7 +518,7 @@ JSON data).--><br><br>
 					</div><br>
 					<div class="panel-group" id="accordion">
 					<div class="panel panel-default">
-						<div class="panel-heading" onmouseover= 'document.getElementById("itemtitle<?php echo ($maxImages+1); ?>").focus();document.getElementById("itemtitle<?php echo ($maxImages+1); ?>").setAttribute("onblur", "validateTitle(<?php echo ($maxImages+1); ?>)");' >
+						<div class="panel-heading" onmouseover= 'document.getElementById("itemtitle<?php echo ($maxImages+1); ?>").focus();'>
 							<h4 class="panel-title">
 							<a data-toggle="collapse" data-parent="#accordion" href="#collapseImage">
 								Add Image
@@ -534,7 +534,7 @@ JSON data).--><br><br>
 					<label>Input picture title, street address, and copy paste the URL address of the ContentDM picture.</label><br><br>					
 						<div class="form-group">
 							<label id="itemlabel<?php echo ($maxImages+1); ?>" for="itemtitle">Title: </label>
-							<input type="text" class="form-control" id="itemtitle<?php echo ($maxImages+1); ?>" name="title" placeholder="The Ohio Statehouse"  required pattern="a-zA-Z\ \" onkeydown="getAddresses(<?php echo ($maxImages+1); ?>)" onblur="validateTitle(<?php echo ($maxImages+1); ?>)" autofocus>
+							<input type="text" class="form-control" id="itemtitle<?php echo ($maxImages+1); ?>" name="title" placeholder="The Ohio Statehouse"  required pattern="a-zA-Z\ \" onkeydown="getAddresses(<?php echo ($maxImages+1); ?>)" onfocus='document.getElementById("itemtitle<?php echo ($maxImages+1); ?>").setAttribute("onblur", "validateTitle(<?php echo ($maxImages+1); ?>)");' autofocus>
 							</div>
 							<div class="form-group">
 							<label id="addressLabel<?php echo ($maxImages+1); ?>" for="getLatLong" style="display:none">Street Address: </label>
