@@ -640,12 +640,13 @@ JSON data).--><br><br>
 							<input id="identifier_<?php echo $i ?>" name="identifier_<?php echo $i ?>"type="text" value="<?php echo $map_data[$i]["identifier"] ?>" style="display:none;" required>
 							
 							<div id="streetwrapper<?php echo $i ?>">
-		<label>Adjust the Google Viewpoint to match the image.</label>
-		<div id="panoInfo<?php echo $i ?>">
-	  	latitude: <input type="text" id="lat_cell<?php echo $i ?>" name="lat_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>" size="10">, longitude: <input type="text" id="lng_cell<?php echo $i ?>" name="lng_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>" size="10"><br/>
-	  	heading: <input type="text" id="heading_cell<?php echo $i ?>" name="heading_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="9">, 
-	  	pitch: <input type="text" id="pitch_cell<?php echo $i ?>" name="pitch_cell<?php echo $i ?>" size="9"  value="<?php echo $map_data[$i]["pitch"] ?>">, 
-	  	zoom: <input type="text" id="zoom_cell<?php echo $i ?>" name="zoom_cell<?php echo $i ?>" size="1"  value="<?php echo $map_data[$i]["zoom"] ?>">
+		<label>Adjust the Google Viewpoint to match the image.</label><br/><br>
+		<div id="panoInfo<?php echo $i ?>" style="display:none">
+	  	<input type="text" id="lat_cell<?php echo $i ?>" name="lat_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["latitude"] ?>" size="10">
+		<input type="text" id="lng_cell<?php echo $i ?>" name="lng_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["longitude"] ?>" size="10">
+		<input type="text" id="heading_cell<?php echo $i ?>" name="heading_cell<?php echo $i ?>" value="<?php echo $map_data[$i]["heading"] ?>" size="9">
+		<input type="text" id="pitch_cell<?php echo $i ?>" name="pitch_cell<?php echo $i ?>" size="9"  value="<?php echo $map_data[$i]["pitch"] ?>">
+		<input type="text" id="zoom_cell<?php echo $i ?>" name="zoom_cell<?php echo $i ?>" size="1"  value="<?php echo $map_data[$i]["zoom"] ?>">
 	  </div>
 	  <br/>
 		<div class="panoblock" id="panoblock<?php echo $i ?>">	
