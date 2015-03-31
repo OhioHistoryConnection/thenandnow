@@ -40,7 +40,7 @@ catch(Exception $e){
 }
 // get map data
 if ( isset($_POST['getmap']) || isset($_GET['getmap']) ) {
-	$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_GET["getmap"]) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',$_POST["getmap"]);
+	$mapID = isset($_GET["getmap"]) ? preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',htmlentities($_GET["getmap"])) : preg_replace('/^([a-zA-Z\-_]{1,50})/','$1',htmlentities($_POST["getmap"]));
 		for ($i = 0; $i < $max; $i++) {
 			if($map_id_json_array[$i]['mapid'] == $mapID){
 				$curl_url = $config['THIS_HOST']."/do_query.php?getmap=" . rawurlencode($mapID);
