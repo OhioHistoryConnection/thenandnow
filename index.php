@@ -518,11 +518,13 @@ JSON data).--><br><br>
 					</div><br>
 					<div class="panel-group" id="accordion">
 					<div class="panel panel-default">
-						<div class="panel-heading" onmouseover= 'document.getElementById("itemtitle<?php echo ($maxImages+1); ?>").focus();'>
+						<div class="panel-heading" id="headerImage" touchstart='document.getElementById("headerImage").style.background="#cccccc"; document.getElementById("itemtitle<?php echo ($maxImages+1); ?>").focus();'touchend='document.getElementById("headerImage").style.background="#f5f5f5";' onmouseover= 'document.getElementById("headerImage").style.background="#cccccc"; document.getElementById("itemtitle<?php echo ($maxImages+1); ?>").focus();'onmouseout='document.getElementById("headerImage").style.background="#f5f5f5";' data-toggle="collapse" data-parent="#accordion" href="#collapseImage">
 							<h4 class="panel-title">
-							<a data-toggle="collapse" data-parent="#accordion" href="#collapseImage">
+							<!--<a data-toggle="collapse" data-parent="#accordion" href="#collapseImage">-->
+							<label>
 								Add Image
-							</a>					
+								</label>
+							<!--</a>-->
 							</h4>
 						</div>
 						<div id="collapseImage" class="panel-collapse collapse" >
@@ -579,12 +581,14 @@ JSON data).--><br><br>
 					</div>
 			<?php for ($i = 0; $i < $maxImages; $i++) {	?>
 						<div class="panel panel-default">
-						<div class="panel-heading">
+						<div class="panel-heading" id="header<?php echo $i ?>"  touchstart= 'document.getElementById("header<?php echo $i ?>").style.background="#cccccc";'touchend='document.getElementById("header<?php echo $i ?>").style.background="#f5f5f5";' onmouseover= 'document.getElementById("header<?php echo $i ?>").style.background="#cccccc";'onmouseout='document.getElementById("header<?php echo $i ?>").style.background="#f5f5f5";' data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $i ?>">
 							<h4 class="panel-title">
 							<img src="<?php echo $map_data[$i]["cdmurl"] ?>" width="123" height="90">&nbsp&nbsp
-							<a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $i ?>">
+							<!--<a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $i ?>">-->
+							<label>
 						  <?php echo $map_data[$i]["itemtitle"]; ?>
-							</a>						
+						  </label>
+							<!--</a>-->					
 							</h4>
 						</div>
 						<div id="collapse<?php echo $i ?>" class="panel-collapse collapse">
