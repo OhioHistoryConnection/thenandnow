@@ -430,8 +430,14 @@ target.setBounds(circle.getBounds());
 	function UpdatePicture(row){
 		document.getElementById('displayAddress'+ row).style.display='inline'; document.getElementById('picturetitle'+ row).style.display='inline'; document.getElementById('picturelocal'+ row).style.display='inline'; document.getElementById('sizepic'+ row).style.display='inline'; document.getElementById('addressLabel'+ row).style.display='none'; document.getElementById('autocomplete'+ row).style.display='none'; document.getElementById('convertAddress'+ row).style.display='none';
 	}
+	function editCancel(row){
+		//document.getElementById('edit' + row).style.display = 'inline';
+		document.getElementById('editButtons' + row).style.display = 'inline';
+		document.getElementById('buttonCat' + row).style.display = 'none';
+	}
 	function UpdateCancel(row){
-		document.getElementById('titleStreet' + row).style.display = 'none'; document.getElementById('submitGroup' + row).style.display = 'none'; document.getElementById('streetwrapper' + row).style.display = 'none'; document.getElementById('imagepreview' + row).style.display = 'inline'; document.getElementById('editButtons' + row).style.display = 'inline';
+		document.getElementById('titleStreet' + row).style.display = 'none'; document.getElementById('submitGroup' + row).style.display = 'none'; document.getElementById('streetwrapper' + row).style.display = 'none'; document.getElementById('imagepreview' + row).style.display = 'inline';
+		editCancel(row);
 	}
 </script>
 <?php if ($map_data_exists) { ?>
@@ -607,16 +613,22 @@ JSON data).--><br><br>
 </script>
 									</div>
 									</div>
-									<div id="editButtons<?php echo $i ?>" class="btn-group">
+									</br></br>
+									<div id="editButtons<?php echo $i ?>" class="btn-group" role="group" aria-label="...">
+									
 									<form method="POST" action="do_query.php" onsubmit="return confirmDelete()"><input type="hidden" name="getmap" value="<?php echo $map_data_exists ? $mapID : '' ?>"><input type="hidden" name="recordno" value="<?php echo $i ?>">
+									<button class="btn" type="button" id="edit<?php echo $i ?>" onclick="document.getElementById('buttonCat<?php echo $i ?>').style.display = 'inline'; document.getElementById('editButtons<?php echo $i ?>').style.display = 'none';">Edit</button>
+									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button><!--</a>-->
+									</form>
+									</div>
+									<div id="buttonCat<?php echo $i ?>"style="display:none">				
 									<button class="btn" type="button" id="editMData" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'inline';EditDisplay('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>);">Edit Meta Data</button>
 									<button class="btn" type="button" id="editView" onclick="document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline'; EditDisplay('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>);">Edit Picture View</button>
-									<button class="btn" type="submit" name="deldata" value="Delete">Delete</button></a>
-									</form>
+									<button id="cancelEdit<?php echo $i ?>"  class="btn" type="button" onclick="editCancel(<?php echo $i ?>);">Cancel</button>
 									</div>
 								</div>
 					<form role="form" id="formupdate" name="formupdate" method="POST" action="do_query.php" novalidate>
-					<input type="hidden" name="recordno" value="<?php echo $i ?>"> 
+					<input type="hidden" name="recordno" value="<?php echo $i ?>">
 								<!--Edit Form-->
 								<div id="titleStreet<?php echo $i ?>" class="panel-body" style="display:none">			<div class="form-group">
 							<label id="itemlabel<?php echo $i ?>" for="itemtitle">Title: </label>
