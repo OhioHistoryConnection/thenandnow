@@ -335,7 +335,7 @@ target.setBounds(circle.getBounds());
 			document.getElementById("sizepic"+row).style.display="inline";
 			document.getElementById("convertAddress"+row).style.display="none";
 			document.getElementById("picturelocal"+row).focus();
-			if(row <= <?php echo $max ?>){//document.getElementById("cancelStreet"+row).style.diplay="none";
+			if(row <= <?php echo $max ?>){
 			document.getElementById("submitGroup"+row).style.diplay="inline";}
 		}
 	}			
@@ -431,7 +431,6 @@ target.setBounds(circle.getBounds());
 		document.getElementById('displayAddress'+ row).style.display='inline'; document.getElementById('picturetitle'+ row).style.display='inline'; document.getElementById('picturelocal'+ row).style.display='inline'; document.getElementById('sizepic'+ row).style.display='inline'; document.getElementById('addressLabel'+ row).style.display='none'; document.getElementById('autocomplete'+ row).style.display='none'; document.getElementById('convertAddress'+ row).style.display='none';
 	}
 	function editCancel(row){
-		//document.getElementById('edit' + row).style.display = 'inline';
 		document.getElementById('editButtons' + row).style.display = 'inline';
 		document.getElementById('buttonCat' + row).style.display = 'none';
 	}
@@ -622,8 +621,8 @@ JSON data).--><br><br>
 									</form>
 									</div>
 									<div id="buttonCat<?php echo $i ?>"style="display:none">				
-									<button class="btn" type="button" id="editMData" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'inline';EditDisplay('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>);">Edit Meta Data</button>
-									<button class="btn" type="button" id="editView" onclick="document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline'; EditDisplay('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>);">Edit Picture View</button>
+									<button class="btn" type="button" id="editMData" onclick="document.getElementById('titleStreet<?php echo $i ?>').style.display = 'inline'; document.getElementById('buttonCat<?php echo $i ?>').style.display = 'none'; EditDisplay('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>);">Edit Meta Data</button>
+									<button class="btn" type="button" id="editView" onclick="document.getElementById('imagepov<?php echo $i ?>').style.display = 'inline'; document.getElementById('buttonCat<?php echo $i ?>').style.display = 'none'; EditDisplay('<?php echo $map_data[$i]["cdmurl"] ?>', <?php echo $i ?>);">Edit Picture View</button>
 									<button id="cancelEdit<?php echo $i ?>"  class="btn" type="button" onclick="editCancel(<?php echo $i ?>);">Cancel</button>
 									</div>
 								</div>
